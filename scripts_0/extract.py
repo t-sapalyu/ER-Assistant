@@ -205,7 +205,7 @@ def main() -> None:
     args = parser.parse_args()
 
     pdf_folder: Path = args.pdf_folder.resolve()
-    output_dir: Path = (args.output_dir or pdf_folder).resolve()
+    output_dir: Path = (args.output_dir or pdf_folder.parent).resolve()
 
     if not pdf_folder.is_dir():
         print(f"Error: {pdf_folder} is not a directory.", file=sys.stderr)
