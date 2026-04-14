@@ -2,10 +2,13 @@
 
 import json
 import sys
+import io
 from datetime import datetime, timezone
 from pathlib import Path
 
 import gradio as gr
+import fitz  # PyMuPDF
+from PIL import Image
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / "scripts"))
@@ -15,18 +18,103 @@ from rag_pipeline import client, generate_answer, load_index, retrieve
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
 EXPORT_DIR = BASE_DIR / "data" / "exports"
 EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+PDF_DIR = BASE_DIR / "data" / "pdfs"
 
 print("Loading FAISS index and chunks...")
 index, chunks = load_index()
 print(f"Ready. {index.ntotal} vectors loaded.")
 
 
-def to_text(content):
-    """Normalize Gradio message content to a plain string.
+# ---------- PDF Highlighting Logic ----------
 
-    Gradio 6 may pass content as a list of blocks like
-    [{"text": "...", "type": "text"}] or as a plain string.
-    """
+def get_verbatim_quotes(page_text, llm_answer):
+    """Uses LLM to find exact quotes from the page used to generate the answer."""
+    prompt = (
+        "You are an exact text matcher. Given the 'Page Text' and the 'LLM Answer', "
+        "extract the exact, verbatim phrases or sentences from the 'Page Text' that support the 'LLM Answer'. "
+        "Return ONLY the exact quotes from the page text, separated by a newline. "
+        "Do not alter the text, do not fix typos, and do not add conversational filler.\n\n"
+        f"Page Text:\n{page_text}\n\n"
+        f"LLM Answer:\n{llm_answer}\n\n"
+        "Verbatim Quotes:"
+    )
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,
+    )
+    quotes = response.choices[0].message.content.strip().split('\n')
+    return [q.strip() for q in quotes if q.strip()]
+
+
+def process_and_highlight_pages(answer, retrieved):
+    """Opens PDF dynamically, checks if chunk is cited in answer, highlights quotes, returns images for gallery."""
+    highlighted_images = []
+    seen_pages = set()
+                                                                                
+    for c in retrieved:
+        # Simple check: only process this page if the LLM's answer actually mentions its source file AND page number
+        if c["source"] not in answer or str(c["page"]) not in answer:
+            continue
+        
+        page_num = c.get("page")
+    
+        if page_num is None or page_num in seen_pages:
+            continue
+        seen_pages.add(page_num)
+
+        # Build path using PDF_DIR and the source filename from the chunk
+        pdf_path = PDF_DIR / c["source"]
+        if not pdf_path.exists():
+            print(f"[Warning] PDF not found at {pdf_path}")
+            continue
+                                                   
+        doc = fitz.open(pdf_path)
+        
+        # Assuming 'page' in chunk is 1-based index; PyMuPDF is 0-based
+        try:
+            actual_page_index = int(page_num) - 1
+        except ValueError:
+            doc.close()
+            continue
+             
+        if actual_page_index < 0 or actual_page_index >= len(doc):
+            doc.close()
+            continue
+
+        # 1. Get the page and its text
+        page = doc[actual_page_index]
+        page_text = page.get_text()
+        
+        # 2. Ask LLM to extract verbatim quotes used for the answer
+        quotes = get_verbatim_quotes(page_text, answer)
+        
+        # 3. Highlight the quotes on the PDF page
+        for quote in quotes:
+            if not quote: 
+                continue
+            text_instances = page.search_for(quote)
+            for inst in text_instances:
+                page.add_highlight_annot(inst)
+
+        # 4. Render to an image
+        pix = page.get_pixmap(dpi=150)
+        img_data = pix.tobytes("png")
+        img = Image.open(io.BytesIO(img_data))
+        
+        # Format for gr.Gallery: tuple of (Image, Caption)
+        caption = f"{c['source']} - Page {page_num}"
+        highlighted_images.append((img, caption))
+        
+        doc.close()
+
+    return highlighted_images
+
+
+# ---------- General Helpers ----------
+
+def to_text(content):
+    """Normalize Gradio message content to a plain string."""
     if isinstance(content, str):
         return content
     if isinstance(content, list):
@@ -73,18 +161,6 @@ def rewrite_query(message, history):
     rewritten = response.choices[0].message.content.strip()
     print(f"[rewrite] '{message}' -> '{rewritten}'")
     return rewritten
-
-
-def format_sources(retrieved):
-    seen = set()
-    lines = ["**Sources:**"]
-    for c in retrieved:
-        key = (c["source"], c["page"])
-        if key in seen:
-            continue
-        seen.add(key)
-        lines.append(f"- `{c['source']}` p.{c['page']}")
-    return "\n".join(lines)
 
 
 # ---------- feedback logging ----------
@@ -169,9 +245,7 @@ def chat(message, history, last_exchange):
     refusal_phrases = ["don't have", "do not have", "cannot answer", "no information"]
     is_refusal = any(p in answer.lower() for p in refusal_phrases)
 
-    display_answer = (
-        answer if is_refusal else f"{answer}\n\n---\n\n{format_sources(retrieved)}"
-    )
+    display_answer = answer
 
     new_history = history + [
         {"role": "user", "content": message},
@@ -184,18 +258,22 @@ def chat(message, history, last_exchange):
         "retrieved": retrieved,
     }
 
-    # Re-enable feedback buttons (unless refusal) and enable both export buttons
+    # Generate highlighted PDF screenshots ONLY for cited pages
+    highlighted_pages = process_and_highlight_pages(answer, retrieved) if not is_refusal else []
+    
     fb_update = gr.update(interactive=not is_refusal)
+    
     return (
         new_history,
         new_last,
-        "",
-        "",
+        "",  # clear msg box
+        "",  # clear feedback status
         fb_update,
         fb_update,
         gr.update(interactive=True),  # export conversation
         gr.update(interactive=True),  # export last answer
-        gr.update(interactive=False),  # send_btn ← new
+        gr.update(interactive=False), # send_btn
+        highlighted_pages             # pdf_gallery gets the list of (image, caption)
     )
 
 
@@ -209,73 +287,74 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
 
     last_exchange_state = gr.State(None)
 
-    chatbot = gr.Chatbot(height=500)
     with gr.Row():
-        msg = gr.Textbox(
-            placeholder="Ask a question...",
-            show_label=False,
-            scale=9,
-            container=False,
-        )
-        send_btn = gr.Button(
-            "Send", variant="primary", scale=1, min_width=80, interactive=False
-        )
+        # LEFT COLUMN: Chat UI
+        with gr.Column(scale=1):
+            chatbot = gr.Chatbot(height=600)
+            with gr.Row():
+                msg = gr.Textbox(
+                    placeholder="Ask a question...",
+                    show_label=False,
+                    scale=9,
+                    container=False,
+                )
+                send_btn = gr.Button(
+                    "Send", variant="primary", scale=1, min_width=80, interactive=False
+                )
 
-    with gr.Row():
-        thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
-        thumbs_down = gr.Button(
-            "👎 Not helpful", variant="secondary", interactive=False
-        )
-        clear_btn = gr.Button("Clear chat")
+            with gr.Row():
+                thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
+                thumbs_down = gr.Button(
+                    "👎 Not helpful", variant="secondary", interactive=False
+                )
+                clear_btn = gr.Button("Clear chat")
 
-    feedback_status = gr.Markdown("")
+            feedback_status = gr.Markdown("")
 
-    with gr.Row():
-        export_chat_btn = gr.Button(
-            "📥 Export chat", size="sm", scale=0, interactive=False
-        )
-        export_answer_btn = gr.Button(
-            "📥 Export answer", size="sm", scale=0, interactive=False
-        )
-    export_file = gr.File(label="Download")
-    export_status = gr.Markdown("")
+            with gr.Row():
+                export_chat_btn = gr.Button(
+                    "📥 Export chat", size="sm", scale=0, interactive=False
+                )
+                export_answer_btn = gr.Button(
+                    "📥 Export answer", size="sm", scale=0, interactive=False
+                )
+            export_file = gr.File(label="Download")
+            export_status = gr.Markdown("")
+        
+        # RIGHT COLUMN: PDF Viewer (gr.Gallery has built-in next/prev functionality!)
+        with gr.Column(scale=1):
+            pdf_gallery = gr.Gallery(
+                label="Cited PDF Pages",
+                show_label=True,
+                height=700,
+                object_fit="contain",
+                preview=True
+            )
+
+    # 10 Outputs total to map directly to the `chat` return values
+    chat_outputs = [
+        chatbot,
+        last_exchange_state,
+        msg,
+        feedback_status,
+        thumbs_up,
+        thumbs_down,
+        export_chat_btn,
+        export_answer_btn,
+        send_btn,
+        pdf_gallery
+    ]
 
     msg.submit(
         chat,
         inputs=[msg, chatbot, last_exchange_state],
-        outputs=[
-            chatbot,
-            last_exchange_state,
-            msg,
-            feedback_status,
-            thumbs_up,
-            thumbs_down,
-            export_chat_btn,
-            export_answer_btn,
-            send_btn,
-        ],
+        outputs=chat_outputs,
     )
 
     send_btn.click(
         chat,
         inputs=[msg, chatbot, last_exchange_state],
-        outputs=[
-            chatbot,
-            last_exchange_state,
-            msg,
-            feedback_status,
-            thumbs_up,
-            thumbs_down,
-            export_chat_btn,
-            export_answer_btn,
-            send_btn,
-        ],
-    )
-
-    msg.change(
-        lambda text: gr.update(interactive=bool(text.strip())),
-        inputs=[msg],
-        outputs=[send_btn],
+        outputs=chat_outputs,        
     )
 
     msg.change(
@@ -297,25 +376,18 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
 
     clear_btn.click(
         lambda: (
-            [],
-            None,
-            "",
-            "",
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            gr.update(interactive=False),
+            [],                           # clear chatbot
+            None,                         # clear last_exchange_state
+            "",                           # clear msg
+            "",                           # clear feedback status
+            gr.update(interactive=False), # thumbs_up
+            gr.update(interactive=False), # thumbs_down
+            gr.update(interactive=False), # export_chat_btn
+            gr.update(interactive=False), # export_answer_btn
+            gr.update(interactive=False), # send_btn
+            None                          # clear pdf_gallery
         ),
-        outputs=[
-            chatbot,
-            last_exchange_state,
-            msg,
-            feedback_status,
-            thumbs_up,
-            thumbs_down,
-            export_chat_btn,
-            export_answer_btn,
-        ],
+        outputs=chat_outputs,
     )
 
     export_chat_btn.click(
