@@ -1,15 +1,26 @@
 """Gradio chat UI for the ER-Assistant RAG system."""
 
+
 import sys
 from pathlib import Path
 
+
 import gradio as gr
 
+
 # Make the scripts/ folder importable so we can use the shared pipeline
+#BASE_DIR = Path(__file__).resolve().parent.parent
+#sys.path.insert(0, str(BASE_DIR / "scripts"))
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / "scripts"))
 
-from pipeline import generate_answer, load_index, retrieve
+from rag_pipeline import retrieve, generate_answer, load_index
+
+print("BASE_DIR:", BASE_DIR)
+print("Looking for:", BASE_DIR / "scripts")
+print("Exists?", (BASE_DIR / "scripts").exists())
+print("sys.path:", sys.path[:3])
 
 # Load index and chunks once at startup
 print("Loading FAISS index and chunks...")
@@ -31,14 +42,14 @@ def format_sources(retrieved):
 
 def chat(message, history):
     """Handle one chat turn: retrieve, generate, and append sources."""
-    retrieved = retrieve(message, index, chunks, k=5)
+    retrieved = retrieve(message, index, chunks)
     answer = generate_answer(message, retrieved)
 
     # Don't show sources on refusals
     if "don't have information" in answer.lower():
         return answer
 
-    return f"{answer}\n\n---\n\n{format_sources(retrieved)}"
+    return f"{answer}"
 
 
 demo = gr.ChatInterface(
