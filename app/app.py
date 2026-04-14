@@ -3,6 +3,7 @@
 import json
 import sys
 import io
+import pandas as pd
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,6 +16,7 @@ sys.path.insert(0, str(BASE_DIR / "scripts"))
 
 from rag_pipeline import client, generate_answer, load_index, retrieve
 
+USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
 EXPORT_DIR = BASE_DIR / "data" / "exports"
 EXPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -189,6 +191,61 @@ def log_feedback(rating, last_exchange):
         gr.update(interactive=False),
     )
 
+# ---------- analytics data ----------
+def get_analytics_data():
+    """Reads the feedback log and returns stats for the dashboard."""
+    if not FEEDBACK_LOG.exists():
+        return "No data yet.", None, None
+
+    data = []
+    with open(FEEDBACK_LOG, "r", encoding="utf-8") as f:
+        for line in f:
+            data.append(json.loads(line))
+    
+    df = pd.DataFrame(data)
+    
+    # 1. Basic Stats
+    total_q = len(df)
+    avg_score = 0
+    if 'sources' in df.columns:
+        # Flatten scores from the sources list
+        all_scores = [s['score'] for sublist in df['sources'] for s in sublist]
+        avg_score = sum(all_scores) / len(all_scores) if all_scores else 0
+
+    # 2. Ratings Distribution
+    rating_counts = df['rating'].value_counts().reset_index()
+    rating_counts.columns = ['Rating', 'Count']
+
+    # 3. Simple Topic Mockup (In a real app, you'd use LLM to categorize)
+    summary_text = f"**Total Questions:** {total_q} | **Avg Retrieval Score:** {avg_score:.3f}"
+    
+    return summary_text, rating_counts, df[['timestamp', 'rating']]
+
+
+def load_analytics_data():
+    if not USAGE_LOG.exists():
+        return "No usage data yet.", pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+
+    df = pd.DataFrame([json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")])
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+    df_display = df.copy()
+    df_display['timestamp'] = df_display['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
+    # Summary Stats
+    total_q = len(df)
+    avg_quality = df['avg_score'].mean()
+    total_cost = df['cost'].sum()
+    summary = f"### 📊 Summary\n**Total Questions:** {total_q} | **Avg Score:** {avg_quality:.3f} | **Total Est. Cost:** ${total_cost:.4f}"
+
+    # Topic Data (for BarPlot)
+    topics = ['CPR', 'Choking', 'Bleeding', 'Burn', 'Stroke', 'Heart']
+    df_topics = pd.DataFrame([{"Topic": t, "Count": int(df['question'].str.contains(t, case=False).sum())} for t in topics])
+    df_table = df_display[['timestamp', 'question', 'avg_score', 'cost']].sort_values('timestamp', ascending=False)
+
+    
+
+    return summary, df_topics, df, df_table
 
 # ---------- export ----------
 def export_conversation(history):
@@ -262,7 +319,18 @@ def chat(message, history, last_exchange):
     highlighted_pages = process_and_highlight_pages(answer, retrieved) if not is_refusal else []
     
     fb_update = gr.update(interactive=not is_refusal)
-    
+    avg_score = sum(c["score"] for c in retrieved) / len(retrieved) if retrieved else 0
+    est_cost = (len(message) + len(answer)) * 0.0000002
+    usage_record = {
+    "timestamp": datetime.now(timezone.utc).isoformat(),
+    "question": message,
+    "answer": answer[:100] + "...", # snippet
+    "avg_score": avg_score,
+    "cost": est_cost 
+}
+    with open(USAGE_LOG, "a", encoding="utf-8") as f:
+        f.write(json.dumps(usage_record) + "\n")
+
     return (
         new_history,
         new_last,
@@ -280,82 +348,103 @@ def chat(message, history, last_exchange):
 # ---------- UI ----------
 with gr.Blocks(title="🚑 ER-Assistant") as demo:
     gr.Markdown("# 🚑 ER-Assistant — First Aid & CPR Q&A")
-    gr.Markdown(
-        "Ask questions about the Canadian Red Cross First Aid & CPR Guide. "
-        "Follow-ups are supported. Use 👍 / 👎 to rate answers."
+    
+    with gr.Tabs() as tabs:
+        
+        # TAB 1: Chatbot (Your Existing UI)
+        with gr.Tab("Chatbot", id=0):
+            gr.Markdown("Ask questions about the Canadian Red Cross First Aid & CPR Guide.")
+            
+            last_exchange_state = gr.State(None)
+
+            with gr.Row():
+                # LEFT COLUMN: Chat UI
+                with gr.Column(scale=1):
+                    chatbot = gr.Chatbot(height=600)
+                    with gr.Row():
+                        msg = gr.Textbox(
+                            placeholder="Ask a question...",
+                            show_label=False,
+                            scale=9,
+                            container=False,
+                        )
+                        send_btn = gr.Button(
+                            "Send", variant="primary", scale=1, min_width=80, interactive=False
+                        )
+
+                    with gr.Row():
+                        thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
+                        thumbs_down = gr.Button(
+                            "👎 Not helpful", variant="secondary", interactive=False
+                        )
+                        clear_btn = gr.Button("Clear chat")
+
+                    feedback_status = gr.Markdown("")
+
+                    with gr.Row():
+                        export_chat_btn = gr.Button(
+                            "📥 Export chat", size="sm", scale=0, interactive=False
+                        )
+                        export_answer_btn = gr.Button(
+                            "📥 Export answer", size="sm", scale=0, interactive=False
+                        )
+                    export_file = gr.File(label="Download")
+                    export_status = gr.Markdown("")
+                
+                # RIGHT COLUMN: PDF Viewer
+                with gr.Column(scale=1):
+                    pdf_gallery = gr.Gallery(
+                        label="Cited PDF Pages",
+                        show_label=True,
+                        height=700,
+                        object_fit="contain",
+                        preview=True
+                    )
+
+        # TAB 2: Analytics (The New Dashboard)
+        with gr.Tab("Analytics", id=1) as analytics_tab:
+            gr.Markdown("## 📊 Usage Analytics")
+            stats_output = gr.Markdown("Loading...")
+            refresh_btn = gr.Button("🔄 Refresh")
+
+            with gr.Row():
+                topic_plot = gr.BarPlot(x="Topic", y="Count", title="Common Topics")
+                score_plot = gr.LinePlot(x="timestamp", y="avg_score", title="Quality Trend")
+            
+            gr.Markdown("### 📜 Detailed Question Log")
+            question_table = gr.Dataframe(
+                headers=["Time", "Question", "Score", "Cost ($)"],
+                datatype=["str", "str", "number", "number"],
+                wrap=True
+            )
+    # ---------- Event Handlers ----------
+
+    # Function to trigger analytics update
+    def update_dashboard():
+        summary, df_topics, df_scores = load_analytics_data()
+        return summary, df_topics, df_scores
+
+    # Auto-update analytics when user clicks the tab
+    analytics_tab.select(
+        fn=load_analytics_data,
+        outputs=[stats_output, topic_plot, score_plot, question_table]
+    )
+    
+    # Manual refresh button
+    refresh_btn.click(
+        fn=load_analytics_data,
+        outputs=[stats_output, topic_plot, score_plot]
     )
 
-    last_exchange_state = gr.State(None)
-
-    with gr.Row():
-        # LEFT COLUMN: Chat UI
-        with gr.Column(scale=1):
-            chatbot = gr.Chatbot(height=600)
-            with gr.Row():
-                msg = gr.Textbox(
-                    placeholder="Ask a question...",
-                    show_label=False,
-                    scale=9,
-                    container=False,
-                )
-                send_btn = gr.Button(
-                    "Send", variant="primary", scale=1, min_width=80, interactive=False
-                )
-
-            with gr.Row():
-                thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
-                thumbs_down = gr.Button(
-                    "👎 Not helpful", variant="secondary", interactive=False
-                )
-                clear_btn = gr.Button("Clear chat")
-
-            feedback_status = gr.Markdown("")
-
-            with gr.Row():
-                export_chat_btn = gr.Button(
-                    "📥 Export chat", size="sm", scale=0, interactive=False
-                )
-                export_answer_btn = gr.Button(
-                    "📥 Export answer", size="sm", scale=0, interactive=False
-                )
-            export_file = gr.File(label="Download")
-            export_status = gr.Markdown("")
-        
-        # RIGHT COLUMN: PDF Viewer (gr.Gallery has built-in next/prev functionality!)
-        with gr.Column(scale=1):
-            pdf_gallery = gr.Gallery(
-                label="Cited PDF Pages",
-                show_label=True,
-                height=700,
-                object_fit="contain",
-                preview=True
-            )
-
-    # 10 Outputs total to map directly to the `chat` return values
+    # [Existing Chatbot Handlers]
     chat_outputs = [
-        chatbot,
-        last_exchange_state,
-        msg,
-        feedback_status,
-        thumbs_up,
-        thumbs_down,
-        export_chat_btn,
-        export_answer_btn,
-        send_btn,
-        pdf_gallery
+        chatbot, last_exchange_state, msg, feedback_status, 
+        thumbs_up, thumbs_down, export_chat_btn, export_answer_btn, 
+        send_btn, pdf_gallery
     ]
 
-    msg.submit(
-        chat,
-        inputs=[msg, chatbot, last_exchange_state],
-        outputs=chat_outputs,
-    )
-
-    send_btn.click(
-        chat,
-        inputs=[msg, chatbot, last_exchange_state],
-        outputs=chat_outputs,        
-    )
+    msg.submit(chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs)
+    send_btn.click(chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs)
 
     msg.change(
         lambda text: gr.update(interactive=bool(text.strip())),
@@ -368,6 +457,7 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         inputs=[last_exchange_state],
         outputs=[feedback_status, thumbs_up, thumbs_down],
     )
+    
     thumbs_down.click(
         lambda exch: log_feedback("not_helpful", exch),
         inputs=[last_exchange_state],
@@ -375,31 +465,14 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
     )
 
     clear_btn.click(
-        lambda: (
-            [],                           # clear chatbot
-            None,                         # clear last_exchange_state
-            "",                           # clear msg
-            "",                           # clear feedback status
-            gr.update(interactive=False), # thumbs_up
-            gr.update(interactive=False), # thumbs_down
-            gr.update(interactive=False), # export_chat_btn
-            gr.update(interactive=False), # export_answer_btn
-            gr.update(interactive=False), # send_btn
-            None                          # clear pdf_gallery
-        ),
+        lambda: ([], None, "", "", gr.update(interactive=False), gr.update(interactive=False), 
+                 gr.update(interactive=False), gr.update(interactive=False), 
+                 gr.update(interactive=False), None),
         outputs=chat_outputs,
     )
 
-    export_chat_btn.click(
-        export_conversation,
-        inputs=[chatbot],
-        outputs=[export_file, export_status],
-    )
-    export_answer_btn.click(
-        export_last_answer,
-        inputs=[last_exchange_state],
-        outputs=[export_file, export_status],
-    )
+    export_chat_btn.click(export_conversation, inputs=[chatbot], outputs=[export_file, export_status])
+    export_answer_btn.click(export_last_answer, inputs=[last_exchange_state], outputs=[export_file, export_status])
 
 
 if __name__ == "__main__":
