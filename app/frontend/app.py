@@ -1,14 +1,24 @@
+"""Gradio chat UI for the ER-Assistant RAG system."""
+
+import sys
+from pathlib import Path
+
 import gradio as gr
 
-from rag import generate_answer, load_index, retrieve
+# Make the scripts/ folder importable so we can use the shared pipeline
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR / "scripts"))
 
-# Load once at startup
+from pipeline import generate_answer, load_index, retrieve
+
+# Load index and chunks once at startup
 print("Loading FAISS index and chunks...")
 index, chunks = load_index()
 print(f"Ready. {index.ntotal} vectors loaded.")
 
 
 def format_sources(retrieved):
+    """Format retrieved chunks as a readable sources block."""
     lines = ["**Sources used:**"]
     for i, c in enumerate(retrieved, 1):
         preview = c["text"][:150].replace("\n", " ")
@@ -20,9 +30,11 @@ def format_sources(retrieved):
 
 
 def chat(message, history):
+    """Handle one chat turn: retrieve, generate, and append sources."""
     retrieved = retrieve(message, index, chunks, k=5)
     answer = generate_answer(message, retrieved)
 
+    # Don't show sources on refusals
     if "don't have information" in answer.lower():
         return answer
 
@@ -31,7 +43,7 @@ def chat(message, history):
 
 demo = gr.ChatInterface(
     fn=chat,
-    title="📄 RAG Q&A — First Aid & CPR Guide",
+    title="🚑 ER-Assistant — First Aid & CPR Q&A",
     description=(
         "Ask questions about the Canadian Red Cross Comprehensive Guide "
         "for First Aid & CPR. Answers include source citations."
