@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+openai
+faiss-cpu
+numpy
+tiktoken
+
+python-dotenv
+pymupdf
+pdfplumber
+beautifulsoup4
+requests
