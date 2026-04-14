@@ -229,6 +229,8 @@ def load_analytics_data():
     df = pd.DataFrame([json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")])
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
+    df['short_time'] = df['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
     df_display = df.copy()
     df_display['timestamp'] = df_display['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -409,7 +411,7 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
 
             with gr.Row():
                 topic_plot = gr.BarPlot(x="Topic", y="Count", title="Common Topics")
-                score_plot = gr.LinePlot(x="timestamp", y="avg_score", title="Quality Trend")
+                score_plot = gr.LinePlot(x="short_time", y="avg_score", title="Quality Trend", x_title="timestamp")
             
             gr.Markdown("### 📜 Detailed Question Log")
             question_table = gr.Dataframe(
