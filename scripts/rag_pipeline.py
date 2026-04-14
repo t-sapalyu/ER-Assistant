@@ -244,6 +244,7 @@ def generate_answer(query, retrieved_chunks):
     Rules:
     - If the context doesn't contain the answer, say 'I don't have enough information to answer this.'
     - Always cite which source your answer comes from using the format: (Source: <filename>, Page <number>).
+    - Use the context to answer, applying reasonable inference (e.g., a 5-year-old is a "child", a 6-month-old is a "baby").
     - If the answer comes from multiple chunks/sources, combine and cite all of them.
     - If the question is yes/no, answer with only 'Yes' or 'No'
     - If the question asks what NOT to do, infer the answer from what the context have
