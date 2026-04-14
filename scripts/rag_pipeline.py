@@ -7,8 +7,9 @@ import os
 from pathlib import Path
 import uuid
 from cost_tracker import track_cost
-#import spacy
-#nlp = spacy.load("en_core_web_sm")  # pip install spacy && python -m spacy download en_core_web_sm
+
+# import spacy
+# nlp = spacy.load("en_core_web_sm")  # pip install spacy && python -m spacy download en_core_web_sm
 
 
 # ---------------------------
@@ -30,12 +31,14 @@ CHUNK_SIZE = 600
 OVERLAP = 150
 MIN_TEXT_LENGTH = 100
 
+
 # ---------------------------
 # Step 1 — Load corpus
 # ---------------------------
 def load_corpus():
     with open(f"{DATA_DIR}/corpus.json", "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 # ---------------------------
 # Helper: clean text
@@ -48,11 +51,13 @@ def clean_text(text: str) -> str:
 
     return text
 
+
 def sentencize(text: str) -> list[str]:
     """Split text into sentences using spaCy."""
     doc = nlp(text)
     return [sent.text.strip() for sent in doc.sents if sent.text.strip()]
-    
+
+
 # ---------------------------
 # Helper: detect noisy pages
 # ---------------------------
@@ -68,6 +73,7 @@ def is_noisy_page(text: str) -> bool:
         return True
 
     return False
+
 
 # ---------------------------
 # Helper: smart split (avoid cutting sentences)
@@ -85,6 +91,7 @@ def find_split_point(text: str, start: int, end: int) -> int:
         return split_pos + 1
 
     return end
+
 
 # ---------------------------
 # Core: chunk per page
@@ -106,17 +113,19 @@ def chunk_page_old(text: str, source: str, page_number: int):
         chunk_text = text[cursor:end].strip()
 
         if chunk_text:
-            chunks.append({
-                "chunk_id": str(uuid.uuid4()),
-                "source": source,
-                "page": page_number,
-                "chunk_index": chunk_index,
-                "text": chunk_text,
-                "char_count": len(chunk_text),
-            })
+            chunks.append(
+                {
+                    "chunk_id": str(uuid.uuid4()),
+                    "source": source,
+                    "page": page_number,
+                    "chunk_index": chunk_index,
+                    "text": chunk_text,
+                    "char_count": len(chunk_text),
+                }
+            )
             chunk_index += 1
 
-        cursor += (CHUNK_SIZE - OVERLAP)
+        cursor += CHUNK_SIZE - OVERLAP
 
     return chunks
 
@@ -140,14 +149,12 @@ def create_chunks(corpus: list):
 
     return all_chunks
 
+
 # ---------------------------
 # Step 3 — Embed (batched)
 # ---------------------------
 def get_embeddings(texts):
-    response = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=texts
-    )
+    response = client.embeddings.create(model="text-embedding-3-small", input=texts)
     track_cost(response, True)
     return [d.embedding for d in response.data]
 
@@ -157,7 +164,7 @@ def embed_chunks(chunks, batch_size=50):
     embeddings = []
 
     for i in range(0, len(texts), batch_size):
-        batch = texts[i:i + batch_size]
+        batch = texts[i : i + batch_size]
         embeddings.extend(get_embeddings(batch))
 
     return embeddings
@@ -200,22 +207,22 @@ def load_index():
 # ---------------------------
 # Step 5 — Retrieve
 # ---------------------------
-def retrieve(query, index, chunks):     
-    #print(f"k={k} | index size={index.ntotal} | chunks size={len(chunks)}") 
-    
+def retrieve(query, index, chunks, k=5):
+    # print(f"k={k} | index size={index.ntotal} | chunks size={len(chunks)}")
+
     query_vec = np.array(get_embeddings([query])).astype("float32")
     faiss.normalize_L2(query_vec)
 
-    scores, indices = index.search(query_vec, 10)
+    scores, indices = index.search(query_vec, k)
 
     results = []
-    
+
     for i, idx in enumerate(indices[0]):
-        
+
         chunk = dict(chunks[idx])
         chunk["score"] = float(scores[0][i])
         results.append(chunk)
-    print(results)    
+    # print(results)
     return results
 
 
@@ -223,10 +230,12 @@ def retrieve(query, index, chunks):
 # Step 6 — Generate answer
 # ---------------------------
 def generate_answer(query, retrieved_chunks):
-    context = "\n\n".join([
-        f"\n\n[Source: {c['source']} | Page {c['page']}]\n{c['text']}"
-        for c in retrieved_chunks
-    ])
+    context = "\n\n".join(
+        [
+            f"\n\n[Source: {c['source']} | Page {c['page']}]\n{c['text']}"
+            for c in retrieved_chunks
+        ]
+    )
 
     system_prompt = """You are a helpful assistant.
 
@@ -244,13 +253,14 @@ def generate_answer(query, retrieved_chunks):
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"},
         ],
         temperature=0,
-        max_tokens=500
+        max_tokens=500,
     )
     track_cost(response)
     return response.choices[0].message.content
+
 
 # ---------------------------
 # Full Pipeline
@@ -288,7 +298,7 @@ def ask(query, index, chunks):
 if __name__ == "__main__":
     # Run once (build index)
     index, chunks = run_pipeline()
-    #run_pipeline()
+    # run_pipeline()
     # Example query
     query = "What is the depth of chest compressions in CPR?"
 
