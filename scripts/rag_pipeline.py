@@ -169,7 +169,7 @@ def build_index(chunks):
     index.add(vectors)
 
     # Save
-    faiss.write_index(index, INDEX_PATH)
+    faiss.write_index(index, str(INDEX_PATH))
 
     with open(CHUNKS_PATH, "w", encoding="utf-8") as f:
         json.dump(chunks, f, indent=2)
@@ -180,7 +180,7 @@ def build_index(chunks):
 
 
 def load_index():
-    index = faiss.read_index(INDEX_PATH)
+    index = faiss.read_index(str(INDEX_PATH))
 
     with open(CHUNKS_PATH, "r", encoding="utf-8") as f:
         chunks = json.load(f)
@@ -259,9 +259,9 @@ def run_pipeline():
     print(f"✅ Saved {len(chunks)} chunks to {CHUNKS_PATH}")
 
     # 3–4. Embed + Index (run once)
-    #index = build_index(chunks)
+    index = build_index(chunks)
 
-    #return index, chunks
+    return index, chunks
 
 
 # ---------------------------
@@ -278,12 +278,12 @@ def ask(query, index, chunks):
 # ---------------------------
 if __name__ == "__main__":
     # Run once (build index)
-    #index, chunks = run_pipeline()
-    run_pipeline()
+    index, chunks = run_pipeline()
+    #run_pipeline()
     # Example query
-    #query = "What is the depth of chest compressions in CPR?"
+    query = "What is the depth of chest compressions in CPR?"
 
-    #answer = ask(query, index, chunks)
+    answer = ask(query, index, chunks)
 
-    #print("\n Answer:\n")
-    #print(answer)
+    print("\n Answer:\n")
+    print(answer)
