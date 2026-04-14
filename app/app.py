@@ -1,4 +1,4 @@
-"""Gradio chat UI for ER-Assistant with conversation history and feedback logging."""
+"""Gradio chat UI for ER-Assistant: history, feedback, export."""
 
 import json
 import sys
@@ -13,10 +13,31 @@ sys.path.insert(0, str(BASE_DIR / "scripts"))
 from rag_pipeline import client, generate_answer, load_index, retrieve
 
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
+EXPORT_DIR = BASE_DIR / "data" / "exports"
+EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 print("Loading FAISS index and chunks...")
 index, chunks = load_index()
 print(f"Ready. {index.ntotal} vectors loaded.")
+
+
+def to_text(content):
+    """Normalize Gradio message content to a plain string.
+
+    Gradio 6 may pass content as a list of blocks like
+    [{"text": "...", "type": "text"}] or as a plain string.
+    """
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, dict) and "text" in block:
+                parts.append(block["text"])
+            elif isinstance(block, str):
+                parts.append(block)
+        return " ".join(parts)
+    return str(content)
 
 
 # ---------- query rewriting for follow-ups ----------
@@ -27,10 +48,13 @@ def rewrite_query(message, history):
     transcript = ""
     for turn in history[-3:]:
         if isinstance(turn, dict):
-            transcript += f"{turn['role']}: {turn['content']}\n"
+            content = to_text(turn["content"])
+            transcript += f"{turn['role']}: {content}\n"
         else:
             user_msg, assistant_msg = turn
-            transcript += f"user: {user_msg}\nassistant: {assistant_msg}\n"
+            transcript += (
+                f"user: {to_text(user_msg)}\nassistant: {to_text(assistant_msg)}\n"
+            )
 
     prompt = (
         "Given the conversation below and a follow-up question, rewrite the "
@@ -65,7 +89,6 @@ def format_sources(retrieved):
 
 # ---------- feedback logging ----------
 def log_feedback(rating, last_exchange):
-    """Append a feedback record and disable both buttons."""
     if not last_exchange:
         return "No answer to rate yet.", gr.update(), gr.update()
 
@@ -84,13 +107,61 @@ def log_feedback(rating, last_exchange):
     with open(FEEDBACK_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(record) + "\n")
 
-    status = f"Feedback recorded ({rating}). Thank you!"
-    # Disable both buttons after voting
-    return status, gr.update(interactive=False), gr.update(interactive=False)
+    return (
+        f"Feedback recorded ({rating}). Thank you!",
+        gr.update(interactive=False),
+        gr.update(interactive=False),
+    )
+
+
+# ---------- export ----------
+def export_conversation(history):
+    if not history:
+        return None, "Nothing to export."
+
+    lines = [
+        "# ER-Assistant Conversation",
+        f"*Exported: {datetime.now(timezone.utc).isoformat()}*",
+        "",
+    ]
+    for turn in history:
+        role = turn["role"].capitalize()
+        content = to_text(turn["content"])
+        lines.append(f"## {role}")
+        lines.append(content)
+        lines.append("")
+
+    md = "\n".join(lines)
+    filename = f"conversation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+    filepath = EXPORT_DIR / filename
+    filepath.write_text(md, encoding="utf-8")
+    return str(filepath), f"Exported {len(history)} messages."
+
+
+def export_last_answer(last_exchange):
+    if not last_exchange:
+        return None, "No answer to export."
+
+    md = (
+        f"# ER-Assistant Answer\n"
+        f"*Exported: {datetime.now(timezone.utc).isoformat()}*\n\n"
+        f"## Question\n{last_exchange['question']}\n\n"
+        f"## Answer\n{last_exchange['answer']}\n\n"
+        f"## Sources\n"
+        + "\n".join(
+            f"- `{c['source']}` p.{c['page']} (score: {c['score']:.3f})"
+            for c in last_exchange["retrieved"]
+        )
+    )
+    filename = f"answer_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+    filepath = EXPORT_DIR / filename
+    filepath.write_text(md, encoding="utf-8")
+    return str(filepath), "Exported last answer."
 
 
 # ---------- chat handler ----------
 def chat(message, history, last_exchange):
+    message = to_text(message)
     standalone_query = rewrite_query(message, history)
     retrieved = retrieve(standalone_query, index, chunks)
     answer = generate_answer(standalone_query, retrieved)
@@ -113,12 +184,22 @@ def chat(message, history, last_exchange):
         "retrieved": retrieved,
     }
 
-    # Re-enable feedback buttons for the new answer (unless it's a refusal)
-    btn_update = gr.update(interactive=not is_refusal)
+    # Re-enable feedback buttons (unless refusal) and enable both export buttons
+    fb_update = gr.update(interactive=not is_refusal)
+    return (
+        new_history,
+        new_last,
+        "",
+        "",
+        fb_update,
+        fb_update,
+        gr.update(interactive=True),  # export conversation
+        gr.update(interactive=True),  # export last answer
+        gr.update(interactive=False),  # send_btn ← new
+    )
 
-    return new_history, new_last, "", "", btn_update, btn_update
 
-
+# ---------- UI ----------
 with gr.Blocks(title="🚑 ER-Assistant") as demo:
     gr.Markdown("# 🚑 ER-Assistant — First Aid & CPR Q&A")
     gr.Markdown(
@@ -126,11 +207,19 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         "Follow-ups are supported. Use 👍 / 👎 to rate answers."
     )
 
-    # State: holds the most recent exchange so feedback can reference it
     last_exchange_state = gr.State(None)
 
     chatbot = gr.Chatbot(height=500)
-    msg = gr.Textbox(placeholder="Ask a question...", label="Your question")
+    with gr.Row():
+        msg = gr.Textbox(
+            placeholder="Ask a question...",
+            show_label=False,
+            scale=9,
+            container=False,
+        )
+        send_btn = gr.Button(
+            "Send", variant="primary", scale=1, min_width=80, interactive=False
+        )
 
     with gr.Row():
         thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
@@ -140,6 +229,16 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         clear_btn = gr.Button("Clear chat")
 
     feedback_status = gr.Markdown("")
+
+    with gr.Row():
+        export_chat_btn = gr.Button(
+            "📥 Export chat", size="sm", scale=0, interactive=False
+        )
+        export_answer_btn = gr.Button(
+            "📥 Export answer", size="sm", scale=0, interactive=False
+        )
+    export_file = gr.File(label="Download")
+    export_status = gr.Markdown("")
 
     msg.submit(
         chat,
@@ -151,7 +250,38 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
             feedback_status,
             thumbs_up,
             thumbs_down,
+            export_chat_btn,
+            export_answer_btn,
+            send_btn,
         ],
+    )
+
+    send_btn.click(
+        chat,
+        inputs=[msg, chatbot, last_exchange_state],
+        outputs=[
+            chatbot,
+            last_exchange_state,
+            msg,
+            feedback_status,
+            thumbs_up,
+            thumbs_down,
+            export_chat_btn,
+            export_answer_btn,
+            send_btn,
+        ],
+    )
+
+    msg.change(
+        lambda text: gr.update(interactive=bool(text.strip())),
+        inputs=[msg],
+        outputs=[send_btn],
+    )
+
+    msg.change(
+        lambda text: gr.update(interactive=bool(text.strip())),
+        inputs=[msg],
+        outputs=[send_btn],
     )
 
     thumbs_up.click(
@@ -164,12 +294,15 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         inputs=[last_exchange_state],
         outputs=[feedback_status, thumbs_up, thumbs_down],
     )
+
     clear_btn.click(
         lambda: (
             [],
             None,
             "",
             "",
+            gr.update(interactive=False),
+            gr.update(interactive=False),
             gr.update(interactive=False),
             gr.update(interactive=False),
         ),
@@ -180,7 +313,20 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
             feedback_status,
             thumbs_up,
             thumbs_down,
+            export_chat_btn,
+            export_answer_btn,
         ],
+    )
+
+    export_chat_btn.click(
+        export_conversation,
+        inputs=[chatbot],
+        outputs=[export_file, export_status],
+    )
+    export_answer_btn.click(
+        export_last_answer,
+        inputs=[last_exchange_state],
+        outputs=[export_file, export_status],
     )
 
 
