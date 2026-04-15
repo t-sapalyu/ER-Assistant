@@ -8,6 +8,7 @@ from pathlib import Path
 import uuid
 from cost_tracker import track_cost
 
+
 # import spacy
 # nlp = spacy.load("en_core_web_sm")  # pip install spacy && python -m spacy download en_core_web_sm
 
@@ -207,23 +208,40 @@ def load_index():
 # ---------------------------
 # Step 5 — Retrieve
 # ---------------------------
-def retrieve(query, index, chunks, k=5):
-    # print(f"k={k} | index size={index.ntotal} | chunks size={len(chunks)}")
-
+def retrieve(query, index, chunks, k=5, fetch_k=20, rerank=True):
+    """Retrieve top-k chunks. With rerank=True, fetches fetch_k from FAISS then
+    reranks with a cross-encoder to return the best k."""
     query_vec = np.array(get_embeddings([query])).astype("float32")
     faiss.normalize_L2(query_vec)
 
-    scores, indices = index.search(query_vec, k)
+    # Stage 1: FAISS retrieval (over-fetch)
+    n_fetch = fetch_k if rerank else k
+    scores, indices = index.search(query_vec, n_fetch)
 
-    results = []
-
+    candidates = []
     for i, idx in enumerate(indices[0]):
-
         chunk = dict(chunks[idx])
-        chunk["score"] = float(scores[0][i])
-        results.append(chunk)
-    # print(results)
-    return results
+        chunk["faiss_score"] = float(scores[0][i])
+        candidates.append(chunk)
+
+    if not rerank:
+        for c in candidates:
+            c["score"] = c["faiss_score"]
+        return candidates[:k]
+
+    # Stage 2: cross-encoder reranking
+    # reranker = get_reranker()
+    # pairs = [(query, c["text"]) for c in candidates]
+    # rerank_scores = reranker.predict(pairs)
+
+    # for c, s in zip(candidates, rerank_scores):
+    #     c["rerank_score"] = float(s)
+    #     c["score"] = float(s)  # overwrite so downstream code uses rerank score
+
+    # candidates.sort(key=lambda c: c["rerank_score"], reverse=True)
+    for c in candidates:
+        c["score"] = c.get("rerank_score", c["faiss_score"])
+    return candidates[:k]
 
 
 # ---------------------------

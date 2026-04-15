@@ -14,6 +14,7 @@ from PIL import Image
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / "scripts"))
 
+from agents import run_agents, is_refusal
 from rag_pipeline import client, generate_answer, load_index, retrieve
 
 USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
@@ -28,6 +29,7 @@ print(f"Ready. {index.ntotal} vectors loaded.")
 
 
 # ---------- PDF Highlighting Logic ----------
+
 
 def get_verbatim_quotes(page_text, llm_answer):
     """Uses LLM to find exact quotes from the page used to generate the answer."""
@@ -45,7 +47,7 @@ def get_verbatim_quotes(page_text, llm_answer):
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
     )
-    quotes = response.choices[0].message.content.strip().split('\n')
+    quotes = response.choices[0].message.content.strip().split("\n")
     return [q.strip() for q in quotes if q.strip()]
 
 
@@ -53,14 +55,14 @@ def process_and_highlight_pages(answer, retrieved):
     """Opens PDF dynamically, checks if chunk is cited in answer, highlights quotes, returns images for gallery."""
     highlighted_images = []
     seen_pages = set()
-                                                                                
+
     for c in retrieved:
         # Simple check: only process this page if the LLM's answer actually mentions its source file AND page number
         if c["source"] not in answer or str(c["page"]) not in answer:
             continue
-        
+
         page_num = c.get("page")
-    
+
         if page_num is None or page_num in seen_pages:
             continue
         seen_pages.add(page_num)
@@ -70,16 +72,16 @@ def process_and_highlight_pages(answer, retrieved):
         if not pdf_path.exists():
             print(f"[Warning] PDF not found at {pdf_path}")
             continue
-                                                   
+
         doc = fitz.open(pdf_path)
-        
+
         # Assuming 'page' in chunk is 1-based index; PyMuPDF is 0-based
         try:
             actual_page_index = int(page_num) - 1
         except ValueError:
             doc.close()
             continue
-             
+
         if actual_page_index < 0 or actual_page_index >= len(doc):
             doc.close()
             continue
@@ -87,13 +89,13 @@ def process_and_highlight_pages(answer, retrieved):
         # 1. Get the page and its text
         page = doc[actual_page_index]
         page_text = page.get_text()
-        
+
         # 2. Ask LLM to extract verbatim quotes used for the answer
         quotes = get_verbatim_quotes(page_text, answer)
-        
+
         # 3. Highlight the quotes on the PDF page
         for quote in quotes:
-            if not quote: 
+            if not quote:
                 continue
             text_instances = page.search_for(quote)
             for inst in text_instances:
@@ -103,17 +105,18 @@ def process_and_highlight_pages(answer, retrieved):
         pix = page.get_pixmap(dpi=150)
         img_data = pix.tobytes("png")
         img = Image.open(io.BytesIO(img_data))
-        
+
         # Format for gr.Gallery: tuple of (Image, Caption)
         caption = f"{c['source']} - Page {page_num}"
         highlighted_images.append((img, caption))
-        
+
         doc.close()
 
     return highlighted_images
 
 
 # ---------- General Helpers ----------
+
 
 def to_text(content):
     """Normalize Gradio message content to a plain string."""
@@ -128,6 +131,42 @@ def to_text(content):
                 parts.append(block)
         return " ".join(parts)
     return str(content)
+
+
+def format_trace(trace: dict) -> str:
+    """Render the agent trace as readable Markdown for the UI accordion."""
+    a1 = trace.get("agent_1", {})
+    a2 = trace.get("agent_2", {})
+    a3 = trace.get("agent_3", {})
+
+    lines = []
+    lines.append("### 🔎 Agent 1 — Internal Researcher")
+    lines.append(f"- Domain check: **{a1.get('domain_check', '?')}**")
+    lines.append(f"- Status: **{a1.get('status', '?')}**")
+    if a1.get("n_sources") is not None:
+        lines.append(f"- Internal sources retrieved: {a1['n_sources']}")
+    if a1.get("draft_answer"):
+        preview = a1["draft_answer"][:300]
+        lines.append(
+            f"- Draft:\n  > {preview}{'…' if len(a1['draft_answer']) > 300 else ''}"
+        )
+    lines.append("")
+
+    lines.append("### 🌐 Agent 2 — External Fact-Checker")
+    if a2.get("status") == "skipped (out of domain)":
+        lines.append("- **Skipped** (question is out of domain)")
+    else:
+        tc = a2.get("tool_calls", [])
+        lines.append(f"- Tools called: {', '.join(tc) if tc else 'none'}")
+        lines.append(f"- External sources found: {a2.get('n_external_sources', 0)}")
+        if a2.get("findings"):
+            lines.append(f"- Findings:\n  > {a2['findings']}")
+    lines.append("")
+
+    lines.append("### ✍️ Agent 3 — Synthesizer")
+    lines.append("- Final answer produced (shown above).")
+
+    return "\n".join(lines)
 
 
 # ---------- query rewriting for follow-ups ----------
@@ -191,6 +230,7 @@ def log_feedback(rating, last_exchange):
         gr.update(interactive=False),
     )
 
+
 # ---------- analytics data ----------
 def get_analytics_data():
     """Reads the feedback log and returns stats for the dashboard."""
@@ -201,53 +241,63 @@ def get_analytics_data():
     with open(FEEDBACK_LOG, "r", encoding="utf-8") as f:
         for line in f:
             data.append(json.loads(line))
-    
+
     df = pd.DataFrame(data)
-    
+
     # 1. Basic Stats
     total_q = len(df)
     avg_score = 0
-    if 'sources' in df.columns:
+    if "sources" in df.columns:
         # Flatten scores from the sources list
-        all_scores = [s['score'] for sublist in df['sources'] for s in sublist]
+        all_scores = [s["score"] for sublist in df["sources"] for s in sublist]
         avg_score = sum(all_scores) / len(all_scores) if all_scores else 0
 
     # 2. Ratings Distribution
-    rating_counts = df['rating'].value_counts().reset_index()
-    rating_counts.columns = ['Rating', 'Count']
+    rating_counts = df["rating"].value_counts().reset_index()
+    rating_counts.columns = ["Rating", "Count"]
 
     # 3. Simple Topic Mockup (In a real app, you'd use LLM to categorize)
-    summary_text = f"**Total Questions:** {total_q} | **Avg Retrieval Score:** {avg_score:.3f}"
-    
-    return summary_text, rating_counts, df[['timestamp', 'rating']]
+    summary_text = (
+        f"**Total Questions:** {total_q} | **Avg Retrieval Score:** {avg_score:.3f}"
+    )
+
+    return summary_text, rating_counts, df[["timestamp", "rating"]]
 
 
 def load_analytics_data():
     if not USAGE_LOG.exists():
         return "No usage data yet.", pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
-    df = pd.DataFrame([json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")])
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df = pd.DataFrame(
+        [json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")]
+    )
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
 
-    df['short_time'] = df['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df["short_time"] = df["timestamp"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     df_display = df.copy()
-    df_display['timestamp'] = df_display['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    df_display["timestamp"] = df_display["timestamp"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     # Summary Stats
     total_q = len(df)
-    avg_quality = df['avg_score'].mean()
-    total_cost = df['cost'].sum()
+    avg_quality = df["avg_score"].mean()
+    total_cost = df["cost"].sum()
     summary = f"### 📊 Summary\n**Total Questions:** {total_q} | **Avg Score:** {avg_quality:.3f} | **Total Est. Cost:** ${total_cost:.4f}"
 
     # Topic Data (for BarPlot)
-    topics = ['CPR', 'Choking', 'Bleeding', 'Burn', 'Stroke', 'Heart']
-    df_topics = pd.DataFrame([{"Topic": t, "Count": int(df['question'].str.contains(t, case=False).sum())} for t in topics])
-    df_table = df_display[['timestamp', 'question', 'avg_score', 'cost']].sort_values('timestamp', ascending=False)
-
-    
+    topics = ["CPR", "Choking", "Bleeding", "Burn", "Stroke", "Heart"]
+    df_topics = pd.DataFrame(
+        [
+            {"Topic": t, "Count": int(df["question"].str.contains(t, case=False).sum())}
+            for t in topics
+        ]
+    )
+    df_table = df_display[["timestamp", "question", "avg_score", "cost"]].sort_values(
+        "timestamp", ascending=False
+    )
 
     return summary, df_topics, df, df_table
+
 
 # ---------- export ----------
 def export_conversation(history):
@@ -298,11 +348,14 @@ def export_last_answer(last_exchange):
 def chat(message, history, last_exchange):
     message = to_text(message)
     standalone_query = rewrite_query(message, history)
-    retrieved = retrieve(standalone_query, index, chunks)
-    answer = generate_answer(standalone_query, retrieved)
 
-    refusal_phrases = ["don't have", "do not have", "cannot answer", "no information"]
-    is_refusal = any(p in answer.lower() for p in refusal_phrases)
+    # Run the three-agent system
+    result = run_agents(standalone_query, index, chunks)
+    answer = result["answer"]
+    retrieved = result["retrieved"]
+    trace = result["trace"]
+
+    is_refusal_answer = is_refusal(answer)  # helper below
 
     display_answer = answer
 
@@ -315,54 +368,70 @@ def chat(message, history, last_exchange):
         "rewritten_query": standalone_query,
         "answer": answer,
         "retrieved": retrieved,
+        "trace": trace,
     }
 
-    # Generate highlighted PDF screenshots ONLY for cited pages
-    highlighted_pages = process_and_highlight_pages(answer, retrieved) if not is_refusal else []
-    
-    fb_update = gr.update(interactive=not is_refusal)
-    avg_score = sum(c["score"] for c in retrieved) / len(retrieved) if retrieved else 0
+    # PDF highlighting (unchanged)
+    highlighted_pages = (
+        process_and_highlight_pages(answer, retrieved)
+        if not is_refusal_answer and retrieved
+        else []
+    )
+
+    fb_update = gr.update(interactive=not is_refusal_answer)
+    avg_score = (
+        sum(c.get("score", 0.0) for c in retrieved) / len(retrieved) if retrieved else 0
+    )
     est_cost = (len(message) + len(answer)) * 0.0000002
     usage_record = {
-    "timestamp": datetime.now(timezone.utc).isoformat(),
-    "question": message,
-    "answer": answer[:100] + "...", # snippet
-    "avg_score": avg_score,
-    "cost": est_cost 
-}
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "question": message,
+        "answer": answer[:100] + "...",
+        "avg_score": avg_score,
+        "cost": est_cost,
+    }
     with open(USAGE_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(usage_record) + "\n")
+
+    trace_md = format_trace(trace)
 
     return (
         new_history,
         new_last,
-        "",  # clear msg box
-        "",  # clear feedback status
+        "",
+        "",
         fb_update,
         fb_update,
-        gr.update(interactive=True),  # export conversation
-        gr.update(interactive=True),  # export last answer
-        gr.update(interactive=False), # send_btn
-        highlighted_pages             # pdf_gallery gets the list of (image, caption)
+        gr.update(interactive=True),
+        gr.update(interactive=True),
+        gr.update(interactive=False),
+        highlighted_pages,
+        trace_md,  # new: agent trace for the accordion
     )
 
 
 # ---------- UI ----------
 with gr.Blocks(title="🚑 ER-Assistant") as demo:
     gr.Markdown("# 🚑 ER-Assistant — First Aid & CPR Q&A")
-    
+
     with gr.Tabs() as tabs:
-        
+
         # TAB 1: Chatbot (Your Existing UI)
         with gr.Tab("Chatbot", id=0):
-            gr.Markdown("Ask questions about the Canadian Red Cross First Aid & CPR Guide.")
-            
+            gr.Markdown(
+                "Ask questions about the Canadian Red Cross First Aid & CPR Guide."
+            )
+
             last_exchange_state = gr.State(None)
 
             with gr.Row():
                 # LEFT COLUMN: Chat UI
                 with gr.Column(scale=1):
                     chatbot = gr.Chatbot(height=600)
+                    with gr.Accordion(
+                        "🔬 Agent trace (how the answer was produced)", open=False
+                    ):
+                        trace_display = gr.Markdown("")
                     with gr.Row():
                         msg = gr.Textbox(
                             placeholder="Ask a question...",
@@ -371,11 +440,17 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
                             container=False,
                         )
                         send_btn = gr.Button(
-                            "Send", variant="primary", scale=1, min_width=80, interactive=False
+                            "Send",
+                            variant="primary",
+                            scale=1,
+                            min_width=80,
+                            interactive=False,
                         )
 
                     with gr.Row():
-                        thumbs_up = gr.Button("👍 Helpful", variant="secondary", interactive=False)
+                        thumbs_up = gr.Button(
+                            "👍 Helpful", variant="secondary", interactive=False
+                        )
                         thumbs_down = gr.Button(
                             "👎 Not helpful", variant="secondary", interactive=False
                         )
@@ -392,7 +467,7 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
                         )
                     export_file = gr.File(label="Download")
                     export_status = gr.Markdown("")
-                
+
                 # RIGHT COLUMN: PDF Viewer
                 with gr.Column(scale=1):
                     pdf_gallery = gr.Gallery(
@@ -400,7 +475,7 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
                         show_label=True,
                         height=700,
                         object_fit="contain",
-                        preview=True
+                        preview=True,
                     )
 
         # TAB 2: Analytics (The New Dashboard)
@@ -411,13 +486,18 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
 
             with gr.Row():
                 topic_plot = gr.BarPlot(x="Topic", y="Count", title="Common Topics")
-                score_plot = gr.LinePlot(x="short_time", y="avg_score", title="Quality Trend", x_title="timestamp")
-            
+                score_plot = gr.LinePlot(
+                    x="short_time",
+                    y="avg_score",
+                    title="Quality Trend",
+                    x_title="timestamp",
+                )
+
             gr.Markdown("### 📜 Detailed Question Log")
             question_table = gr.Dataframe(
                 headers=["Time", "Question", "Score", "Cost ($)"],
                 datatype=["str", "str", "number", "number"],
-                wrap=True
+                wrap=True,
             )
     # ---------- Event Handlers ----------
 
@@ -429,24 +509,33 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
     # Auto-update analytics when user clicks the tab
     analytics_tab.select(
         fn=load_analytics_data,
-        outputs=[stats_output, topic_plot, score_plot, question_table]
+        outputs=[stats_output, topic_plot, score_plot, question_table],
     )
-    
+
     # Manual refresh button
     refresh_btn.click(
-        fn=load_analytics_data,
-        outputs=[stats_output, topic_plot, score_plot]
+        fn=load_analytics_data, outputs=[stats_output, topic_plot, score_plot]
     )
 
     # [Existing Chatbot Handlers]
     chat_outputs = [
-        chatbot, last_exchange_state, msg, feedback_status, 
-        thumbs_up, thumbs_down, export_chat_btn, export_answer_btn, 
-        send_btn, pdf_gallery
+        chatbot,
+        last_exchange_state,
+        msg,
+        feedback_status,
+        thumbs_up,
+        thumbs_down,
+        export_chat_btn,
+        export_answer_btn,
+        send_btn,
+        pdf_gallery,
+        trace_display,
     ]
 
     msg.submit(chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs)
-    send_btn.click(chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs)
+    send_btn.click(
+        chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs
+    )
 
     msg.change(
         lambda text: gr.update(interactive=bool(text.strip())),
@@ -459,7 +548,7 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         inputs=[last_exchange_state],
         outputs=[feedback_status, thumbs_up, thumbs_down],
     )
-    
+
     thumbs_down.click(
         lambda exch: log_feedback("not_helpful", exch),
         inputs=[last_exchange_state],
@@ -467,14 +556,30 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
     )
 
     clear_btn.click(
-        lambda: ([], None, "", "", gr.update(interactive=False), gr.update(interactive=False), 
-                 gr.update(interactive=False), gr.update(interactive=False), 
-                 gr.update(interactive=False), None),
+        lambda: (
+            [],
+            None,
+            "",
+            "",
+            gr.update(interactive=False),
+            gr.update(interactive=False),
+            gr.update(interactive=False),
+            gr.update(interactive=False),
+            gr.update(interactive=False),
+            None,
+            "",
+        ),
         outputs=chat_outputs,
     )
 
-    export_chat_btn.click(export_conversation, inputs=[chatbot], outputs=[export_file, export_status])
-    export_answer_btn.click(export_last_answer, inputs=[last_exchange_state], outputs=[export_file, export_status])
+    export_chat_btn.click(
+        export_conversation, inputs=[chatbot], outputs=[export_file, export_status]
+    )
+    export_answer_btn.click(
+        export_last_answer,
+        inputs=[last_exchange_state],
+        outputs=[export_file, export_status],
+    )
 
 
 if __name__ == "__main__":
