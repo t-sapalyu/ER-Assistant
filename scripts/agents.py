@@ -1,15 +1,27 @@
-"""Three-agent system: Internal Researcher -> Web Fact-Checker -> Synthesizer/Router.
-
-Agent 3 now doubles as an LLM-driven router: after synthesizing a draft, it decides
-whether the answer is ready or whether Agent 2 should retry with a refined query.
-Loop is capped by MAX_AGENT_ITERATIONS.
-"""
-
+import asyncio
 import json
 
 from cost_tracker import track_cost
-from mcp_server import TOOL_FUNCTIONS, TOOL_SCHEMAS
+from fastmcp import Client
+from mcp_server import TOOL_SCHEMAS  # hardcoded — keep this
 from rag_pipeline import client, generate_answer, retrieve
+
+MCP_SERVER_URL = "http://127.0.0.1:8765/mcp"
+
+
+async def _call_mcp_tool(tool_name: str, args: dict):
+    async with Client(MCP_SERVER_URL) as mcp_client:
+        result = await mcp_client.call_tool(tool_name, args)
+        if hasattr(result, "data") and result.data is not None:
+            return result.data
+        if hasattr(result, "content") and result.content:
+            return [block.text for block in result.content if hasattr(block, "text")]
+        return []
+
+
+def call_mcp_tool_sync(tool_name: str, args: dict):
+    return asyncio.run(_call_mcp_tool(tool_name, args))
+
 
 DOMAIN_DESCRIPTION = (
     "first aid, CPR, emergency medical response, injuries, " "and pre-hospital care"
@@ -176,8 +188,11 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
             args = {}
         print(f"[Agent 2]   → calling {fn_name}({args})")
 
-        fn = TOOL_FUNCTIONS.get(fn_name)
-        result = fn(**args) if fn else []
+        try:
+            result = call_mcp_tool_sync(fn_name, args)
+        except Exception as e:
+            print(f"[Agent 2]   ✗ MCP call failed: {e}")
+            result = []
         print(f"[Agent 2]   ← {fn_name} returned {len(result)} result(s)")
 
         all_sources.extend([{**item, "tool": fn_name} for item in result])

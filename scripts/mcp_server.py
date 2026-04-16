@@ -160,5 +160,5 @@ TOOL_SCHEMAS = [
 
 
 if __name__ == "__main__":
-    # When run standalone, serve as real MCP stdio server.
-    mcp.run()
+    # Run as a real MCP server over HTTP on port 8765
+    mcp.run(transport="http", host="127.0.0.1", port=8765)
