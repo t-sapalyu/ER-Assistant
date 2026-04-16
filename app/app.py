@@ -105,6 +105,7 @@ def build_chat_response(
     feedback_enabled=False, export_chat_enabled=None, export_answer_enabled=False,
     send_enabled=False, gallery=None, trace="", pending=None,
     hitl_visible=False, hint="", add_panel_visible=False, add_mode=False,
+    hitl_btns_enabled=False,
     feedback_status="",
 ):
     """Build the 16-element tuple returned by chat() and related handlers."""
@@ -125,7 +126,9 @@ def build_chat_response(
         pending,
         gr.update(visible=hitl_visible),
         hint,
-        gr.update(visible=add_panel_visible),
+        gr.update(interactive=hitl_btns_enabled),
+        gr.update(interactive=hitl_btns_enabled),
+        gr.update(visible=add_panel_visible),        
         add_mode,
     )
 
@@ -574,9 +577,9 @@ def chat(message, history, last_exchange, mode_choice, add_knowledge_mode):
         "question": message,
         "rewritten_query": standalone_query,
         "draft": draft,
-        "a1": result["a1"],
-        "a2": result["a2"],
-        "a3": result["a3"],
+        "a1": result.get("a1", {}),
+        "a2": result.get("a2", {}),
+        "a3": result.get("a3", {}),
         "retrieved": retrieved,
     }
 
@@ -613,6 +616,7 @@ def chat(message, history, last_exchange, mode_choice, add_knowledge_mode):
         trace=format_trace(pending),
         pending=pending,
         hitl_visible=agentic_mode and not is_refusal_answer,
+        hitl_btns_enabled=agentic_mode and not is_refusal_answer,
     )
 
 
@@ -762,7 +766,7 @@ with gr.Blocks(
         mode_dropdown = gr.Dropdown(
             choices=[
                 "Simple agent (only internal knowledge)",
-                "Agentic (internal knowledge + web search)",
+                "Agentic (internal + web search)",
             ],
             value="Simple agent (only internal knowledge)",
             show_label=False,
@@ -965,8 +969,10 @@ with gr.Blocks(
         pending_state,
         hitl_panel,
         review_hint,
+        more_research_btn,
+        rewrite_btn, 
         add_knowledge_panel,
-        add_knowledge_mode_state,
+        add_knowledge_mode_state,        
     ]
 
     msg.submit(
@@ -987,10 +993,7 @@ with gr.Blocks(
     )
 
     review_hint.change(
-        lambda text: (
-            gr.update(interactive=bool(text.strip())),
-            gr.update(interactive=bool(text.strip())),
-        ),
+        lambda text: (gr.update(), gr.update()),
         inputs=[review_hint],
         outputs=[more_research_btn, rewrite_btn],
     )

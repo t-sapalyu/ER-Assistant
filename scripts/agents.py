@@ -47,7 +47,7 @@ def is_refusal(answer: str) -> bool:
 # Agent 1 — Internal Researcher
 # ----------------------------------------------------------------------
 def agent_1_researcher(query, index, chunks) -> dict:
-    t0 = time.perf_counter()
+    t0 = time.perf_counter() 
     print(f"\n{'=' * 60}")
     print(f"[Agent 1] Starting. Query: {query!r}")
 
@@ -176,7 +176,7 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
 
     if not tool_calls:
         print(f"[Agent 2] LLM chose NOT to use any tool.")
-        return {"web_findings": "", "sources": [], "tool_calls": []}
+        return {"web_findings": "", "sources": [], "tool_calls": [], "duration": time.perf_counter() - t0,}
 
     print(f"[Agent 2] LLM requested {len(tool_calls)} tool call(s)")
 
@@ -508,10 +508,10 @@ def run_simple_rag(query, index, chunks) -> dict:
     print(f"[Simple RAG] Retrieved {len(retrieved)} chunks. Top score: {top_score:.3f}")
 
     answer = generate_answer(query, retrieved)
+    duration = time.perf_counter() - t0
     print(f"[Simple RAG] Answer: {answer[:140]}{'...' if len(answer) > 140 else ''}")
     print(f"{'#' * 60}\n")
 
-    duration = time.perf_counter() - t0 
     return {
         "draft": answer,
         "retrieved": retrieved,
@@ -526,7 +526,7 @@ def run_simple_rag(query, index, chunks) -> dict:
         "a3": {
             "action": "answer",
             "reason": "Simple RAG mode — no routing.",
-            "retry_hint": "",            
+            "retry_hint": "",
         },
         "iterations": 0,
         "auto_retry_triggered": False,
