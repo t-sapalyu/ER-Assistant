@@ -1,0 +1,11 @@
+openai>=1.0.0
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+python-dotenv>=1.0.0
+PyMuPDF>=1.23.0
+pandas>=2.0.0
+Pillow>=10.0.0
+wikipedia-api>=0.6.0
+ddgs>=5.0.0
+fastmcp>=0.1.0
+gradio>=4.0.0
