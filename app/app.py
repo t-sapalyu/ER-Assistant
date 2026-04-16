@@ -21,7 +21,7 @@ from agents import (
     rerun_with_more_research,
     rerun_with_rewrite,
 )
-from rag_pipeline import client, generate_answer, load_index, retrieve
+from rag_pipeline import add_to_database, client, generate_answer, load_index, retrieve
 
 USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
@@ -522,6 +522,41 @@ def on_needs_rewrite(pending, hint, history, last_exchange):
     )
 
 
+# ---------- Add Knowledge handler ----------
+def handle_add_to_database(text: str, source_name: str):
+    """Chunk + embed new text and add it to the live FAISS index."""
+    text = text.strip()
+    source_name = source_name.strip() or "user_input"
+    if not text:
+        return "Please enter some text to add."
+    result = add_to_database(text, source_name, index, chunks)
+    return result["message"]
+
+
+def handle_upload_file(file, source_name: str):
+    """Extract text from an uploaded PDF or .txt file and add it to the database."""
+    if file is None:
+        return "No file uploaded."
+
+    path = Path(file.name)
+    source = source_name.strip() or path.name
+
+    if path.suffix.lower() == ".pdf":
+        doc = fitz.open(str(path))
+        text = "\n\n".join(page.get_text() for page in doc)
+        doc.close()
+    elif path.suffix.lower() == ".txt":
+        text = path.read_text(encoding="utf-8")
+    else:
+        return "Unsupported file type. Please upload a PDF or .txt file."
+
+    if not text.strip():
+        return "Could not extract any text from the file."
+
+    result = add_to_database(text, source, index, chunks)
+    return result["message"]
+
+
 # ---------- UI ----------
 with gr.Blocks(
     title="🚑 ER-Assistant",
@@ -649,8 +684,54 @@ with gr.Blocks(
                         preview=True,
                     )
 
-        # ========== TAB 2: Analytics ==========
-        with gr.Tab("Analytics", id=1) as analytics_tab:
+        # TAB 2: Add Knowledge (Agentic AI Step 3)
+        with gr.Tab("Add Knowledge", id=1):
+            gr.Markdown(
+                "## 📚 Add New Knowledge\n"
+                "Upload a PDF or .txt file, or paste text directly. "
+                "It will be chunked, embedded, and added to the live database immediately."
+            )
+            add_status = gr.Markdown("")
+
+            with gr.Accordion("📁 Upload a file (PDF or .txt)", open=True):
+                upload_source = gr.Textbox(
+                    label="Source name (optional)",
+                    placeholder="e.g. AHA_Guidelines_2025.pdf",
+                    lines=1,
+                )
+                upload_file = gr.File(
+                    label="Upload PDF or .txt",
+                    file_types=[".pdf", ".txt"],
+                )
+                upload_btn = gr.Button("➕ Add file to database", variant="primary")
+
+            with gr.Accordion("✏️ Or paste text manually", open=True):
+                add_source = gr.Textbox(
+                    label="Source name",
+                    placeholder="e.g. my_notes",
+                    lines=1,
+                )
+                add_text = gr.Textbox(
+                    label="Text to add",
+                    placeholder="Paste the new first-aid or CPR text here…",
+                    lines=10,
+                )
+                add_btn = gr.Button("➕ Add text to database", variant="primary")
+
+            upload_btn.click(
+                handle_upload_file,
+                inputs=[upload_file, upload_source],
+                outputs=[add_status],
+            )
+
+            add_btn.click(
+                handle_add_to_database,
+                inputs=[add_text, add_source],
+                outputs=[add_status],
+            )
+
+        # TAB 3: Analytics (The New Dashboard)
+        with gr.Tab("Analytics", id=2) as analytics_tab:
             gr.Markdown("## 📊 Usage Analytics")
             stats_output = gr.Markdown("Loading...")
             refresh_btn = gr.Button("🔄 Refresh")

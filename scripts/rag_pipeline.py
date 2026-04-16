@@ -145,7 +145,7 @@ def create_chunks(corpus: list):
         if is_noisy_page(text):
             continue
 
-        page_chunks = chunk_page(text, source, page)
+        page_chunks = chunk_page_old(text, source, page)
         all_chunks.extend(page_chunks)
 
     return all_chunks
@@ -309,6 +309,39 @@ def ask(query, index, chunks):
     retrieved = retrieve(query, index, chunks)
     answer = generate_answer(query, retrieved)
     return answer
+
+
+# ---------------------------
+# Step 7 — Add to database (Agentic AI Step 3)
+# ---------------------------
+def add_to_database(text: str, source_name: str, index, chunks: list) -> dict:
+    """Chunk, embed, and add new text to the live FAISS index + chunks list.
+
+    Args:
+        text: Raw text to add.
+        source_name: Label used as the 'source' field in each chunk (e.g. filename).
+        index: Live faiss.Index object (mutated in place).
+        chunks: Live chunks list (mutated in place).
+
+    Returns:
+        Dict with keys: added (int), source (str), message (str).
+    """
+    new_chunks = chunk_page_old(text, source_name, 0)
+    if not new_chunks:
+        return {"added": 0, "source": source_name, "message": "Text too short to index."}
+
+    embeddings = embed_chunks(new_chunks)
+    vectors = np.array(embeddings).astype("float32")
+    faiss.normalize_L2(vectors)
+    index.add(vectors)
+    chunks.extend(new_chunks)
+
+    faiss.write_index(index, str(INDEX_PATH))
+    with open(CHUNKS_PATH, "w", encoding="utf-8") as f:
+        json.dump(chunks, f, indent=2)
+
+    msg = f"Added {len(new_chunks)} chunk(s) from '{source_name}' to the database."
+    return {"added": len(new_chunks), "source": source_name, "message": msg}
 
 
 # ---------------------------
