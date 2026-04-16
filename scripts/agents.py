@@ -486,6 +486,40 @@ def run_agents(query, index, chunks) -> dict:
     }
 
 
+def run_simple_rag(query, index, chunks) -> dict:
+    """RAG mode: no agents, no web search. Just retrieve + generate."""
+    print(f"\n{'#' * 60}")
+    print(f"# run_simple_rag: {query!r}")
+    print(f"{'#' * 60}")
+
+    retrieved = retrieve(query, index, chunks)
+    top_score = retrieved[0].get("score", 0.0) if retrieved else 0.0
+    print(f"[Simple RAG] Retrieved {len(retrieved)} chunks. Top score: {top_score:.3f}")
+
+    answer = generate_answer(query, retrieved)
+    print(f"[Simple RAG] Answer: {answer[:140]}{'...' if len(answer) > 140 else ''}")
+    print(f"{'#' * 60}\n")
+
+    return {
+        "draft": answer,
+        "retrieved": retrieved,
+        "a1": {
+            "status": "simple_mode",
+            "answer": answer,
+            "sources": retrieved,
+            "domain_check": "n/a",
+        },
+        "a2": {"web_findings": "", "sources": [], "tool_calls": []},
+        "a3": {
+            "action": "answer",
+            "reason": "Simple RAG mode — no routing.",
+            "retry_hint": "",
+        },
+        "iterations": 0,
+        "auto_retry_triggered": False,
+    }
+
+
 # ----------------------------------------------------------------------
 # Human-in-the-loop feedback functions (called from the UI)
 # ----------------------------------------------------------------------
