@@ -1,4 +1,9 @@
-"""Three-agent system: Internal Researcher -> Web Fact-Checker -> Synthesizer."""
+"""Three-agent system: Internal Researcher -> Web Fact-Checker -> Synthesizer/Router.
+
+Agent 3 now doubles as an LLM-driven router: after synthesizing a draft, it decides
+whether the answer is ready or whether Agent 2 should retry with a refined query.
+Loop is capped by MAX_AGENT_ITERATIONS.
+"""
 
 import json
 
@@ -6,16 +11,9 @@ from cost_tracker import track_cost
 from mcp_server import TOOL_FUNCTIONS, TOOL_SCHEMAS
 from rag_pipeline import client, generate_answer, retrieve
 
-
 DOMAIN_DESCRIPTION = (
     "first aid, CPR, emergency medical response, injuries, " "and pre-hospital care"
 )
-
-# DOMAIN_DESCRIPTION = (
-#     "first aid, CPR, emergency medical response, injuries, and "
-#     "pre-hospital care topics covered in the Canadian Red Cross "
-#     "Comprehensive Guide for First Aid & CPR"
-# )
 
 REFUSAL_MARKERS = (
     "don't have",
@@ -24,6 +22,8 @@ REFUSAL_MARKERS = (
     "no information",
     "not enough information",
 )
+
+MAX_AGENT_ITERATIONS = 2  # total Agent 2 + Agent 3 loops before forced finalization
 
 
 def is_refusal(answer: str) -> bool:
@@ -35,11 +35,9 @@ def is_refusal(answer: str) -> bool:
 # Agent 1 — Internal Researcher
 # ----------------------------------------------------------------------
 def agent_1_researcher(query, index, chunks) -> dict:
-    """Classify domain, retrieve from corpus, draft answer if possible."""
     print(f"\n{'=' * 60}")
     print(f"[Agent 1] Starting. Query: {query!r}")
 
-    # Step 1: domain classification
     classifier_prompt = (
         f"Decide if the user's question is about the TOPIC of {DOMAIN_DESCRIPTION}, "
         f"regardless of whether specific information is available. "
@@ -61,7 +59,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
     print(f"[Agent 1] Domain check: {'IN' if in_domain else 'OUT'} (raw: {verdict!r})")
 
     if not in_domain:
-        print(f"[Agent 1] Returning: out_of_domain (skipping retrieval)")
+        print(f"[Agent 1] Returning: out_of_domain")
         return {
             "status": "out_of_domain",
             "answer": "",
@@ -69,12 +67,10 @@ def agent_1_researcher(query, index, chunks) -> dict:
             "domain_check": "out",
         }
 
-    # Step 2: retrieve from corpus
     retrieved = retrieve(query, index, chunks)
     top_score = retrieved[0].get("score", 0.0) if retrieved else 0.0
     print(f"[Agent 1] Retrieved {len(retrieved)} chunks. Top score: {top_score:.3f}")
 
-    # Step 3: draft an answer from the retrieved context
     draft = generate_answer(query, retrieved)
     refused = is_refusal(draft)
     print(f"[Agent 1] Draft generated. Refused: {refused}")
@@ -84,7 +80,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
         )
 
     if refused:
-        print(f"[Agent 1] Returning: no_knowledge (corpus silent on this)")
+        print(f"[Agent 1] Returning: no_knowledge")
         return {
             "status": "no_knowledge",
             "answer": "",
@@ -102,13 +98,19 @@ def agent_1_researcher(query, index, chunks) -> dict:
 
 
 # ----------------------------------------------------------------------
-# Agent 2 — External Fact-Checker (uses MCP tools via function-calling)
+# Agent 2 — External Fact-Checker
 # ----------------------------------------------------------------------
-def agent_2_fact_checker(query, agent_1_output) -> dict:
-    """Use MCP tools to fact-check or supplement agent 1's answer."""
+def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
+    """Use MCP tools to fact-check or supplement agent 1's answer.
+
+    extra_hint: optional instruction from Agent 3's router or the human user
+    to guide the retry (e.g. 'focus on 2025 guideline changes').
+    """
     status = agent_1_output.get("status")
     draft = agent_1_output.get("answer", "")
     print(f"\n[Agent 2] Starting. Agent 1 status: {status}")
+    if extra_hint:
+        print(f"[Agent 2] Retry hint received: {extra_hint!r}")
 
     if status == "no_knowledge":
         system = (
@@ -119,15 +121,14 @@ def agent_2_fact_checker(query, agent_1_output) -> dict:
             "web_search for recent news or updates."
         )
         user = f"Question: {query}\n\nSearch for relevant information."
-        print(f"[Agent 2] Mode: search from scratch (no internal knowledge)")
+        print(f"[Agent 2] Mode: search from scratch")
     else:
         system = (
             "You are a fact-checker. An internal knowledge base has produced "
-            "a draft answer. Your job is to verify whether this information "
-            "is still current and accurate, and find any updates or corrections. "
-            "Use the available tools. Choose wisely — Wikipedia for established "
-            "facts, web_search for recent changes or news. If the draft seems "
-            "fine and nothing has changed, you can skip tool calls."
+            "a draft answer. Verify whether it is still current and accurate, "
+            "and find updates or corrections. Use the available tools. "
+            "Choose wisely — Wikipedia for established facts, web_search for "
+            "recent changes. If the draft is fine, you can skip tool calls."
         )
         user = (
             f"Question: {query}\n\n"
@@ -135,6 +136,9 @@ def agent_2_fact_checker(query, agent_1_output) -> dict:
             f"Verify this against external sources."
         )
         print(f"[Agent 2] Mode: fact-check existing draft")
+
+    if extra_hint:
+        user += f"\n\nAdditional guidance for this search:\n{extra_hint}"
 
     messages = [
         {"role": "system", "content": system},
@@ -154,12 +158,11 @@ def agent_2_fact_checker(query, agent_1_output) -> dict:
     tool_calls = message.tool_calls or []
 
     if not tool_calls:
-        print(f"[Agent 2] LLM chose NOT to use any tool. Returning empty.")
+        print(f"[Agent 2] LLM chose NOT to use any tool.")
         return {"web_findings": "", "sources": [], "tool_calls": []}
 
     print(f"[Agent 2] LLM requested {len(tool_calls)} tool call(s)")
 
-    # Execute each tool call and collect results
     all_sources = []
     tool_names_used = []
     messages.append(message.model_dump())
@@ -188,18 +191,16 @@ def agent_2_fact_checker(query, agent_1_output) -> dict:
         )
 
     if not all_sources:
-        print(f"[Agent 2] All tools returned empty. No findings to synthesize.")
+        print(f"[Agent 2] All tools returned empty.")
         return {"web_findings": "", "sources": [], "tool_calls": tool_names_used}
 
-    # Summarize what was found
     messages.append(
         {
             "role": "user",
             "content": (
                 "Based on the tool results above, write a brief summary "
-                "(2-3 sentences) of what external sources say about the "
-                "question. If the sources confirm the draft answer, say so. "
-                "If they suggest corrections or updates, highlight those."
+                "(2-3 sentences) of what external sources say. If they confirm "
+                "the draft, say so. If they suggest corrections, highlight those."
             ),
         }
     )
@@ -223,64 +224,115 @@ def agent_2_fact_checker(query, agent_1_output) -> dict:
 
 
 # ----------------------------------------------------------------------
-# Agent 3 — Synthesizer
+# Agent 3 — Synthesizer + Router
 # ----------------------------------------------------------------------
-def agent_3_synthesizer(query, agent_1_output, agent_2_output) -> str:
-    """Merge internal and external findings into a labeled final answer."""
+def agent_3_synthesizer_router(
+    query, agent_1_output, agent_2_output, rewrite_hint: str = ""
+) -> dict:
+    """Synthesize a draft AND decide if more research is needed.
+
+    Returns:
+        {
+            "action": "answer" | "retry_agent_2",
+            "draft": str,              # the synthesized answer
+            "reason": str,             # LLM's explanation
+            "retry_hint": str,         # guidance for Agent 2 retry (if action=="retry")
+        }
+    """
     a1_status = agent_1_output.get("status")
     a1_answer = agent_1_output.get("answer", "")
     a2_findings = agent_2_output.get("web_findings", "")
     a2_sources = agent_2_output.get("sources", [])
-
     has_a2 = bool(a2_findings)
-    print(f"\n[Agent 3] Starting. A1 status: {a1_status} | A2 has findings: {has_a2}")
 
+    print(f"\n[Agent 3] Starting. A1 status: {a1_status} | A2 has findings: {has_a2}")
+    if rewrite_hint:
+        print(f"[Agent 3] Rewrite hint received: {rewrite_hint!r}")
+
+    # Trivial paths — no routing decision needed
     if a1_status == "out_of_domain":
-        print(f"[Agent 3] Path: out_of_domain refusal")
-        return (
-            "I don't have information about this — it falls outside my "
-            "domain (first aid and emergency response)."
-        )
+        print(f"[Agent 3] Path: out_of_domain refusal (no routing)")
+        return {
+            "action": "answer",
+            "draft": (
+                "I don't have information about this — it falls outside my "
+                "domain (first aid and emergency response)."
+            ),
+            "reason": "Out-of-domain question.",
+            "retry_hint": "",
+        }
 
     if a1_status == "no_knowledge" and not has_a2:
-        print(f"[Agent 3] Path: no info in corpus or web")
-        return (
-            "I don't have information about this in my internal corpus, "
-            "and external sources didn't return useful results either."
-        )
+        print(f"[Agent 3] Path: no info in corpus or web (no routing)")
+        return {
+            "action": "answer",
+            "draft": (
+                "I don't have information about this in my internal corpus, "
+                "and external sources didn't return useful results either."
+            ),
+            "reason": "No information found anywhere.",
+            "retry_hint": "",
+        }
 
+    # Build the draft (same as before)
     if not has_a2:
-        print(f"[Agent 3] Path: internal only (pass-through, no external findings)")
-        return a1_answer
-
-    if a1_status == "no_knowledge":
-        print(f"[Agent 3] Path: external only (corpus was silent)")
+        draft = a1_answer
+        synth_type = "internal_only"
+    elif a1_status == "no_knowledge":
         sources_block = _format_web_sources(a2_sources)
-        return (
-            f"My internal corpus doesn't cover this, but external sources "
-            f"indicate:\n\n{a2_findings}\n\n{sources_block}"
+        draft = (
+            f"My internal corpus doesn't cover this, but external sources indicate:"
+            f"\n\n{a2_findings}\n\n{sources_block}"
         )
+        synth_type = "external_only"
+    else:
+        draft = _synthesize_combined(
+            query, a1_answer, a2_findings, a2_sources, rewrite_hint
+        )
+        synth_type = "combined"
 
-    # Both internal and external — synthesize with LLM
-    print(f"[Agent 3] Path: synthesizing internal + external")
+    print(f"[Agent 3] Draft produced ({synth_type})")
+    print(f"[Agent 3] Draft preview: {draft[:140]}{'...' if len(draft) > 140 else ''}")
+
+    # Routing decision — skip for out_of_domain / no_info which already returned above
+    router_decision = _agent_3_router_decide(
+        query, a1_status, draft, a2_findings, a2_sources
+    )
+    print(
+        f"[Agent 3] Router decision: {router_decision['action']} — {router_decision['reason']}"
+    )
+
+    return {
+        "action": router_decision["action"],
+        "draft": draft,
+        "reason": router_decision["reason"],
+        "retry_hint": router_decision.get("retry_hint", ""),
+    }
+
+
+def _synthesize_combined(query, a1_answer, a2_findings, a2_sources, rewrite_hint):
+    """Produce a final combined answer when both internal and external exist."""
     internal_block = f"**From the Red Cross Guide:**\n{a1_answer}"
     external_block = (
         f"**External verification:**\n{a2_findings}\n\n"
         f"{_format_web_sources(a2_sources)}"
     )
 
+    extra = ""
+    if rewrite_hint:
+        extra = (
+            f"\n\nThe previous draft needs revision. Apply this guidance: "
+            f"{rewrite_hint}"
+        )
+
     prompt = (
-        "You are an assistant combining two sources of information into a "
-        "single clear answer. Start with the internal (Red Cross Guide) "
-        "information, then mention any external updates or confirmations. "
-        "Preserve all citations from the internal answer — they look like "
-        "(Source: file.pdf, Page N). Do NOT remove or alter them. "
-        "After the main answer, list external sources with their URLs "
-        "clearly labeled. Keep it concise.\n\n"
-        f"Question: {query}\n\n"
-        f"{internal_block}\n\n"
-        f"{external_block}\n\n"
-        "Final answer:"
+        "You are combining two sources of information into a single clear answer. "
+        "Start with the internal (Red Cross Guide) information, then mention any "
+        "external updates or confirmations. Preserve all citations from the internal "
+        "answer — they look like (Source: file.pdf, Page N). Do NOT alter them. "
+        "After the main answer, list external sources with their URLs clearly "
+        "labeled. Keep it concise.\n\n"
+        f"Question: {query}\n\n{internal_block}\n\n{external_block}{extra}\n\nFinal answer:"
     )
     resp = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -289,9 +341,59 @@ def agent_3_synthesizer(query, agent_1_output, agent_2_output) -> str:
         max_tokens=600,
     )
     track_cost(resp)
-    final = resp.choices[0].message.content.strip()
-    print(f"[Agent 3] Final answer: {final[:140]}{'...' if len(final) > 140 else ''}")
-    return final
+    return resp.choices[0].message.content.strip()
+
+
+def _agent_3_router_decide(query, a1_status, draft, a2_findings, a2_sources):
+    """LLM decides: is this draft ready, or does Agent 2 need to retry?"""
+    summary_parts = [f"Question: {query}"]
+    summary_parts.append(f"Internal corpus status: {a1_status}")
+    summary_parts.append(f"External findings present: {'yes' if a2_findings else 'no'}")
+    if a2_findings:
+        summary_parts.append(f"External findings: {a2_findings[:300]}")
+        summary_parts.append(f"Number of external sources: {len(a2_sources)}")
+    summary_parts.append(f"Current draft answer:\n{draft}")
+
+    prompt = (
+        "You are a quality router. Given the question, the synthesis so far, and "
+        "what was (or wasn't) found externally, decide if the draft answer is "
+        "ready OR if the external fact-checker should retry with a refined query.\n\n"
+        "Answer is READY when:\n"
+        "- It addresses the question directly.\n"
+        "- Internal and external sources agree, OR internal is authoritative and "
+        "  external didn't add value.\n"
+        "- External sources (if any) are from credible domains (Wikipedia, gov, "
+        "  well-known medical orgs).\n\n"
+        "Retry external research when:\n"
+        "- The draft is vague or incomplete for a time-sensitive question.\n"
+        "- External findings were empty or came from low-quality domains.\n"
+        "- Internal and external sources contradict and need reconciliation.\n\n"
+        "Respond in JSON only, with this exact schema:\n"
+        '{"action": "answer" OR "retry_agent_2", "reason": "<one short sentence>", '
+        '"retry_hint": "<if retry, a specific guidance string; else empty>"}\n\n'
+        f"--- context ---\n" + "\n\n".join(summary_parts)
+    )
+
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_object"},
+        temperature=0,
+        max_tokens=200,
+    )
+    track_cost(resp)
+    try:
+        decision = json.loads(resp.choices[0].message.content)
+        if decision.get("action") not in ("answer", "retry_agent_2"):
+            decision["action"] = "answer"
+        return decision
+    except json.JSONDecodeError:
+        # If the router misbehaves, default to answering (safe fallback)
+        return {
+            "action": "answer",
+            "reason": "Router response parse failure; defaulting to answer.",
+            "retry_hint": "",
+        }
 
 
 def _format_web_sources(sources: list[dict]) -> str:
@@ -307,52 +409,85 @@ def _format_web_sources(sources: list[dict]) -> str:
 
 
 # ----------------------------------------------------------------------
-# Orchestrator
+# Orchestrator with auto-retry loop
 # ----------------------------------------------------------------------
 def run_agents(query, index, chunks) -> dict:
-    """Run all three agents and return the final answer + a trace for UI display."""
+    """Run agents 1 -> 2 -> 3, with Agent 3 able to trigger a single auto-retry.
+
+    Returns a dict with the draft, retrieved sources, and agent trace.
+    The human-in-the-loop review step happens *after* this function returns,
+    in the UI layer.
+    """
     print(f"\n{'#' * 60}")
     print(f"# run_agents: {query!r}")
     print(f"{'#' * 60}")
 
     a1 = agent_1_researcher(query, index, chunks)
 
+    # Out-of-domain: skip straight to refusal
     if a1["status"] == "out_of_domain":
-        final = agent_3_synthesizer(query, a1, {"web_findings": "", "sources": []})
-        print(f"\n[run_agents] Done (short-circuit after out_of_domain).")
+        a3 = agent_3_synthesizer_router(query, a1, {"web_findings": "", "sources": []})
+        print(f"\n[run_agents] Done (out_of_domain short-circuit)")
         print(f"{'#' * 60}\n")
         return {
-            "answer": final,
+            "draft": a3["draft"],
             "retrieved": [],
-            "trace": {
-                "agent_1": a1,
-                "agent_2": {"status": "skipped (out of domain)"},
-                "agent_3": {"final_answer": final},
-            },
+            "a1": a1,
+            "a2": {"web_findings": "", "sources": [], "tool_calls": []},
+            "a3": a3,
+            "iterations": 0,
+            "auto_retry_triggered": False,
         }
 
     a2 = agent_2_fact_checker(query, a1)
-    final = agent_3_synthesizer(query, a1, a2)
+    a3 = agent_3_synthesizer_router(query, a1, a2)
 
-    print(f"\n[run_agents] Done.")
+    iteration = 1
+    auto_retry_triggered = False
+
+    while a3["action"] == "retry_agent_2" and iteration < MAX_AGENT_ITERATIONS:
+        print(f"\n[Orchestrator] Agent 3 requested retry (iteration {iteration + 1})")
+        auto_retry_triggered = True
+        a2 = agent_2_fact_checker(query, a1, extra_hint=a3.get("retry_hint", ""))
+        a3 = agent_3_synthesizer_router(query, a1, a2)
+        iteration += 1
+
+    if a3["action"] == "retry_agent_2":
+        print(f"\n[Orchestrator] Max iterations hit. Forcing 'answer' action.")
+        a3["action"] = "answer"
+        a3["reason"] += " (forced after max retries)"
+
+    print(f"\n[run_agents] Done after {iteration} iteration(s)")
     print(f"{'#' * 60}\n")
 
     return {
-        "answer": final,
+        "draft": a3["draft"],
         "retrieved": a1["sources"],
-        "trace": {
-            "agent_1": {
-                "status": a1["status"],
-                "domain_check": a1["domain_check"],
-                "draft_answer": a1["answer"],
-                "n_sources": len(a1["sources"]),
-            },
-            "agent_2": {
-                "tool_calls": a2.get("tool_calls", []),
-                "findings": a2.get("web_findings", ""),
-                "n_external_sources": len(a2.get("sources", [])),
-                "sources": a2.get("sources", []),
-            },
-            "agent_3": {"final_answer": final},
-        },
+        "a1": a1,
+        "a2": a2,
+        "a3": a3,
+        "iterations": iteration,
+        "auto_retry_triggered": auto_retry_triggered,
     }
+
+
+# ----------------------------------------------------------------------
+# Human-in-the-loop feedback functions (called from the UI)
+# ----------------------------------------------------------------------
+def rerun_with_more_research(query, a1, hint: str = "") -> dict:
+
+    print(f"\n[HITL] User requested more research. Hint: {hint!r}")
+    a2 = agent_2_fact_checker(query, a1, extra_hint=hint)
+    a3 = agent_3_synthesizer_router(query, a1, a2)
+    if a3["action"] == "retry_agent_2":
+        a3["action"] = "answer"  # don't retry again after human already intervened
+    return {"draft": a3["draft"], "a2": a2, "a3": a3, "retrieved": a1["sources"]}
+
+
+def rerun_with_rewrite(query, a1, a2, hint: str = "") -> dict:
+
+    print(f"\n[HITL] User requested rewrite. Hint: {hint!r}")
+    a3 = agent_3_synthesizer_router(query, a1, a2, rewrite_hint=hint)
+    if a3["action"] == "retry_agent_2":
+        a3["action"] = "answer"  # don't trigger research retry on a rewrite request
+    return {"draft": a3["draft"], "a2": a2, "a3": a3, "retrieved": a1["sources"]}

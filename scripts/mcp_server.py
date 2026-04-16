@@ -22,9 +22,6 @@ _WIKI = wikipediaapi.Wikipedia(
 def wikipedia_search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
     """Search Wikipedia for authoritative, general-knowledge information.
 
-    Best for medical guidelines, definitions, procedures, and well-established
-    facts (e.g. CPR ratios, first-aid protocols, disease descriptions).
-
     Args:
         query: Search query (keywords work best, e.g. "CPR compression depth").
         max_results: Max number of articles to return (default 3).
@@ -33,8 +30,6 @@ def wikipedia_search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
         List of {title, summary, url} dicts. Empty list if nothing found.
     """
     try:
-        # wikipedia-api doesn't have a search endpoint, so use DDG to find
-        # candidate articles, then fetch summaries from wikipedia-api.
         with DDGS() as ddgs:
             hits = list(
                 ddgs.text(
@@ -77,11 +72,6 @@ def wikipedia_search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
 @mcp.tool
 def web_search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
     """Search the live web via DuckDuckGo for recent news or updated information.
-
-    Best for time-sensitive topics where the internal corpus may be outdated,
-    such as recent protocol changes, news about medical guidelines, or recent
-    recalls/advisories.
-
     Args:
         query: Search query.
         max_results: Max number of results to return (default 3).
