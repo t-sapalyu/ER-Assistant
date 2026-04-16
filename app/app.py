@@ -14,7 +14,12 @@ from PIL import Image
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / "scripts"))
 
-from agents import run_agents, is_refusal
+from agents import (
+    run_agents,
+    is_refusal,
+    rerun_with_more_research,
+    rerun_with_rewrite,
+)
 from rag_pipeline import client, generate_answer, load_index, retrieve
 
 USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
@@ -133,38 +138,39 @@ def to_text(content):
     return str(content)
 
 
-def format_trace(trace: dict) -> str:
-    """Render the agent trace as readable Markdown for the UI accordion."""
-    a1 = trace.get("agent_1", {})
-    a2 = trace.get("agent_2", {})
-    a3 = trace.get("agent_3", {})
+def format_trace(pending: dict) -> str:
+    a1 = pending.get("a1", {})
+    a2 = pending.get("a2", {})
+    a3 = pending.get("a3", {})
 
     lines = []
     lines.append("### 🔎 Agent 1 — Internal Researcher")
     lines.append(f"- Domain check: **{a1.get('domain_check', '?')}**")
     lines.append(f"- Status: **{a1.get('status', '?')}**")
-    if a1.get("n_sources") is not None:
-        lines.append(f"- Internal sources retrieved: {a1['n_sources']}")
-    if a1.get("draft_answer"):
-        preview = a1["draft_answer"][:300]
-        lines.append(
-            f"- Draft:\n  > {preview}{'…' if len(a1['draft_answer']) > 300 else ''}"
-        )
+    n_sources = len(a1.get("sources", []))
+    lines.append(f"- Internal sources retrieved: {n_sources}")
+    if a1.get("answer"):
+        preview = a1["answer"][:300]
+        lines.append(f"- Draft: > {preview}{'…' if len(a1['answer']) > 300 else ''}")
     lines.append("")
 
     lines.append("### 🌐 Agent 2 — External Fact-Checker")
-    if a2.get("status") == "skipped (out of domain)":
-        lines.append("- **Skipped** (question is out of domain)")
-    else:
-        tc = a2.get("tool_calls", [])
-        lines.append(f"- Tools called: {', '.join(tc) if tc else 'none'}")
-        lines.append(f"- External sources found: {a2.get('n_external_sources', 0)}")
-        if a2.get("findings"):
-            lines.append(f"- Findings:\n  > {a2['findings']}")
+    tc = a2.get("tool_calls", [])
+    lines.append(f"- Tools called: {', '.join(tc) if tc else 'none'}")
+    lines.append(f"- External sources found: {len(a2.get('sources', []))}")
+    if a2.get("web_findings"):
+        lines.append(f"- Findings: > {a2['web_findings']}")
     lines.append("")
 
-    lines.append("### ✍️ Agent 3 — Synthesizer")
-    lines.append("- Final answer produced (shown above).")
+    lines.append("### ✍️ Agent 3 — Synthesizer + Router")
+    lines.append(f"- Router action: **{a3.get('action', '?')}**")
+    lines.append(f"- Reason: {a3.get('reason', '')}")
+    if a3.get("retry_hint"):
+        lines.append(f"- Retry hint: _{a3['retry_hint']}_")
+    lines.append("")
+    lines.append(
+        "_Draft shown in review panel above — approve, request more research, or request rewrite._"
+    )
 
     return "\n".join(lines)
 
@@ -346,67 +352,181 @@ def export_last_answer(last_exchange):
 
 # ---------- chat handler ----------
 def chat(message, history, last_exchange):
+    """Produce an answer and send it directly to chat. Keep state for HITL follow-ups."""
     message = to_text(message)
     standalone_query = rewrite_query(message, history)
 
-    # Run the three-agent system
     result = run_agents(standalone_query, index, chunks)
-    answer = result["answer"]
+    draft = result["draft"]
     retrieved = result["retrieved"]
-    trace = result["trace"]
 
-    is_refusal_answer = is_refusal(answer)  # helper below
-
-    display_answer = answer
-
+    # Commit the answer to chat immediately
     new_history = history + [
         {"role": "user", "content": message},
-        {"role": "assistant", "content": display_answer},
+        {"role": "assistant", "content": draft},
     ]
+
     new_last = {
         "question": message,
         "rewritten_query": standalone_query,
-        "answer": answer,
+        "answer": draft,
         "retrieved": retrieved,
-        "trace": trace,
     }
 
-    # PDF highlighting (unchanged)
-    highlighted_pages = (
-        process_and_highlight_pages(answer, retrieved)
-        if not is_refusal_answer and retrieved
-        else []
-    )
+    # Stash everything HITL buttons will need if the user wants to revise
+    pending = {
+        "question": message,
+        "rewritten_query": standalone_query,
+        "draft": draft,
+        "a1": result["a1"],
+        "a2": result["a2"],
+        "a3": result["a3"],
+        "retrieved": retrieved,
+    }
 
-    fb_update = gr.update(interactive=not is_refusal_answer)
+    is_refusal_answer = is_refusal(draft)
+
+    # Usage log
     avg_score = (
         sum(c.get("score", 0.0) for c in retrieved) / len(retrieved) if retrieved else 0
     )
-    est_cost = (len(message) + len(answer)) * 0.0000002
+    est_cost = (len(message) + len(draft)) * 0.0000002
     usage_record = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "question": message,
-        "answer": answer[:100] + "...",
+        "answer": draft[:100] + "...",
         "avg_score": avg_score,
         "cost": est_cost,
+        "iterations": result.get("iterations", 1),
     }
     with open(USAGE_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(usage_record) + "\n")
 
-    trace_md = format_trace(trace)
+    highlighted = (
+        process_and_highlight_pages(draft, retrieved)
+        if not is_refusal_answer and retrieved
+        else []
+    )
+
+    trace_md = format_trace(pending)
+    fb = gr.update(interactive=not is_refusal_answer)
+    hitl_visible = gr.update(visible=not is_refusal_answer)
+
+    return (
+        new_history,  # chatbot (message added)
+        new_last,  # last_exchange_state
+        "",  # clear msg
+        "",  # clear feedback_status
+        fb,  # thumbs_up
+        fb,  # thumbs_down
+        gr.update(interactive=True),  # export_chat_btn
+        gr.update(interactive=True),  # export_answer_btn
+        gr.update(interactive=False),  # send_btn (re-disabled)
+        highlighted,  # pdf_gallery
+        trace_md,  # trace_display
+        pending,  # pending_state
+        hitl_visible,  # hitl_panel (show unless refusal)
+        "",  # review_hint (clear)
+    )
+
+
+def on_needs_more_research(pending, hint, history, last_exchange):
+    """Rerun Agent 2 + Agent 3 and append revised answer as a new assistant turn."""
+    if not pending:
+        return history, last_exchange, gr.update(), None, [], "", ""
+
+    print(f"\n[HITL] 'Needs more research' clicked. Hint: {hint!r}")
+
+    # Add a small system-style note so the user sees work is happening
+    intro = f"🔁 Revising based on your feedback"
+    if hint:
+        intro += f" (hint: _{hint}_)"
+    intro += "…"
+
+    result = rerun_with_more_research(
+        pending["rewritten_query"], pending["a1"], hint=hint
+    )
+    revised = result["draft"]
+
+    # Update pending with the revised state so subsequent HITL clicks use the new base
+    pending["draft"] = revised
+    pending["a2"] = result["a2"]
+    pending["a3"] = result["a3"]
+    pending["retrieved"] = result["retrieved"]
+
+    # Append two new turns: a pseudo-user note + the revised assistant answer
+    new_history = history + [
+        {"role": "user", "content": intro},
+        {"role": "assistant", "content": revised},
+    ]
+
+    new_last = {
+        "question": pending["question"],
+        "rewritten_query": pending["rewritten_query"],
+        "answer": revised,
+        "retrieved": pending["retrieved"],
+    }
+
+    trace_md = format_trace(pending)
+    highlighted = (
+        process_and_highlight_pages(revised, pending["retrieved"])
+        if pending["retrieved"]
+        else []
+    )
+
+    return (
+        new_history,  # chatbot (two new turns appended)
+        new_last,  # last_exchange
+        gr.update(visible=True),  # hitl_panel stays visible for another round
+        pending,  # updated pending
+        highlighted,  # pdf_gallery refresh
+        trace_md,  # trace_display
+        "",  # clear review_hint
+    )
+
+
+def on_needs_rewrite(pending, hint, history, last_exchange):
+    """Rerun Agent 3 with rewrite hint and append revised answer as a new assistant turn."""
+    if not pending:
+        return history, last_exchange, gr.update(), None, [], "", ""
+
+    print(f"\n[HITL] 'Needs rewrite' clicked. Hint: {hint!r}")
+
+    intro = f"✏️ Rewriting based on your feedback"
+    if hint:
+        intro += f" (hint: _{hint}_)"
+    intro += "…"
+
+    result = rerun_with_rewrite(
+        pending["rewritten_query"], pending["a1"], pending["a2"], hint=hint
+    )
+    revised = result["draft"]
+
+    pending["draft"] = revised
+    pending["a3"] = result["a3"]
+
+    new_history = history + [
+        {"role": "user", "content": intro},
+        {"role": "assistant", "content": revised},
+    ]
+
+    new_last = {
+        "question": pending["question"],
+        "rewritten_query": pending["rewritten_query"],
+        "answer": revised,
+        "retrieved": pending["retrieved"],
+    }
+
+    trace_md = format_trace(pending)
 
     return (
         new_history,
         new_last,
+        gr.update(visible=True),
+        pending,
+        [],  # pdf_gallery not refreshed (sources didn't change)
+        trace_md,
         "",
-        "",
-        fb_update,
-        fb_update,
-        gr.update(interactive=True),
-        gr.update(interactive=True),
-        gr.update(interactive=False),
-        highlighted_pages,
-        trace_md,  # new: agent trace for the accordion
     )
 
 
@@ -428,9 +548,23 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
                 # LEFT COLUMN: Chat UI
                 with gr.Column(scale=1):
                     chatbot = gr.Chatbot(height=600)
-                    with gr.Accordion(
-                        "🔬 Agent trace (how the answer was produced)", open=False
-                    ):
+
+                    # === Human-in-the-loop review panel ===
+                    pending_state = gr.State(None)
+
+                    with gr.Group(visible=False) as hitl_panel:
+                        review_hint = gr.Textbox(
+                            label="Optional guidance for revision",
+                            placeholder="e.g. 'focus on 2025 updates' or 'make it shorter'",
+                            lines=1,
+                        )
+                        with gr.Row():
+                            more_research_btn = gr.Button(
+                                "🔁 Needs more research", size="sm"
+                            )
+                            rewrite_btn = gr.Button("✏️ Needs rewrite", size="sm")
+
+                    with gr.Accordion("🔬 Agent trace", open=False):
                         trace_display = gr.Markdown("")
                     with gr.Row():
                         msg = gr.Textbox(
@@ -530,6 +664,9 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         send_btn,
         pdf_gallery,
         trace_display,
+        pending_state,
+        hitl_panel,
+        review_hint,
     ]
 
     msg.submit(chat, inputs=[msg, chatbot, last_exchange_state], outputs=chat_outputs)
@@ -555,6 +692,34 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
         outputs=[feedback_status, thumbs_up, thumbs_down],
     )
 
+    more_research_btn.click(
+        on_needs_more_research,
+        inputs=[pending_state, review_hint, chatbot, last_exchange_state],
+        outputs=[
+            chatbot,
+            last_exchange_state,
+            hitl_panel,
+            pending_state,
+            pdf_gallery,
+            trace_display,
+            review_hint,
+        ],
+    )
+
+    rewrite_btn.click(
+        on_needs_rewrite,
+        inputs=[pending_state, review_hint, chatbot, last_exchange_state],
+        outputs=[
+            chatbot,
+            last_exchange_state,
+            hitl_panel,
+            pending_state,
+            pdf_gallery,
+            trace_display,
+            review_hint,
+        ],
+    )
+
     clear_btn.click(
         lambda: (
             [],
@@ -567,6 +732,9 @@ with gr.Blocks(title="🚑 ER-Assistant") as demo:
             gr.update(interactive=False),
             gr.update(interactive=False),
             None,
+            "",
+            None,
+            gr.update(visible=False),
             "",
         ),
         outputs=chat_outputs,
