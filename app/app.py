@@ -21,7 +21,7 @@ from agents import (
     rerun_with_more_research,
     rerun_with_rewrite,
 )
-from rag_pipeline import add_to_database, check_content_scope, client, generate_answer, load_index, retrieve
+from rag_pipeline import add_to_database, check_content_scope, classify_add_mode_message, client, generate_answer, load_index, retrieve
 
 USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
@@ -351,48 +351,78 @@ def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
     """Produce an answer and send it directly to chat. Keep state for HITL follow-ups."""
     message = to_text(message)
 
-    # In add-knowledge mode: treat the typed text as content to index
+    # In add-knowledge mode: classify before doing anything
     if add_knowledge_mode:
-        in_scope, reason = check_content_scope(message)
-        preview = message[:80] + ("…" if len(message) > 80 else "")
-        if not in_scope:
-            refusal = (
-                f"Sorry, I can't add that to the knowledge base.\n\n"
-                f"**Reason:** {reason}\n\n"
-                "This assistant only stores content related to first aid, CPR, and emergency medicine. "
-                "Please try again with relevant content, or type anything else to cancel."
+        classification = classify_add_mode_message(message)
+
+        # ── User said something unrelated / wants to exit ────────────────
+        if classification == "exit":
+            bot_reply = (
+                "No problem, I've closed the knowledge panel. "
+                "Feel free to ask me anything, or say _'I want to add info'_ any time to reopen it."
             )
             new_history = history + [
-                {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
-                {"role": "assistant", "content": refusal},
+                {"role": "user", "content": message},
+                {"role": "assistant", "content": bot_reply},
             ]
             return (
                 new_history, None,
-                gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
+                gr.update(value="", placeholder="Ask a question..."), "",
                 gr.update(interactive=False), gr.update(interactive=False),
-                gr.update(interactive=bool(history)), gr.update(interactive=False),
+                gr.update(interactive=bool(new_history)), gr.update(interactive=False),
                 gr.update(interactive=False), [],
                 "", None,
                 gr.update(visible=False), "",
-                gr.update(visible=True),    # keep panel open
-                True,                       # stay in add-knowledge mode
+                gr.update(visible=False),   # close panel
+                False,                      # exit add-knowledge mode
             )
-        result_msg = handle_add_to_database(message, "chat_input")
-        new_history = history + [
-            {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
-            {"role": "assistant", "content": f"✅ {result_msg}"},
-        ]
-        return (
-            new_history, None,
-            gr.update(value="", placeholder="Ask a question..."), "",
-            gr.update(interactive=False), gr.update(interactive=False),
-            gr.update(interactive=True), gr.update(interactive=False),
-            gr.update(interactive=False), [],
-            "", None,
-            gr.update(visible=False), "",
-            gr.update(visible=False),   # hide add-knowledge panel
-            False,                      # exit add-knowledge mode
-        )
+
+        # ── User asked a question — exit mode and answer normally ────────
+        if classification == "question":
+            add_knowledge_mode = False   # fall through to normal RAG below
+
+        # ── User provided content to index ───────────────────────────────
+        else:
+            preview = message[:80] + ("…" if len(message) > 80 else "")
+            in_scope, reason = check_content_scope(message)
+            if not in_scope:
+                refusal = (
+                    f"Sorry, I can't add that to the knowledge base.\n\n"
+                    f"**Reason:** {reason}\n\n"
+                    "This assistant only stores content related to first aid, CPR, and emergency medicine. "
+                    "Please paste relevant content, or say _'cancel'_ to exit."
+                )
+                new_history = history + [
+                    {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
+                    {"role": "assistant", "content": refusal},
+                ]
+                return (
+                    new_history, None,
+                    gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
+                    gr.update(interactive=False), gr.update(interactive=False),
+                    gr.update(interactive=bool(history)), gr.update(interactive=False),
+                    gr.update(interactive=False), [],
+                    "", None,
+                    gr.update(visible=False), "",
+                    gr.update(visible=True),    # keep panel open
+                    True,                       # stay in add-knowledge mode
+                )
+            result_msg = handle_add_to_database(message, "chat_input")
+            new_history = history + [
+                {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
+                {"role": "assistant", "content": f"✅ {result_msg}"},
+            ]
+            return (
+                new_history, None,
+                gr.update(value="", placeholder="Ask a question..."), "",
+                gr.update(interactive=False), gr.update(interactive=False),
+                gr.update(interactive=True), gr.update(interactive=False),
+                gr.update(interactive=False), [],
+                "", None,
+                gr.update(visible=False), "",
+                gr.update(visible=False),   # hide add-knowledge panel
+                False,                      # exit add-knowledge mode
+            )
 
     # Detect "add knowledge" intent — open inline panel
     if detect_add_knowledge_intent(message):

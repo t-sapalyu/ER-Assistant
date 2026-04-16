@@ -320,6 +320,40 @@ def ask(query, index, chunks):
 # ---------------------------
 # Step 6b — Scope validation
 # ---------------------------
+CLASSIFY_ADD_MODE_PROMPT = (
+    "The user is in 'Add Knowledge' mode, meaning they are supposed to be providing "
+    "new factual content about first aid or emergency medicine to store in a knowledge base.\n\n"
+    "Read their message and decide what they actually intend:\n"
+    "  CONTENT  — the message genuinely looks like knowledge to store: "
+    "it reads as informational, instructional, or reference text about a medical/first-aid topic.\n"
+    "  QUESTION — the message is clearly asking for information or an answer.\n"
+    "  EXIT     — everything else: the user seems to have lost interest, is confused, "
+    "is saying something unrelated, is expressing an emotion, is chatting casually, "
+    "or is otherwise not providing content and not asking a question. "
+    "Use your judgment — if it does not clearly fit CONTENT or QUESTION, choose EXIT.\n\n"
+    "Reply with ONLY one word: CONTENT, QUESTION, or EXIT."
+)
+
+
+def classify_add_mode_message(message: str) -> str:
+    """Return 'content', 'question', or 'exit'. Uses LLM intent understanding, not keywords."""
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": CLASSIFY_ADD_MODE_PROMPT},
+            {"role": "user", "content": message},
+        ],
+        temperature=0,
+        max_tokens=10,
+    )
+    label = response.choices[0].message.content.strip().upper()
+    if "CONTENT" in label:
+        return "content"
+    if "QUESTION" in label:
+        return "question"
+    return "exit"
+
+
 SCOPE_SYSTEM_PROMPT = (
     "You are a strict content gatekeeper for an ER / First-Aid assistant. "
     "Decide whether the supplied text is relevant to any of these topics: "
