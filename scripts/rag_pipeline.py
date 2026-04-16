@@ -215,11 +215,17 @@ def retrieve(query, index, chunks, k=5, fetch_k=20, rerank=True):
     faiss.normalize_L2(query_vec)
 
     # Stage 1: FAISS retrieval (over-fetch)
-    n_fetch = fetch_k if rerank else k
+    # Clamp to index size so FAISS never pads results with -1 or repeats
+    n_fetch = min(fetch_k if rerank else k, index.ntotal)
+    if n_fetch == 0:
+        return []
     scores, indices = index.search(query_vec, n_fetch)
 
     candidates = []
     for i, idx in enumerate(indices[0]):
+        # FAISS pads with -1 when k > ntotal; skip invalid entries
+        if idx < 0 or idx >= len(chunks):
+            continue
         chunk = dict(chunks[idx])
         chunk["faiss_score"] = float(scores[0][i])
         candidates.append(chunk)
@@ -309,6 +315,41 @@ def ask(query, index, chunks):
     retrieved = retrieve(query, index, chunks)
     answer = generate_answer(query, retrieved)
     return answer
+
+
+# ---------------------------
+# Step 6b — Scope validation
+# ---------------------------
+SCOPE_SYSTEM_PROMPT = (
+    "You are a strict content gatekeeper for an ER / First-Aid assistant. "
+    "Decide whether the supplied text is relevant to any of these topics: "
+    "first aid, CPR, AED, choking, bleeding control, burns, fractures, "
+    "stroke, cardiac arrest, emergency medicine, tourniquets, wound care, "
+    "shock, poisoning, allergic reactions, or similar emergency / pre-hospital care.\n\n"
+    "Reply with EXACTLY one line in this format:\n"
+    "RELEVANT: <yes|no>\n"
+    "REASON: <one short sentence>\n\n"
+    "Do not add anything else."
+)
+
+
+def check_content_scope(text: str) -> tuple[bool, str]:
+    """Return (is_relevant, reason). Uses the first 1500 chars as a sample."""
+    sample = text.strip()[:1500]
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": SCOPE_SYSTEM_PROMPT},
+            {"role": "user", "content": f"Text to evaluate:\n\n{sample}"},
+        ],
+        temperature=0,
+        max_tokens=80,
+    )
+    reply = response.choices[0].message.content.strip()
+    relevant = "yes" in reply.lower().split("relevant:")[-1].split("\n")[0].lower()
+    reason_line = [l for l in reply.splitlines() if l.upper().startswith("REASON:")]
+    reason = reason_line[0].split(":", 1)[-1].strip() if reason_line else "Out of scope."
+    return relevant, reason
 
 
 # ---------------------------

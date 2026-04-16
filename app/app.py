@@ -21,7 +21,7 @@ from agents import (
     rerun_with_more_research,
     rerun_with_rewrite,
 )
-from rag_pipeline import add_to_database, client, generate_answer, load_index, retrieve
+from rag_pipeline import add_to_database, check_content_scope, client, generate_answer, load_index, retrieve
 
 USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
@@ -353,8 +353,31 @@ def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
 
     # In add-knowledge mode: treat the typed text as content to index
     if add_knowledge_mode:
-        result_msg = handle_add_to_database(message, "chat_input")
+        in_scope, reason = check_content_scope(message)
         preview = message[:80] + ("…" if len(message) > 80 else "")
+        if not in_scope:
+            refusal = (
+                f"Sorry, I can't add that to the knowledge base.\n\n"
+                f"**Reason:** {reason}\n\n"
+                "This assistant only stores content related to first aid, CPR, and emergency medicine. "
+                "Please try again with relevant content, or type anything else to cancel."
+            )
+            new_history = history + [
+                {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
+                {"role": "assistant", "content": refusal},
+            ]
+            return (
+                new_history, None,
+                gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
+                gr.update(interactive=False), gr.update(interactive=False),
+                gr.update(interactive=bool(history)), gr.update(interactive=False),
+                gr.update(interactive=False), [],
+                "", None,
+                gr.update(visible=False), "",
+                gr.update(visible=True),    # keep panel open
+                True,                       # stay in add-knowledge mode
+            )
+        result_msg = handle_add_to_database(message, "chat_input")
         new_history = history + [
             {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
             {"role": "assistant", "content": f"✅ {result_msg}"},
@@ -619,11 +642,40 @@ def detect_add_knowledge_intent(message: str) -> bool:
 
 
 def handle_upload_file_inline(file, source_name: str, history: list):
-    """Upload file, add to database, confirm in chat, and exit add-knowledge mode."""
-    msg = handle_upload_file(file, source_name)
-    success = "Added" in msg or "chunks" in msg.lower()
+    """Upload file, scope-check, add to database, confirm in chat, and exit add-knowledge mode."""
+    if file is None:
+        return history, gr.update(visible=True), None, "No file uploaded.", True
+
+    path = Path(file.name)
+    source = source_name.strip() or path.name
+
+    # Extract text first so we can scope-check before indexing
+    if path.suffix.lower() == ".pdf":
+        doc = fitz.open(str(path))
+        extracted = "\n\n".join(page.get_text() for page in doc)
+        doc.close()
+    elif path.suffix.lower() == ".txt":
+        extracted = path.read_text(encoding="utf-8")
+    else:
+        return history, gr.update(visible=True), None, "Unsupported file type. Please upload a PDF or .txt file.", True
+
+    if not extracted.strip():
+        return history, gr.update(visible=True), None, "Could not extract any text from the file.", True
+
+    in_scope, reason = check_content_scope(extracted)
+    if not in_scope:
+        refusal = (
+            f"Sorry, **{source}** was not added.\n\n"
+            f"**Reason:** {reason}\n\n"
+            "This assistant only stores content related to first aid, CPR, and emergency medicine."
+        )
+        new_history = history + [{"role": "assistant", "content": refusal}]
+        return new_history, gr.update(visible=True), None, "", True
+
+    result = add_to_database(extracted, source, index, chunks)
+    msg = result["message"]
+    success = result["added"] > 0
     new_history = history + [{"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}]
-    # On success: hide panel, reset mode; on failure: keep panel open
     return new_history, gr.update(visible=not success), None, "", not success
 
 
