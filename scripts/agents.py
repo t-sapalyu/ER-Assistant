@@ -1,6 +1,6 @@
 import asyncio
 import json
-
+import time
 from cost_tracker import track_cost
 from fastmcp import Client
 from mcp_server import TOOL_SCHEMAS  # hardcoded — keep this
@@ -47,6 +47,7 @@ def is_refusal(answer: str) -> bool:
 # Agent 1 — Internal Researcher
 # ----------------------------------------------------------------------
 def agent_1_researcher(query, index, chunks) -> dict:
+    t0 = time.perf_counter()
     print(f"\n{'=' * 60}")
     print(f"[Agent 1] Starting. Query: {query!r}")
 
@@ -77,6 +78,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
             "answer": "",
             "sources": [],
             "domain_check": "out",
+            "duration": time.perf_counter() - t0,
         }
 
     retrieved = retrieve(query, index, chunks)
@@ -98,6 +100,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
             "answer": "",
             "sources": retrieved,
             "domain_check": "in",
+            "duration": time.perf_counter() - t0,
         }
 
     print(f"[Agent 1] Returning: has_answer")
@@ -106,6 +109,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
         "answer": draft,
         "sources": retrieved,
         "domain_check": "in",
+        "duration": time.perf_counter() - t0,
     }
 
 
@@ -113,6 +117,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
 # Agent 2 — External Fact-Checker
 # ----------------------------------------------------------------------
 def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
+    t0 = time.perf_counter()
     """Use MCP tools to fact-check or supplement agent 1's answer.
 
     extra_hint: optional instruction from Agent 3's router or the human user
@@ -207,7 +212,7 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
 
     if not all_sources:
         print(f"[Agent 2] All tools returned empty.")
-        return {"web_findings": "", "sources": [], "tool_calls": tool_names_used}
+        return {"web_findings": "", "sources": [], "tool_calls": tool_names_used, "duration": time.perf_counter() - t0,}
 
     messages.append(
         {
@@ -235,6 +240,7 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
         "web_findings": findings,
         "sources": all_sources,
         "tool_calls": tool_names_used,
+        "duration": time.perf_counter() - t0,
     }
 
 
@@ -244,6 +250,7 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
 def agent_3_synthesizer_router(
     query, agent_1_output, agent_2_output, rewrite_hint: str = ""
 ) -> dict:
+    t0 = time.perf_counter()
     """Synthesize a draft AND decide if more research is needed.
 
     Returns:
@@ -275,6 +282,7 @@ def agent_3_synthesizer_router(
             ),
             "reason": "Out-of-domain question.",
             "retry_hint": "",
+            "duration": time.perf_counter() - t0,
         }
 
     if a1_status == "no_knowledge" and not has_a2:
@@ -287,6 +295,7 @@ def agent_3_synthesizer_router(
             ),
             "reason": "No information found anywhere.",
             "retry_hint": "",
+            "duration": time.perf_counter() - t0,
         }
 
     # Build the draft (same as before)
@@ -322,6 +331,7 @@ def agent_3_synthesizer_router(
         "draft": draft,
         "reason": router_decision["reason"],
         "retry_hint": router_decision.get("retry_hint", ""),
+        "duration": time.perf_counter() - t0,
     }
 
 
@@ -448,7 +458,7 @@ def run_agents(query, index, chunks) -> dict:
             "draft": a3["draft"],
             "retrieved": [],
             "a1": a1,
-            "a2": {"web_findings": "", "sources": [], "tool_calls": []},
+            "a2": {"web_findings": "", "sources": [], "tool_calls": [], "duration": 0},
             "a3": a3,
             "iterations": 0,
             "auto_retry_triggered": False,
@@ -488,6 +498,7 @@ def run_agents(query, index, chunks) -> dict:
 
 def run_simple_rag(query, index, chunks) -> dict:
     """RAG mode: no agents, no web search. Just retrieve + generate."""
+    t0 = time.perf_counter()
     print(f"\n{'#' * 60}")
     print(f"# run_simple_rag: {query!r}")
     print(f"{'#' * 60}")
@@ -500,6 +511,7 @@ def run_simple_rag(query, index, chunks) -> dict:
     print(f"[Simple RAG] Answer: {answer[:140]}{'...' if len(answer) > 140 else ''}")
     print(f"{'#' * 60}\n")
 
+    duration = time.perf_counter() - t0 
     return {
         "draft": answer,
         "retrieved": retrieved,
@@ -508,12 +520,13 @@ def run_simple_rag(query, index, chunks) -> dict:
             "answer": answer,
             "sources": retrieved,
             "domain_check": "n/a",
+            "duration": duration,
         },
         "a2": {"web_findings": "", "sources": [], "tool_calls": []},
         "a3": {
             "action": "answer",
             "reason": "Simple RAG mode — no routing.",
-            "retry_hint": "",
+            "retry_hint": "",            
         },
         "iterations": 0,
         "auto_retry_triggered": False,

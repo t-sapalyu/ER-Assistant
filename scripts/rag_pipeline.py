@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import uuid
 from cost_tracker import track_cost
-
+import logging
 
 # import spacy
 # nlp = spacy.load("en_core_web_sm")  # pip install spacy && python -m spacy download en_core_web_sm
@@ -21,9 +21,11 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
+LOG_DIR = BASE_DIR / "logs"
 
 INDEX_PATH = DATA_DIR / "my_index.faiss"
 CHUNKS_PATH = DATA_DIR / "chunks.json"
+CHUNK_LOG = LOG_DIR / "chunk_log.txt"
 
 # ---------------------------
 # Config
@@ -31,6 +33,14 @@ CHUNKS_PATH = DATA_DIR / "chunks.json"
 CHUNK_SIZE = 600
 OVERLAP = 150
 MIN_TEXT_LENGTH = 100
+
+logging.basicConfig(
+    filename=CHUNK_LOG,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------
@@ -191,7 +201,7 @@ def build_index(chunks):
     with open(CHUNKS_PATH, "w", encoding="utf-8") as f:
         json.dump(chunks, f, indent=2)
 
-    print("✅ Index + chunks saved")
+    print("Index + chunks saved")
 
     return index
 
@@ -208,7 +218,7 @@ def load_index():
 # ---------------------------
 # Step 5 — Retrieve
 # ---------------------------
-def retrieve(query, index, chunks, k=5, fetch_k=20, rerank=True):
+def retrieve(query, index, chunks, k=20, fetch_k=20, rerank=True):
     """Retrieve top-k chunks. With rerank=True, fetches fetch_k from FAISS then
     reranks with a cross-encoder to return the best k."""
     query_vec = np.array(get_embeddings([query])).astype("float32")
@@ -247,6 +257,19 @@ def retrieve(query, index, chunks, k=5, fetch_k=20, rerank=True):
     # candidates.sort(key=lambda c: c["rerank_score"], reverse=True)
     for c in candidates:
         c["score"] = c.get("rerank_score", c["faiss_score"])
+
+    # LOGGING 
+    logger.info("---- RETRIEVED CHUNKS ----")
+    logger.info(f"query: {query}")
+    logger.info(f"total_candidates: {len(candidates)}")
+
+    for i, chunk in enumerate(candidates):
+        logger.info(f"[Rank {i+1}] score: {chunk.get('score')}")
+        logger.info(f"id: {chunk.get('chunk_id')}")        
+        logger.info(f"source: {chunk.get('source')}")
+        logger.info(f"pages: {chunk.get('page')}")
+        logger.info(f"text preview: {chunk.get('text', '')[:200]}")
+        logger.info("-" * 50)
     return candidates[:k]
 
 

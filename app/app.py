@@ -6,7 +6,6 @@ import io
 import pandas as pd
 from datetime import datetime, timezone
 from pathlib import Path
-
 import gradio as gr
 import fitz  # PyMuPDF
 from PIL import Image
@@ -23,7 +22,7 @@ from agents import (
 )
 from rag_pipeline import add_to_database, check_content_scope, classify_add_mode_message, client, generate_answer, load_index, retrieve
 
-USAGE_LOG = BASE_DIR / "data" / "usage_log.jsonl"
+USAGE_LOG = BASE_DIR / "logs" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
 EXPORT_DIR = BASE_DIR / "data" / "exports"
 EXPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -44,20 +43,26 @@ CUSTOM_CSS = """
     font-weight: 600;
     margin-bottom: 8px;
 }
-.mode-pill.simple { background: #1f2937; color: #a7f3d0; }
-.mode-pill.agentic { background: #064e3b; color: #6ee7b7; }
+.mode-pill.simple {
+    background: var(--background-fill-secondary);
+    color: var(--body-text-color);
+}
+.mode-pill.agentic {
+    background: var(--primary-500);
+    color: white;
+}
 
 .hitl-panel {
-    background: #1f2937;
-    border: 1px solid #374151;
+    background: var(--background-fill-secondary);
+    border: 1px solid var(--border-color-primary);
     border-radius: 12px;
     padding: 12px;
     margin-top: 8px;
 }
 
 .agent-trace {
-    background: #1f2937 !important;
-    border-left: 3px solid #10b981 !important;
+    background: var(--background-fill-secondary) !important;
+    border-left: 3px solid var(--primary-500) !important;
     padding: 8px 12px !important;
     font-size: 0.9rem !important;
     border-radius: 12px !important;
@@ -68,12 +73,136 @@ CUSTOM_CSS = """
     padding: 4px 12px !important;
 }
 
+.header-row {
+    align-items: center;
+    gap: 8px;
+}
+.mode-label {
+    flex-grow: 0 !important;
+    min-width: fit-content !important;
+}
+.mode-label p {
+    margin: 0 !important;
+    padding: 0 4px !important;
+    white-space: nowrap;
+}
+
+.total-cost-display {
+    text-align: right;
+}
+.total-cost-display p {
+    margin: 0 !important;
+}
+
 footer { display: none !important; }
 """
 
 
 # ---------- PDF Highlighting Logic ----------
 
+def build_chat_response(
+    history, last_exchange=None, msg_value="", msg_placeholder="Ask a question...",
+    feedback_enabled=False, export_chat_enabled=None, export_answer_enabled=False,
+    send_enabled=False, gallery=None, trace="", pending=None,
+    hitl_visible=False, hint="", add_panel_visible=False, add_mode=False,
+    feedback_status="",
+):
+    """Build the 16-element tuple returned by chat() and related handlers."""
+    if export_chat_enabled is None:
+        export_chat_enabled = bool(history)
+    return (
+        history,
+        last_exchange,
+        gr.update(value=msg_value, placeholder=msg_placeholder),
+        feedback_status,
+        gr.update(interactive=feedback_enabled),
+        gr.update(interactive=feedback_enabled),
+        gr.update(interactive=export_chat_enabled),
+        gr.update(interactive=export_answer_enabled),
+        gr.update(interactive=send_enabled),
+        gallery or [],
+        trace,
+        pending,
+        gr.update(visible=hitl_visible),
+        hint,
+        gr.update(visible=add_panel_visible),
+        add_mode,
+    )
+
+
+def extract_text_from_file(path: Path) -> tuple[str, str]:
+    """Return (text, error_message). Exactly one will be non-empty."""
+    if path.suffix.lower() == ".pdf":
+        doc = fitz.open(str(path))
+        text = "\n\n".join(page.get_text() for page in doc)
+        doc.close()
+        if not text.strip():
+            return "", "Could not extract any text from the file."
+        return text, ""
+    if path.suffix.lower() == ".txt":
+        text = path.read_text(encoding="utf-8")
+        if not text.strip():
+            return "", "Could not extract any text from the file."
+        return text, ""
+    return "", "Unsupported file type. Please upload a PDF or .txt file."
+
+
+def write_export(content: str, prefix: str, status_msg: str):
+    """Write a markdown export file with a timestamped name and return (path, status)."""
+    filename = f"{prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+    filepath = EXPORT_DIR / filename
+    filepath.write_text(content, encoding="utf-8")
+    return str(filepath), status_msg
+
+
+def format_scope_refusal(source_label: str, reason: str) -> str:
+    """Standard refusal message when content is out of scope."""
+    return (
+        f"Sorry, {source_label} was not added.\n\n"
+        f"**Reason:** {reason}\n\n"
+        "This assistant only stores content related to first aid, CPR, and emergency medicine."
+    )
+
+
+def _run_rerun(pending, hint, history, rerun_fn, rerun_args, intro_verb, update_retrieved, rehighlight):
+    """Shared body for on_needs_more_research / on_needs_rewrite."""
+    if not pending:
+        return history, None, gr.update(), None, [], "", ""
+
+    print(f"\n[HITL] '{intro_verb}' clicked. Hint: {hint!r}")
+
+    intro = f"{intro_verb} based on your feedback"
+    if hint:
+        intro += f" (hint: _{hint}_)"
+    intro += "…"
+
+    result = rerun_fn(*rerun_args)
+    revised = result["draft"]
+
+    pending["draft"] = revised
+    pending["a3"] = result["a3"]
+    if update_retrieved:
+        pending["a2"] = result["a2"]
+        pending["retrieved"] = result["retrieved"]
+
+    new_history = history + [
+        {"role": "user", "content": intro},
+        {"role": "assistant", "content": revised},
+    ]
+    new_last = {
+        "question": pending["question"],
+        "rewritten_query": pending["rewritten_query"],
+        "answer": revised,
+        "retrieved": pending["retrieved"],
+    }
+    trace_md = format_trace(pending)
+    highlighted = (
+        process_and_highlight_pages(revised, pending["retrieved"])
+        if rehighlight and pending["retrieved"]
+        else []
+    )
+
+    return new_history, new_last, gr.update(visible=True), pending, highlighted, trace_md, ""
 
 def get_verbatim_quotes(page_text, llm_answer):
     """Uses LLM to find exact quotes from the page used to generate the answer."""
@@ -153,7 +282,6 @@ def process_and_highlight_pages(answer, retrieved):
 
 # ---------- General Helpers ----------
 
-
 def to_text(content):
     """Normalize Gradio message content to a plain string."""
     if isinstance(content, str):
@@ -174,8 +302,17 @@ def format_trace(pending: dict) -> str:
     a2 = pending.get("a2", {})
     a3 = pending.get("a3", {})
 
+    def fmt_time(d):                              
+        return f"{d:.2f}s" if isinstance(d, (int, float)) else "—"
+    
+    total = sum(                                  
+        x.get("duration", 0) for x in (a1, a2, a3)
+        if isinstance(x.get("duration"), (int, float))
+    )
+
     lines = []
-    lines.append("### 🔎 Agent 1 — Internal Researcher")
+    lines.append("### Agent 1 — Internal Researcher")
+    lines.append(f"- Duration: **{fmt_time(a1.get('duration'))}**")
     lines.append(f"- Domain check: **{a1.get('domain_check', '?')}**")
     lines.append(f"- Status: **{a1.get('status', '?')}**")
     n_sources = len(a1.get("sources", []))
@@ -185,15 +322,17 @@ def format_trace(pending: dict) -> str:
         lines.append(f"- Draft: > {preview}{'…' if len(a1['answer']) > 300 else ''}")
     lines.append("")
 
-    lines.append("### 🌐 Agent 2 — External Fact-Checker")
+    lines.append("### Agent 2 — External Fact-Checker")
     tc = a2.get("tool_calls", [])
+    lines.append(f"- Duration: **{fmt_time(a2.get('duration'))}**")
     lines.append(f"- Tools called: {', '.join(tc) if tc else 'none'}")
     lines.append(f"- External sources found: {len(a2.get('sources', []))}")
     if a2.get("web_findings"):
         lines.append(f"- Findings: > {a2['web_findings']}")
     lines.append("")
 
-    lines.append("### ✍️ Agent 3 — Synthesizer + Router")
+    lines.append("### Agent 3 — Synthesizer + Router")
+    lines.append(f"- Duration: **{fmt_time(a3.get('duration'))}**")
     lines.append(f"- Router action: **{a3.get('action', '?')}**")
     lines.append(f"- Reason: {a3.get('reason', '')}")
     if a3.get("retry_hint"):
@@ -271,7 +410,7 @@ def log_feedback(rating, last_exchange):
 # ---------- analytics data ----------
 def load_analytics_data():
     if not USAGE_LOG.exists():
-        return "No usage data yet.", pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        return "No usage data yet.", "### Total Cost: **$0.0000**", pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
     df = pd.DataFrame(
         [json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")]
@@ -285,7 +424,8 @@ def load_analytics_data():
     total_q = len(df)
     avg_quality = df["avg_score"].mean()
     total_cost = df["cost"].sum()
-    summary = f"### 📊 Summary\n**Total Questions:** {total_q} | **Avg Score:** {avg_quality:.3f} | **Total Est. Cost:** ${total_cost:.4f}"
+    summary = f"### **Total Questions:** {total_q} | **Avg Score:** {avg_quality:.3f}"
+    total_cost_md = f"### Total Cost: **${total_cost:.4f}**"
 
     topics = ["CPR", "Choking", "Bleeding", "Burn", "Stroke", "Heart"]
     df_topics = pd.DataFrame(
@@ -298,7 +438,7 @@ def load_analytics_data():
         "timestamp", ascending=False
     )
 
-    return summary, df_topics, df, df_table
+    return summary, total_cost_md, df_topics, df, df_table
 
 
 # ---------- export ----------
@@ -312,17 +452,11 @@ def export_conversation(history):
         "",
     ]
     for turn in history:
-        role = turn["role"].capitalize()
-        content = to_text(turn["content"])
-        lines.append(f"## {role}")
-        lines.append(content)
+        lines.append(f"## {turn['role'].capitalize()}")
+        lines.append(to_text(turn["content"]))
         lines.append("")
 
-    md = "\n".join(lines)
-    filename = f"conversation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-    filepath = EXPORT_DIR / filename
-    filepath.write_text(md, encoding="utf-8")
-    return str(filepath), f"Exported {len(history)} messages."
+    return write_export("\n".join(lines), "conversation", f"Exported {len(history)} messages.")
 
 
 def export_last_answer(last_exchange):
@@ -340,16 +474,14 @@ def export_last_answer(last_exchange):
             for c in last_exchange["retrieved"]
         )
     )
-    filename = f"answer_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-    filepath = EXPORT_DIR / filename
-    filepath.write_text(md, encoding="utf-8")
-    return str(filepath), "Exported last answer."
+    return write_export(md, "answer", "Exported last answer.")
 
 
 # ---------- chat handler ----------
-def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
+def chat(message, history, last_exchange, mode_choice, add_knowledge_mode):
     """Produce an answer and send it directly to chat. Keep state for HITL follow-ups."""
     message = to_text(message)
+    agentic_mode = (mode_choice == "Agentic (internal + web search)")
 
     # In add-knowledge mode: classify before doing anything
     if add_knowledge_mode:
@@ -365,17 +497,7 @@ def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
                 {"role": "user", "content": message},
                 {"role": "assistant", "content": bot_reply},
             ]
-            return (
-                new_history, None,
-                gr.update(value="", placeholder="Ask a question..."), "",
-                gr.update(interactive=False), gr.update(interactive=False),
-                gr.update(interactive=bool(new_history)), gr.update(interactive=False),
-                gr.update(interactive=False), [],
-                "", None,
-                gr.update(visible=False), "",
-                gr.update(visible=False),   # close panel
-                False,                      # exit add-knowledge mode
-            )
+            return build_chat_response(new_history)
 
         # ── User asked a question — exit mode and answer normally ────────
         if classification == "question":
@@ -386,66 +508,43 @@ def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
             preview = message[:80] + ("…" if len(message) > 80 else "")
             in_scope, reason = check_content_scope(message)
             if not in_scope:
-                refusal = (
-                    f"Sorry, I can't add that to the knowledge base.\n\n"
-                    f"**Reason:** {reason}\n\n"
-                    "This assistant only stores content related to first aid, CPR, and emergency medicine. "
-                    "Please paste relevant content, or say _'cancel'_ to exit."
-                )
+                refusal = format_scope_refusal("that content", reason) + \
+                    "\n\nPlease paste relevant content, or say _'cancel'_ to exit."
                 new_history = history + [
                     {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
                     {"role": "assistant", "content": refusal},
                 ]
-                return (
-                    new_history, None,
-                    gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
-                    gr.update(interactive=False), gr.update(interactive=False),
-                    gr.update(interactive=bool(history)), gr.update(interactive=False),
-                    gr.update(interactive=False), [],
-                    "", None,
-                    gr.update(visible=False), "",
-                    gr.update(visible=True),    # keep panel open
-                    True,                       # stay in add-knowledge mode
+                return build_chat_response(
+                    new_history,
+                    msg_placeholder="Paste text to add, then press Send…",
+                    add_panel_visible=True,
+                    add_mode=True,
                 )
             result_msg = handle_add_to_database(message, "chat_input")
             new_history = history + [
                 {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
                 {"role": "assistant", "content": f"✅ {result_msg}"},
             ]
-            return (
-                new_history, None,
-                gr.update(value="", placeholder="Ask a question..."), "",
-                gr.update(interactive=False), gr.update(interactive=False),
-                gr.update(interactive=True), gr.update(interactive=False),
-                gr.update(interactive=False), [],
-                "", None,
-                gr.update(visible=False), "",
-                gr.update(visible=False),   # hide add-knowledge panel
-                False,                      # exit add-knowledge mode
-            )
+            return build_chat_response(new_history, export_chat_enabled=True)
 
     # Detect "add knowledge" intent — open inline panel
     if detect_add_knowledge_intent(message):
         bot_reply = (
             "Sure! The **Add Knowledge** panel is now open below.\n\n"
-            "- 📁 **Upload a file** — use the file row to attach a PDF or .txt\n"
-            "- ✏️ **Type or paste text** — just type your content in this chat box and press **Send**\n\n"
+            "- **Upload a file** — use the file row to attach a PDF or .txt\n"
+            "- **Type or paste text** — just type your content in this chat box and press **Send**\n\n"
             "Once added, the content will be immediately available for future questions."
         )
         new_history = history + [
             {"role": "user", "content": message},
             {"role": "assistant", "content": bot_reply},
         ]
-        return (
-            new_history, None,
-            gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
-            gr.update(interactive=False), gr.update(interactive=False),
-            gr.update(interactive=bool(history)), gr.update(interactive=False),
-            gr.update(interactive=False), [],
-            "_No agent trace for knowledge addition._", None,
-            gr.update(visible=False), "",
-            gr.update(visible=True),    # show add-knowledge panel
-            True,                       # enter add-knowledge mode
+        return build_chat_response(
+            new_history,
+            msg_placeholder="Paste text to add, then press Send…",
+            trace="_No agent trace for knowledge addition._",
+            add_panel_visible=True,
+            add_mode=True,
         )
 
     standalone_query = rewrite_query(message, history)
@@ -503,122 +602,43 @@ def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
         else []
     )
 
-    trace_md = format_trace(pending)
-    fb = gr.update(interactive=not is_refusal_answer)
-    hitl_visible = gr.update(visible=agentic_mode and not is_refusal_answer)
-
-    return (
+    return build_chat_response(
         new_history,
-        new_last,
-        "",
-        "",
-        fb,
-        fb,
-        gr.update(interactive=True),
-        gr.update(interactive=True),
-        gr.update(interactive=False),
-        highlighted,
-        trace_md,
-        pending,
-        hitl_visible,
-        "",
-        gr.update(visible=False),   # hide add-knowledge panel on normal answers
-        False,                      # ensure add-knowledge mode is off
+        last_exchange=new_last,
+        feedback_enabled=not is_refusal_answer,
+        export_chat_enabled=True,
+        export_answer_enabled=True,
+        send_enabled=False,
+        gallery=highlighted,
+        trace=format_trace(pending),
+        pending=pending,
+        hitl_visible=agentic_mode and not is_refusal_answer,
     )
 
 
 def on_needs_more_research(pending, hint, history, last_exchange):
     if not pending:
         return history, last_exchange, gr.update(), None, [], "", ""
-
-    print(f"\n[HITL] 'Needs more research' clicked. Hint: {hint!r}")
-
-    intro = f"🔁 Revising based on your feedback"
-    if hint:
-        intro += f" (hint: _{hint}_)"
-    intro += "…"
-
-    result = rerun_with_more_research(
-        pending["rewritten_query"], pending["a1"], hint=hint
-    )
-    revised = result["draft"]
-
-    pending["draft"] = revised
-    pending["a2"] = result["a2"]
-    pending["a3"] = result["a3"]
-    pending["retrieved"] = result["retrieved"]
-
-    new_history = history + [
-        {"role": "user", "content": intro},
-        {"role": "assistant", "content": revised},
-    ]
-
-    new_last = {
-        "question": pending["question"],
-        "rewritten_query": pending["rewritten_query"],
-        "answer": revised,
-        "retrieved": pending["retrieved"],
-    }
-
-    trace_md = format_trace(pending)
-    highlighted = (
-        process_and_highlight_pages(revised, pending["retrieved"])
-        if pending["retrieved"]
-        else []
-    )
-
-    return (
-        new_history,
-        new_last,
-        gr.update(visible=True),
-        pending,
-        highlighted,
-        trace_md,
-        "",
+    return _run_rerun(
+        pending, hint, history,
+        rerun_fn=lambda: rerun_with_more_research(pending["rewritten_query"], pending["a1"], hint=hint),
+        rerun_args=(),
+        intro_verb="Revising",
+        update_retrieved=True,
+        rehighlight=True,
     )
 
 
 def on_needs_rewrite(pending, hint, history, last_exchange):
     if not pending:
         return history, last_exchange, gr.update(), None, [], "", ""
-
-    print(f"\n[HITL] 'Needs rewrite' clicked. Hint: {hint!r}")
-
-    intro = f"✏️ Rewriting based on your feedback"
-    if hint:
-        intro += f" (hint: _{hint}_)"
-    intro += "…"
-
-    result = rerun_with_rewrite(
-        pending["rewritten_query"], pending["a1"], pending["a2"], hint=hint
-    )
-    revised = result["draft"]
-
-    pending["draft"] = revised
-    pending["a3"] = result["a3"]
-
-    new_history = history + [
-        {"role": "user", "content": intro},
-        {"role": "assistant", "content": revised},
-    ]
-
-    new_last = {
-        "question": pending["question"],
-        "rewritten_query": pending["rewritten_query"],
-        "answer": revised,
-        "retrieved": pending["retrieved"],
-    }
-
-    trace_md = format_trace(pending)
-
-    return (
-        new_history,
-        new_last,
-        gr.update(visible=True),
-        pending,
-        [],
-        trace_md,
-        "",
+    return _run_rerun(
+        pending, hint, history,
+        rerun_fn=lambda: rerun_with_rewrite(pending["rewritten_query"], pending["a1"], pending["a2"], hint=hint),
+        rerun_args=(),
+        intro_verb="Rewriting",
+        update_retrieved=False,
+        rehighlight=False,
     )
 
 
@@ -641,20 +661,37 @@ def handle_upload_file(file, source_name: str):
     path = Path(file.name)
     source = source_name.strip() or path.name
 
-    if path.suffix.lower() == ".pdf":
-        doc = fitz.open(str(path))
-        text = "\n\n".join(page.get_text() for page in doc)
-        doc.close()
-    elif path.suffix.lower() == ".txt":
-        text = path.read_text(encoding="utf-8")
-    else:
-        return "Unsupported file type. Please upload a PDF or .txt file."
-
-    if not text.strip():
-        return "Could not extract any text from the file."
+    text, error = extract_text_from_file(path)
+    if error:
+        return error
 
     result = add_to_database(text, source, index, chunks)
     return result["message"]
+
+
+def handle_upload_file_inline(file, source_name: str, history: list):
+    """Upload file, scope-check, add to database, confirm in chat, and exit add-knowledge mode."""
+    if file is None:
+        return history, gr.update(visible=True), None, "No file uploaded.", True
+
+    path = Path(file.name)
+    source = source_name.strip() or path.name
+
+    extracted, error = extract_text_from_file(path)
+    if error:
+        return history, gr.update(visible=True), None, error, True
+
+    in_scope, reason = check_content_scope(extracted)
+    if not in_scope:
+        refusal = format_scope_refusal(f"**{source}**", reason)
+        new_history = history + [{"role": "assistant", "content": refusal}]
+        return new_history, gr.update(visible=True), None, "", True
+
+    result = add_to_database(extracted, source, index, chunks)
+    msg = result["message"]
+    success = result["added"] > 0
+    new_history = history + [{"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}]
+    return new_history, gr.update(visible=not success), None, "", not success
 
 
 # ---------- Inline Add Knowledge helpers ----------
@@ -720,11 +757,35 @@ with gr.Blocks(
     css=CUSTOM_CSS,
 ) as demo:
     gr.Markdown("# ER-Assistant - First Aid & CPR Q&A")
+    with gr.Row(elem_classes="header-row"):
+        theme_toggle = gr.Button("Toggle theme", size="sm", scale=0)        
+        mode_dropdown = gr.Dropdown(
+            choices=[
+                "Simple agent (only internal knowledge)",
+                "Agentic (internal knowledge + web search)",
+            ],
+            value="Simple agent (only internal knowledge)",
+            show_label=False,
+            container=False,
+            interactive=True,
+            scale=0,
+            min_width=320,
+        )
+    theme_toggle.click(
+        fn=None,
+        inputs=[],
+        outputs=[],
+        js="""
+        () => {
+            document.body.classList.toggle('dark');
+        }
+        """,
+    )
 
     with gr.Tabs() as tabs:
 
         # ========== TAB 1: Chatbot ==========
-        with gr.Tab("💬 Chat", id=0):
+        with gr.Tab("Chat", id=0):
 
             last_exchange_state = gr.State(None)
             pending_state = gr.State(None)
@@ -735,8 +796,7 @@ with gr.Blocks(
                 # LEFT: chat column
                 with gr.Column(scale=1):
                     chatbot = gr.Chatbot(
-                        height=550,
-                        avatar_images=(None, "🚑"),
+                        height=550,                        
                     )
 
                     # ── Input row: message + Send ──────────────────────────────
@@ -759,7 +819,7 @@ with gr.Blocks(
                     # ── Inline Add Knowledge panel (shown on intent) ───────────
                     with gr.Group(visible=False) as add_knowledge_panel:
                         gr.Markdown(
-                            "📚 **Add Knowledge** — type or paste text in the box below and press **Send**, "
+                            "**Add Knowledge** — type or paste text in the box below and press **Send**, "
                             "or upload a file:"
                         )
                         with gr.Row():
@@ -777,22 +837,9 @@ with gr.Blocks(
                                 lines=1,
                             )
                             inline_upload_btn = gr.Button(
-                                "📎 Add file", variant="secondary", size="sm", scale=1, min_width=80
+                                "Add file", variant="secondary", size="sm", scale=1, min_width=80
                             )
                         inline_add_status = gr.Markdown("")
-
-                    # Mode toggle + indicator row
-                    with gr.Row():
-                        with gr.Column(scale=3):
-                            mode_indicator = gr.Markdown(
-                                '<span class="mode-pill simple">RAG mode</span>'
-                            )
-                    with gr.Column(scale=1, min_width=200):
-                        agentic_mode = gr.Checkbox(
-                            label="Agentic mode (web search + synthesizer)",
-                            value=False,
-                            info="Uses 3-agent pipeline with live web search.",
-                        )
 
                     # ── Feedback row: sits right under the answer ──────────────
                     with gr.Row(elem_classes="small-btn"):
@@ -822,31 +869,32 @@ with gr.Blocks(
                         )
                         with gr.Row(elem_classes="small-btn"):
                             more_research_btn = gr.Button(
-                                "🔁 Needs more research", size="sm", interactive=False
+                                "Needs more research", size="sm", interactive=False
                             )
                             rewrite_btn = gr.Button(
-                                "✏️ Needs rewrite", size="sm", interactive=False
+                                "Needs rewrite", size="sm", interactive=False
                             )
 
                     # ── Utility row: session-level actions grouped together ───
                     with gr.Row(elem_classes=["small-btn", "utility-row"]):
                         export_chat_btn = gr.Button(
-                            "📥 Export chat",
+                            "Export chat",
                             size="sm",
                             interactive=False,
                         )
                         export_answer_btn = gr.Button(
-                            "📥 Export answer",
+                            "Export answer",
                             size="sm",
                             interactive=False,
                         )
-                        clear_btn = gr.Button("🗑️ Clear", size="sm")
+                        clear_btn = gr.Button("Clear", size="sm")
 
-                    export_file = gr.File(label="Download", visible=True)
+                    #export_file = gr.File(label="Download", visible=False)
+                    export_file = gr.DownloadButton("Download", visible=False)
                     export_status = gr.Markdown("")
 
                     with gr.Accordion(
-                        "🔬 Agent trace", open=False, elem_classes="agent-trace"
+                        "Agent trace", open=False, elem_classes="agent-trace"
                     ):
                         trace_display = gr.Markdown(
                             "_Ask a question to see agent activity._"
@@ -855,7 +903,7 @@ with gr.Blocks(
                 # RIGHT: PDF viewer
                 with gr.Column(scale=1):
                     pdf_gallery = gr.Gallery(
-                        label="📄 Cited PDF pages",
+                        label="Cited PDF pages",
                         show_label=True,
                         height=700,
                         object_fit="contain",
@@ -864,9 +912,13 @@ with gr.Blocks(
 
         # TAB 2: Analytics
         with gr.Tab("Analytics", id=1) as analytics_tab:
-            gr.Markdown("## 📊 Usage Analytics")
-            stats_output = gr.Markdown("Loading...")
-            refresh_btn = gr.Button("🔄 Refresh")
+            with gr.Row():
+                gr.Markdown("**Usage Analytics**")
+                total_cost_output = gr.Markdown(
+                    "### Total Cost: **$0.0000**",
+                    elem_classes="total-cost-display",
+                )
+            stats_output = gr.Markdown("Loading...")            
 
             with gr.Row():
                 topic_plot = gr.BarPlot(x="Topic", y="Count", title="Common Topics")
@@ -875,9 +927,10 @@ with gr.Blocks(
                     y="avg_score",
                     title="Quality Trend",
                     x_title="timestamp",
+                    x_label_angle=-45,                    
                 )
 
-            gr.Markdown("### 📜 Detailed Question Log")
+            gr.Markdown("### Detailed Question Log")
             question_table = gr.Dataframe(
                 headers=["Time", "Question", "Score", "Cost ($)"],
                 datatype=["str", "str", "number", "number"],
@@ -893,14 +946,9 @@ with gr.Blocks(
     )
 
     analytics_tab.select(
-        fn=load_analytics_data,
-        outputs=[stats_output, topic_plot, score_plot, question_table],
-    )
-
-    refresh_btn.click(
-        fn=load_analytics_data,
-        outputs=[stats_output, topic_plot, score_plot, question_table],
-    )
+    fn=load_analytics_data,
+    outputs=[stats_output, total_cost_output, topic_plot, score_plot, question_table],
+    )    
 
     chat_outputs = [
         chatbot,
@@ -921,27 +969,14 @@ with gr.Blocks(
         add_knowledge_mode_state,
     ]
 
-    def update_mode_indicator(agentic):
-        if agentic:
-            return (
-                '<span class="mode-pill agentic">Agentic mode (3 agents + web)</span>'
-            )
-        return '<span class="mode-pill simple">RAG mode</span>'
-
-    agentic_mode.change(
-        update_mode_indicator,
-        inputs=[agentic_mode],
-        outputs=[mode_indicator],
-    )
-
     msg.submit(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, agentic_mode, add_knowledge_mode_state],
+        inputs=[msg, chatbot, last_exchange_state, mode_dropdown, add_knowledge_mode_state],
         outputs=chat_outputs,
     )
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, agentic_mode, add_knowledge_mode_state],
+        inputs=[msg, chatbot, last_exchange_state, mode_dropdown, add_knowledge_mode_state],
         outputs=chat_outputs,
     )
 
@@ -1001,32 +1036,27 @@ with gr.Blocks(
     )
 
     clear_btn.click(
-        lambda: (
-            [],
-            None,
-            gr.update(value="", placeholder="Ask a question..."),
-            "",
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            gr.update(interactive=False),
-            None,
-            "",
-            None,
-            gr.update(visible=False),
-            "",
-            gr.update(visible=False),
-            False,
-        ),
-        outputs=chat_outputs,
-    )
+    lambda: build_chat_response([]),
+    outputs=chat_outputs,
+    )   
+
+    def export_conversation_with_visibility(history):
+        filepath, status = export_conversation(history)
+        return gr.update(value=filepath, visible=filepath is not None), status
+
+
+    def export_last_answer_with_visibility(last_exchange):
+        filepath, status = export_last_answer(last_exchange)
+        return gr.update(value=filepath, visible=filepath is not None), status
+
 
     export_chat_btn.click(
-        export_conversation, inputs=[chatbot], outputs=[export_file, export_status]
+        export_conversation_with_visibility,
+        inputs=[chatbot],
+        outputs=[export_file, export_status],
     )
     export_answer_btn.click(
-        export_last_answer,
+        export_last_answer_with_visibility,
         inputs=[last_exchange_state],
         outputs=[export_file, export_status],
     )
@@ -1034,35 +1064,5 @@ with gr.Blocks(
 
 if __name__ == "__main__":
     demo.launch(
-        theme=gr.themes.Soft(
-            primary_hue="emerald",
-            secondary_hue="slate",
-            neutral_hue="slate",
-            font=[gr.themes.GoogleFont("Nunito"), "sans-serif"],
-        ).set(
-            # Dark backgrounds
-            body_background_fill="*neutral_950",
-            body_background_fill_dark="*neutral_950",
-            background_fill_primary="*neutral_900",
-            background_fill_primary_dark="*neutral_900",
-            background_fill_secondary="*neutral_800",
-            background_fill_secondary_dark="*neutral_800",
-            block_background_fill="*neutral_900",
-            block_background_fill_dark="*neutral_900",
-            # Text
-            body_text_color="white",
-            body_text_color_dark="white",
-            body_text_color_subdued="*neutral_400",
-            body_text_color_subdued_dark="*neutral_400",
-            # Borders — soft and rounded
-            block_border_width="1px",
-            block_border_color="*neutral_800",
-            block_border_color_dark="*neutral_800",
-            block_radius="12px",
-            # Buttons
-            button_primary_background_fill="*primary_500",
-            button_primary_background_fill_hover="*primary_400",
-            button_primary_text_color="white",
-        ),
         css=CUSTOM_CSS,
     )
