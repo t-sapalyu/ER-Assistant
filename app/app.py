@@ -347,9 +347,54 @@ def export_last_answer(last_exchange):
 
 
 # ---------- chat handler ----------
-def chat(message, history, last_exchange, agentic_mode):
+def chat(message, history, last_exchange, agentic_mode, add_knowledge_mode):
     """Produce an answer and send it directly to chat. Keep state for HITL follow-ups."""
     message = to_text(message)
+
+    # In add-knowledge mode: treat the typed text as content to index
+    if add_knowledge_mode:
+        result_msg = handle_add_to_database(message, "chat_input")
+        preview = message[:80] + ("…" if len(message) > 80 else "")
+        new_history = history + [
+            {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
+            {"role": "assistant", "content": f"✅ {result_msg}"},
+        ]
+        return (
+            new_history, None,
+            gr.update(value="", placeholder="Ask a question..."), "",
+            gr.update(interactive=False), gr.update(interactive=False),
+            gr.update(interactive=True), gr.update(interactive=False),
+            gr.update(interactive=False), [],
+            "", None,
+            gr.update(visible=False), "",
+            gr.update(visible=False),   # hide add-knowledge panel
+            False,                      # exit add-knowledge mode
+        )
+
+    # Detect "add knowledge" intent — open inline panel
+    if detect_add_knowledge_intent(message):
+        bot_reply = (
+            "Sure! The **Add Knowledge** panel is now open below.\n\n"
+            "- 📁 **Upload a file** — use the file row to attach a PDF or .txt\n"
+            "- ✏️ **Type or paste text** — just type your content in this chat box and press **Send**\n\n"
+            "Once added, the content will be immediately available for future questions."
+        )
+        new_history = history + [
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": bot_reply},
+        ]
+        return (
+            new_history, None,
+            gr.update(value="", placeholder="Paste text to add, then press Send…"), "",
+            gr.update(interactive=False), gr.update(interactive=False),
+            gr.update(interactive=bool(history)), gr.update(interactive=False),
+            gr.update(interactive=False), [],
+            "_No agent trace for knowledge addition._", None,
+            gr.update(visible=False), "",
+            gr.update(visible=True),    # show add-knowledge panel
+            True,                       # enter add-knowledge mode
+        )
+
     standalone_query = rewrite_query(message, history)
 
     if agentic_mode:
@@ -424,6 +469,8 @@ def chat(message, history, last_exchange, agentic_mode):
         pending,
         hitl_visible,
         "",
+        gr.update(visible=False),   # hide add-knowledge panel on normal answers
+        False,                      # ensure add-knowledge mode is off
     )
 
 
@@ -557,6 +604,29 @@ def handle_upload_file(file, source_name: str):
     return result["message"]
 
 
+# ---------- Inline Add Knowledge helpers ----------
+ADD_KNOWLEDGE_PHRASES = [
+    "add knowledge", "add new", "upload pdf", "upload file",
+    "add information", "new information", "add text", "update the database",
+    "add to the database", "i want to add", "can i add", "how to add",
+    "add data", "insert knowledge", "teach you", "teach the bot",
+]
+
+
+def detect_add_knowledge_intent(message: str) -> bool:
+    msg_lower = message.lower()
+    return any(p in msg_lower for p in ADD_KNOWLEDGE_PHRASES)
+
+
+def handle_upload_file_inline(file, source_name: str, history: list):
+    """Upload file, add to database, confirm in chat, and exit add-knowledge mode."""
+    msg = handle_upload_file(file, source_name)
+    success = "Added" in msg or "chunks" in msg.lower()
+    new_history = history + [{"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}]
+    # On success: hide panel, reset mode; on failure: keep panel open
+    return new_history, gr.update(visible=not success), None, "", not success
+
+
 # ---------- UI ----------
 with gr.Blocks(
     title="🚑 ER-Assistant",
@@ -576,6 +646,7 @@ with gr.Blocks(
 
             last_exchange_state = gr.State(None)
             pending_state = gr.State(None)
+            add_knowledge_mode_state = gr.State(False)
 
             with gr.Row():
 
@@ -602,6 +673,31 @@ with gr.Blocks(
                             min_width=80,
                             interactive=False,
                         )
+
+                    # ── Inline Add Knowledge panel (shown on intent) ───────────
+                    with gr.Group(visible=False) as add_knowledge_panel:
+                        gr.Markdown(
+                            "📚 **Add Knowledge** — type or paste text in the box below and press **Send**, "
+                            "or upload a file:"
+                        )
+                        with gr.Row():
+                            inline_upload_file = gr.File(
+                                label=None,
+                                file_types=[".pdf", ".txt"],
+                                scale=1,
+                                min_width=120,
+                            )
+                            inline_upload_source = gr.Textbox(
+                                placeholder="Source name (optional)",
+                                show_label=False,
+                                container=False,
+                                scale=4,
+                                lines=1,
+                            )
+                            inline_upload_btn = gr.Button(
+                                "📎 Add file", variant="secondary", size="sm", scale=1, min_width=80
+                            )
+                        inline_add_status = gr.Markdown("")
 
                     # Mode toggle + indicator row
                     with gr.Row():
@@ -684,54 +780,8 @@ with gr.Blocks(
                         preview=True,
                     )
 
-        # TAB 2: Add Knowledge (Agentic AI Step 3)
-        with gr.Tab("Add Knowledge", id=1):
-            gr.Markdown(
-                "## 📚 Add New Knowledge\n"
-                "Upload a PDF or .txt file, or paste text directly. "
-                "It will be chunked, embedded, and added to the live database immediately."
-            )
-            add_status = gr.Markdown("")
-
-            with gr.Accordion("📁 Upload a file (PDF or .txt)", open=True):
-                upload_source = gr.Textbox(
-                    label="Source name (optional)",
-                    placeholder="e.g. AHA_Guidelines_2025.pdf",
-                    lines=1,
-                )
-                upload_file = gr.File(
-                    label="Upload PDF or .txt",
-                    file_types=[".pdf", ".txt"],
-                )
-                upload_btn = gr.Button("➕ Add file to database", variant="primary")
-
-            with gr.Accordion("✏️ Or paste text manually", open=True):
-                add_source = gr.Textbox(
-                    label="Source name",
-                    placeholder="e.g. my_notes",
-                    lines=1,
-                )
-                add_text = gr.Textbox(
-                    label="Text to add",
-                    placeholder="Paste the new first-aid or CPR text here…",
-                    lines=10,
-                )
-                add_btn = gr.Button("➕ Add text to database", variant="primary")
-
-            upload_btn.click(
-                handle_upload_file,
-                inputs=[upload_file, upload_source],
-                outputs=[add_status],
-            )
-
-            add_btn.click(
-                handle_add_to_database,
-                inputs=[add_text, add_source],
-                outputs=[add_status],
-            )
-
-        # TAB 3: Analytics (The New Dashboard)
-        with gr.Tab("Analytics", id=2) as analytics_tab:
+        # TAB 2: Analytics
+        with gr.Tab("Analytics", id=1) as analytics_tab:
             gr.Markdown("## 📊 Usage Analytics")
             stats_output = gr.Markdown("Loading...")
             refresh_btn = gr.Button("🔄 Refresh")
@@ -753,6 +803,12 @@ with gr.Blocks(
             )
 
     # ---------- Event Handlers ----------
+
+    inline_upload_btn.click(
+        handle_upload_file_inline,
+        inputs=[inline_upload_file, inline_upload_source, chatbot],
+        outputs=[chatbot, add_knowledge_panel, inline_upload_file, inline_add_status, add_knowledge_mode_state],
+    )
 
     analytics_tab.select(
         fn=load_analytics_data,
@@ -779,6 +835,8 @@ with gr.Blocks(
         pending_state,
         hitl_panel,
         review_hint,
+        add_knowledge_panel,
+        add_knowledge_mode_state,
     ]
 
     def update_mode_indicator(agentic):
@@ -796,12 +854,12 @@ with gr.Blocks(
 
     msg.submit(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, agentic_mode],
+        inputs=[msg, chatbot, last_exchange_state, agentic_mode, add_knowledge_mode_state],
         outputs=chat_outputs,
     )
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, agentic_mode],
+        inputs=[msg, chatbot, last_exchange_state, agentic_mode, add_knowledge_mode_state],
         outputs=chat_outputs,
     )
 
@@ -864,7 +922,7 @@ with gr.Blocks(
         lambda: (
             [],
             None,
-            "",
+            gr.update(value="", placeholder="Ask a question..."),
             "",
             gr.update(interactive=False),
             gr.update(interactive=False),
@@ -876,6 +934,8 @@ with gr.Blocks(
             None,
             gr.update(visible=False),
             "",
+            gr.update(visible=False),
+            False,
         ),
         outputs=chat_outputs,
     )
