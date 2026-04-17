@@ -9,6 +9,32 @@ from pathlib import Path
 import gradio as gr
 import fitz  # PyMuPDF
 from PIL import Image
+from fastapi import FastAPI
+from pydantic import BaseModel
+import uvicorn
+from threading import Thread
+
+api = FastAPI()
+
+class QueryRequest(BaseModel):
+    question: str
+    mode: str = "simple"
+
+@api.post("/query")
+async def query(req: QueryRequest):
+    standalone = rewrite_query(req.question, [])
+    if req.mode == "agentic":
+        result = run_agents(standalone, index, chunks)
+    else:
+        result = run_simple_rag(standalone, index, chunks)
+    return {"answer": result["draft"]}
+
+
+def run_api():
+    uvicorn.run(api, host="127.0.0.1", port=5000)
+
+Thread(target=run_api, daemon=True).start()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR / "scripts"))
@@ -21,6 +47,9 @@ from agents import (
     rerun_with_rewrite,
 )
 from rag_pipeline import add_to_database, check_content_scope, classify_add_mode_message, client, generate_answer, load_index, retrieve
+from mcp_server import mcp
+
+Thread(target=lambda: mcp.run(transport="http", host="127.0.0.1", port=8765), daemon=True).start()
 
 USAGE_LOG = BASE_DIR / "logs" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
