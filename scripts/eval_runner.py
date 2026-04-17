@@ -14,33 +14,45 @@ DATA_DIR = BASE_DIR / "data"
 # ---------------------------
 # LLM-as-Judge
 # ---------------------------
-def judge_faithfulness(question, answer, context):
-    """Ask gpt-4o-mini to score whether the answer is faithful to the context."""
+JUDGE_SYSTEM_PROMPT = """You are an evaluation judge for a first-aid RAG assistant.
+Given a question, the retrieved context, and the system's answer, classify the answer
+into EXACTLY one of four verdicts:
+
+  faithful        — the answer is directly supported by the context and addresses the question
+  hallucinated    — the answer contains claims that are NOT present in the context
+  missed          — the context clearly contains enough information to answer the question,
+                    but the answer incorrectly says "I don't have enough information"
+  correct_refusal — the context does not contain relevant information and the answer
+                    correctly declines to answer
+
+Reply with one word (the verdict), then a colon, then one sentence explaining why.
+Example: "missed: The context on page 51 describes chest thrusts for pregnant persons but the answer ignored it."
+"""
+
+
+def judge_faithfulness(question, answer, context, top_score: float = 1.0):
+    """Classify answer as faithful / hallucinated / missed / correct_refusal."""
+    # Fast-path: very low retrieval score + refusal → almost certainly correct_refusal
+    refusal = "don't have enough" in answer.lower() or "i don't know" in answer.lower()
+    if refusal and top_score < 0.35:
+        return "correct_refusal: retrieval score too low to expect a grounded answer."
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are an evaluation judge. Given a question, an answer, "
-                    "and the context that was provided, determine if the answer "
-                    "is faithful to the context. Score: 'faithful' if every claim "
-                    "in the answer is supported by the context, 'unfaithful' if "
-                    "the answer contains information not in the context."
-                ),
-            },
+            {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
             {
                 "role": "user",
                 "content": (
                     f"Question: {question}\n\n"
-                    f"Context: {context}\n\n"
+                    f"Retrieved context:\n{context}\n\n"
                     f"Answer: {answer}\n\n"
-                    "Is the answer faithful to the context? Reply with 'faithful' or 'unfaithful' and one sentence explaining why."
+                    "Verdict:"
                 ),
             },
         ],
         temperature=0,
-        max_tokens=100,
+        max_tokens=120,
     )
     track_cost(response)
     return response.choices[0].message.content.strip()
@@ -56,8 +68,16 @@ def run_eval():
     with open(DATA_DIR / "questions.json", encoding="utf-8") as f:
         questions = json.load(f)
 
+    VERDICT_PASS = {"faithful", "correct_refusal"}
+    VERDICT_ICONS = {
+        "faithful":        "✅ faithful       ",
+        "correct_refusal": "✅ correct_refusal",
+        "missed":          "⚠️  missed         ",
+        "hallucinated":    "❌ hallucinated   ",
+    }
+
     results = []
-    faithful_count = 0
+    verdict_counts = {"faithful": 0, "correct_refusal": 0, "missed": 0, "hallucinated": 0}
 
     print(f"Running {len(questions)} questions...\n")
 
@@ -68,19 +88,22 @@ def run_eval():
 
         # Retrieve + generate
         retrieved = retrieve(question, index, chunks, k=5)
+        top_score = retrieved[0]["score"] if retrieved else 0.0
         answer = generate_answer(question, retrieved)
 
         # Build context string for the judge
         context = "\n\n".join(c["text"] for c in retrieved)
 
-        # Judge
-        verdict = judge_faithfulness(question, answer, context)
-        is_faithful = "unfaithful" not in verdict.lower()
-        if is_faithful:
-            faithful_count += 1
+        # Judge — now 4-way verdict
+        verdict = judge_faithfulness(question, answer, context, top_score)
+        verdict_label = verdict.split(":")[0].strip().lower()
+        if verdict_label not in verdict_counts:
+            verdict_label = "hallucinated"   # safe fallback for unexpected output
+        verdict_counts[verdict_label] += 1
+        passed = verdict_label in VERDICT_PASS
 
-        status = "FAITHFUL  ✅" if is_faithful else "UNFAITHFUL ❌"
-        print(f"[{status}] [{category}] {question[:70]}")
+        icon = VERDICT_ICONS.get(verdict_label, "❓")
+        print(f"[{icon}] [{category}] {question[:70]}")
 
         results.append(
             {
@@ -89,7 +112,9 @@ def run_eval():
                 "expected": expected,
                 "answer": answer,
                 "verdict": verdict,
-                "faithful": is_faithful,
+                "verdict_label": verdict_label,
+                "passed": passed,
+                "top_score": round(top_score, 4),
                 "sources": [
                     {"source": c["source"], "page": c["page"], "score": c["score"]}
                     for c in retrieved
@@ -99,22 +124,32 @@ def run_eval():
 
     # Summary
     total = len(results)
+    passed_total = sum(1 for r in results if r["passed"])
     print(f"\n{'='*60}")
-    print(f"RESULT: {faithful_count}/{total} answers faithful ({faithful_count/total*100:.0f}%)")
+    print(f"PASSED: {passed_total}/{total} ({passed_total/total*100:.0f}%)")
+    print(f"  ✅ faithful:         {verdict_counts['faithful']}")
+    print(f"  ✅ correct_refusal:  {verdict_counts['correct_refusal']}")
+    print(f"  ⚠️  missed:           {verdict_counts['missed']}")
+    print(f"  ❌ hallucinated:     {verdict_counts['hallucinated']}")
 
     # Breakdown by category
     categories = {}
     for r in results:
         cat = r["category"]
-        categories.setdefault(cat, {"total": 0, "faithful": 0})
+        categories.setdefault(cat, {"total": 0, "passed": 0, "missed": 0, "hallucinated": 0})
         categories[cat]["total"] += 1
-        if r["faithful"]:
-            categories[cat]["faithful"] += 1
+        if r["passed"]:
+            categories[cat]["passed"] += 1
+        elif r["verdict_label"] == "missed":
+            categories[cat]["missed"] += 1
+        else:
+            categories[cat]["hallucinated"] += 1
 
     print("\nBreakdown by category:")
     for cat, counts in categories.items():
-        pct = counts["faithful"] / counts["total"] * 100
-        print(f"  {cat}: {counts['faithful']}/{counts['total']} ({pct:.0f}%)")
+        pct = counts["passed"] / counts["total"] * 100
+        print(f"  {cat}: {counts['passed']}/{counts['total']} passed ({pct:.0f}%) "
+              f"| missed={counts['missed']} hallucinated={counts['hallucinated']}")
 
     # Save to disk
     out_path = DATA_DIR / "eval_results.json"
@@ -143,3 +178,4 @@ if __name__ == "__main__":
     print(f"Q: {q}")
     print(f"A: {answer}")
     print(f"Verdict: {verdict}")"""
+
