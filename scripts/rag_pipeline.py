@@ -9,6 +9,9 @@ import uuid
 from cost_tracker import track_cost
 import logging
 
+import time
+from openai import RateLimitError, APIError, APITimeoutError, APIConnectionError
+
 # import spacy
 # nlp = spacy.load("en_core_web_sm")  # pip install spacy && python -m spacy download en_core_web_sm
 
@@ -18,6 +21,49 @@ import logging
 # ---------------------------
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def safe_chat(max_retries=3, **kwargs):
+    """Chat completion with exponential backoff on transient errors."""
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(**kwargs)
+            track_cost(response)
+            return response
+        except (RateLimitError, APITimeoutError, APIConnectionError) as e:
+            wait = 2**attempt
+            print(
+                f"[safe_chat] {type(e).__name__} — retrying in {wait}s (attempt {attempt + 1}/{max_retries})"
+            )
+            time.sleep(wait)
+        except APIError as e:
+            print(f"[safe_chat] APIError: {e}")
+            time.sleep(1)
+    print(f"[safe_chat] All {max_retries} retries exhausted. Returning None.")
+    return None
+
+
+def safe_embed(texts, max_retries=3):
+    """Embedding call with exponential backoff on transient errors."""
+    for attempt in range(max_retries):
+        try:
+            response = client.embeddings.create(
+                model="text-embedding-3-small", input=texts
+            )
+            track_cost(response, True)
+            return [d.embedding for d in response.data]
+        except (RateLimitError, APITimeoutError, APIConnectionError) as e:
+            wait = 2**attempt
+            print(
+                f"[safe_embed] {type(e).__name__} — retrying in {wait}s (attempt {attempt + 1}/{max_retries})"
+            )
+            time.sleep(wait)
+        except APIError as e:
+            print(f"[safe_embed] APIError: {e}")
+            time.sleep(1)
+    print(f"[safe_embed] All {max_retries} retries exhausted. Returning empty list.")
+    return []
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -37,7 +83,7 @@ MIN_TEXT_LENGTH = 100
 logging.basicConfig(
     filename=CHUNK_LOG,
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 logger = logging.getLogger(__name__)
@@ -165,9 +211,7 @@ def create_chunks(corpus: list):
 # Step 3 — Embed (batched)
 # ---------------------------
 def get_embeddings(texts):
-    response = client.embeddings.create(model="text-embedding-3-small", input=texts)
-    track_cost(response, True)
-    return [d.embedding for d in response.data]
+    return safe_embed(texts)
 
 
 def embed_chunks(chunks, batch_size=50):
@@ -218,59 +262,51 @@ def load_index():
 # ---------------------------
 # Step 5 — Retrieve
 # ---------------------------
-def retrieve(query, index, chunks, k=20, fetch_k=20, rerank=True):
-    """Retrieve top-k chunks. With rerank=True, fetches fetch_k from FAISS then
-    reranks with a cross-encoder to return the best k."""
+def retrieve(query, index, chunks, k=5):
+    """Retrieve top-k chunks from FAISS."""
     query_vec = np.array(get_embeddings([query])).astype("float32")
     faiss.normalize_L2(query_vec)
 
-    # Stage 1: FAISS retrieval (over-fetch)
-    # Clamp to index size so FAISS never pads results with -1 or repeats
-    n_fetch = min(fetch_k if rerank else k, index.ntotal)
+    n_fetch = min(k, index.ntotal)
     if n_fetch == 0:
         return []
     scores, indices = index.search(query_vec, n_fetch)
 
     candidates = []
     for i, idx in enumerate(indices[0]):
-        # FAISS pads with -1 when k > ntotal; skip invalid entries
         if idx < 0 or idx >= len(chunks):
             continue
         chunk = dict(chunks[idx])
-        chunk["faiss_score"] = float(scores[0][i])
+        chunk["score"] = float(scores[0][i])
         candidates.append(chunk)
 
-    if not rerank:
-        for c in candidates:
-            c["score"] = c["faiss_score"]
-        return candidates[:k]
+    # Filter weak matches
+    MIN_SCORE = 0.25
+    candidates = [c for c in candidates if c["score"] >= MIN_SCORE]
 
-    # Stage 2: cross-encoder reranking
-    # reranker = get_reranker()
-    # pairs = [(query, c["text"]) for c in candidates]
-    # rerank_scores = reranker.predict(pairs)
-
-    # for c, s in zip(candidates, rerank_scores):
-    #     c["rerank_score"] = float(s)
-    #     c["score"] = float(s)  # overwrite so downstream code uses rerank score
-
-    # candidates.sort(key=lambda c: c["rerank_score"], reverse=True)
+    # Deduplicate — keep best chunk per page
+    seen = set()
+    unique = []
     for c in candidates:
-        c["score"] = c.get("rerank_score", c["faiss_score"])
+        key = (c["source"], c["page"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(c)
+    candidates = unique
 
-    # LOGGING 
+    # Logging
     logger.info("---- RETRIEVED CHUNKS ----")
     logger.info(f"query: {query}")
     logger.info(f"total_candidates: {len(candidates)}")
-
     for i, chunk in enumerate(candidates):
         logger.info(f"[Rank {i+1}] score: {chunk.get('score')}")
-        logger.info(f"id: {chunk.get('chunk_id')}")        
         logger.info(f"source: {chunk.get('source')}")
-        logger.info(f"pages: {chunk.get('page')}")
+        logger.info(f"page: {chunk.get('page')}")
         logger.info(f"text preview: {chunk.get('text', '')[:200]}")
         logger.info("-" * 50)
-    return candidates[:k]
+
+    return candidates
 
 
 # ---------------------------
@@ -300,7 +336,7 @@ def generate_answer(query, retrieved_chunks):
     - If the question is yes/no, answer with only 'Yes' or 'No'.
     """
 
-    response = client.chat.completions.create(
+    response = safe_chat(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": system_prompt},
@@ -309,7 +345,8 @@ def generate_answer(query, retrieved_chunks):
         temperature=0,
         max_tokens=500,
     )
-    track_cost(response)
+    if response is None:
+        return "Sorry, I couldn't generate an answer right now. Please try again."
     return response.choices[0].message.content
 
 
@@ -363,7 +400,7 @@ CLASSIFY_ADD_MODE_PROMPT = (
 
 def classify_add_mode_message(message: str) -> str:
     """Return 'content', 'question', or 'exit'. Uses LLM intent understanding, not keywords."""
-    response = client.chat.completions.create(
+    response = safe_chat(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": CLASSIFY_ADD_MODE_PROMPT},
@@ -372,6 +409,8 @@ def classify_add_mode_message(message: str) -> str:
         temperature=0,
         max_tokens=10,
     )
+    if response is None:
+        return "exit"
     label = response.choices[0].message.content.strip().upper()
     if "CONTENT" in label:
         return "content"
@@ -396,7 +435,7 @@ SCOPE_SYSTEM_PROMPT = (
 def check_content_scope(text: str) -> tuple[bool, str]:
     """Return (is_relevant, reason). Uses the first 1500 chars as a sample."""
     sample = text.strip()[:1500]
-    response = client.chat.completions.create(
+    response = safe_chat(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": SCOPE_SYSTEM_PROMPT},
@@ -405,10 +444,14 @@ def check_content_scope(text: str) -> tuple[bool, str]:
         temperature=0,
         max_tokens=80,
     )
+    if response is None:
+        return False, "API error — could not validate scope."
     reply = response.choices[0].message.content.strip()
     relevant = "yes" in reply.lower().split("relevant:")[-1].split("\n")[0].lower()
     reason_line = [l for l in reply.splitlines() if l.upper().startswith("REASON:")]
-    reason = reason_line[0].split(":", 1)[-1].strip() if reason_line else "Out of scope."
+    reason = (
+        reason_line[0].split(":", 1)[-1].strip() if reason_line else "Out of scope."
+    )
     return relevant, reason
 
 
@@ -429,7 +472,11 @@ def add_to_database(text: str, source_name: str, index, chunks: list) -> dict:
     """
     new_chunks = chunk_page_old(text, source_name, 0)
     if not new_chunks:
-        return {"added": 0, "source": source_name, "message": "Text too short to index."}
+        return {
+            "added": 0,
+            "source": source_name,
+            "message": "Text too short to index.",
+        }
 
     embeddings = embed_chunks(new_chunks)
     vectors = np.array(embeddings).astype("float32")
@@ -459,4 +506,3 @@ if __name__ == "__main__":
 
     print("\n Answer:\n")
     print(answer)
-

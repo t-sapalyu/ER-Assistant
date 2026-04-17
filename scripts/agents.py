@@ -3,8 +3,8 @@ import json
 import time
 from cost_tracker import track_cost
 from fastmcp import Client
-from mcp_server import TOOL_SCHEMAS  # hardcoded — keep this
-from rag_pipeline import client, generate_answer, retrieve
+from mcp_server import TOOL_SCHEMAS
+from rag_pipeline import client, generate_answer, retrieve, safe_chat
 
 MCP_SERVER_URL = "http://127.0.0.1:8765/mcp"
 
@@ -47,7 +47,7 @@ def is_refusal(answer: str) -> bool:
 # Agent 1 — Internal Researcher
 # ----------------------------------------------------------------------
 def agent_1_researcher(query, index, chunks) -> dict:
-    t0 = time.perf_counter() 
+    t0 = time.perf_counter()
     print(f"\n{'=' * 60}")
     print(f"[Agent 1] Starting. Query: {query!r}")
 
@@ -60,13 +60,20 @@ def agent_1_researcher(query, index, chunks) -> dict:
         f"Respond with exactly one word: 'in' or 'out'.\n\n"
         f"Question: {query}"
     )
-    resp = client.chat.completions.create(
+    resp = safe_chat(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": classifier_prompt}],
         temperature=0,
         max_tokens=5,
     )
-    track_cost(resp)
+    if resp is None:
+        return {
+            "status": "out_of_domain",
+            "answer": "",
+            "sources": [],
+            "domain_check": "error",
+            "duration": time.perf_counter() - t0,
+        }
     verdict = resp.choices[0].message.content.strip().lower()
     in_domain = verdict.startswith("in")
     print(f"[Agent 1] Domain check: {'IN' if in_domain else 'OUT'} (raw: {verdict!r})")
@@ -162,21 +169,31 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
         {"role": "user", "content": user},
     ]
 
-    resp = client.chat.completions.create(
+    resp = safe_chat(
         model="gpt-4o-mini",
         messages=messages,
         tools=TOOL_SCHEMAS,
         temperature=0,
         max_tokens=500,
     )
-    track_cost(resp)
-
+    if resp is None:
+        return {
+            "web_findings": "",
+            "sources": [],
+            "tool_calls": [],
+            "duration": time.perf_counter() - t0,
+        }
     message = resp.choices[0].message
     tool_calls = message.tool_calls or []
 
     if not tool_calls:
         print(f"[Agent 2] LLM chose NOT to use any tool.")
-        return {"web_findings": "", "sources": [], "tool_calls": [], "duration": time.perf_counter() - t0,}
+        return {
+            "web_findings": "",
+            "sources": [],
+            "tool_calls": [],
+            "duration": time.perf_counter() - t0,
+        }
 
     print(f"[Agent 2] LLM requested {len(tool_calls)} tool call(s)")
 
@@ -212,7 +229,12 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
 
     if not all_sources:
         print(f"[Agent 2] All tools returned empty.")
-        return {"web_findings": "", "sources": [], "tool_calls": tool_names_used, "duration": time.perf_counter() - t0,}
+        return {
+            "web_findings": "",
+            "sources": [],
+            "tool_calls": tool_names_used,
+            "duration": time.perf_counter() - t0,
+        }
 
     messages.append(
         {
@@ -224,13 +246,19 @@ def agent_2_fact_checker(query, agent_1_output, extra_hint: str = "") -> dict:
             ),
         }
     )
-    resp2 = client.chat.completions.create(
+    resp2 = safe_chat(
         model="gpt-4o-mini",
         messages=messages,
         temperature=0,
         max_tokens=300,
     )
-    track_cost(resp2)
+    if resp2 is None:
+        return {
+            "web_findings": "",
+            "sources": all_sources,
+            "tool_calls": tool_names_used,
+            "duration": time.perf_counter() - t0,
+        }
     findings = resp2.choices[0].message.content.strip()
 
     print(f"[Agent 2] Findings: {findings[:140]}{'...' if len(findings) > 140 else ''}")
@@ -359,13 +387,14 @@ def _synthesize_combined(query, a1_answer, a2_findings, a2_sources, rewrite_hint
         "labeled. Keep it concise.\n\n"
         f"Question: {query}\n\n{internal_block}\n\n{external_block}{extra}\n\nFinal answer:"
     )
-    resp = client.chat.completions.create(
+    resp = safe_chat(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
         max_tokens=600,
     )
-    track_cost(resp)
+    if resp is None:
+        return a1_answer  # fall back to internal-only answer
     return resp.choices[0].message.content.strip()
 
 
@@ -399,14 +428,19 @@ def _agent_3_router_decide(query, a1_status, draft, a2_findings, a2_sources):
         f"--- context ---\n" + "\n\n".join(summary_parts)
     )
 
-    resp = client.chat.completions.create(
+    resp = safe_chat(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
         temperature=0,
         max_tokens=200,
     )
-    track_cost(resp)
+    if resp is None:
+        return {
+            "action": "answer",
+            "reason": "API error; defaulting to answer.",
+            "retry_hint": "",
+        }
     try:
         decision = json.loads(resp.choices[0].message.content)
         if decision.get("action") not in ("answer", "retry_agent_2"):

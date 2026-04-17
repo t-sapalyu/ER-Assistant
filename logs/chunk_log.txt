@@ -2034,3 +2034,10 @@
 2026-04-17 00:35:44,907 - INFO - text preview: 133 133 133 Self-Inflicted Injuries Self-harm ranges from minor self-inflicted injuries to suicide. Suicide is one of the ten most common causes of death in Canada, affecting people from a variety of 
 2026-04-17 00:35:44,907 - INFO - --------------------------------------------------
 2026-04-17 00:35:45,812 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 12:07:23,954 - INFO - HTTP Request: GET https://pypi.org/pypi/fastmcp/json "HTTP/1.1 200 OK"
+2026-04-17 12:07:24,051 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+2026-04-17 12:07:24,141 - INFO - StreamableHTTP session manager started
+2026-04-17 12:07:24,329 - INFO - HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2026-04-17 12:07:24,354 - INFO - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+2026-04-17 12:07:24,470 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-launched-telemetry "HTTP/1.1 200 OK"
+2026-04-17 12:07:24,696 - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"

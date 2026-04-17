@@ -14,11 +14,14 @@ from pydantic import BaseModel
 import uvicorn
 from threading import Thread
 
+
 api = FastAPI()
+
 
 class QueryRequest(BaseModel):
     question: str
     mode: str = "simple"
+
 
 @api.post("/query")
 async def query(req: QueryRequest):
@@ -33,6 +36,7 @@ async def query(req: QueryRequest):
 def run_api():
     uvicorn.run(api, host="127.0.0.1", port=5000)
 
+
 Thread(target=run_api, daemon=True).start()
 
 
@@ -46,10 +50,21 @@ from agents import (
     rerun_with_more_research,
     rerun_with_rewrite,
 )
-from rag_pipeline import add_to_database, check_content_scope, classify_add_mode_message, client, generate_answer, load_index, retrieve
+from rag_pipeline import (
+    add_to_database,
+    check_content_scope,
+    classify_add_mode_message,
+    client,
+    generate_answer,
+    load_index,
+    retrieve,
+    safe_chat,
+)
 from mcp_server import mcp
 
-Thread(target=lambda: mcp.run(transport="http", host="127.0.0.1", port=8765), daemon=True).start()
+Thread(
+    target=lambda: mcp.run(transport="http", host="127.0.0.1", port=8765), daemon=True
+).start()
 
 USAGE_LOG = BASE_DIR / "logs" / "usage_log.jsonl"
 FEEDBACK_LOG = BASE_DIR / "data" / "feedback.jsonl"
@@ -129,11 +144,23 @@ footer { display: none !important; }
 
 # ---------- PDF Highlighting Logic ----------
 
+
 def build_chat_response(
-    history, last_exchange=None, msg_value="", msg_placeholder="Ask a question...",
-    feedback_enabled=False, export_chat_enabled=None, export_answer_enabled=False,
-    send_enabled=False, gallery=None, trace="", pending=None,
-    hitl_visible=False, hint="", add_panel_visible=False, add_mode=False,
+    history,
+    last_exchange=None,
+    msg_value="",
+    msg_placeholder="Ask a question...",
+    feedback_enabled=False,
+    export_chat_enabled=None,
+    export_answer_enabled=False,
+    send_enabled=False,
+    gallery=None,
+    trace="",
+    pending=None,
+    hitl_visible=False,
+    hint="",
+    add_panel_visible=False,
+    add_mode=False,
     hitl_btns_enabled=False,
     feedback_status="",
 ):
@@ -157,7 +184,7 @@ def build_chat_response(
         hint,
         gr.update(interactive=hitl_btns_enabled),
         gr.update(interactive=hitl_btns_enabled),
-        gr.update(visible=add_panel_visible),        
+        gr.update(visible=add_panel_visible),
         add_mode,
     )
 
@@ -196,7 +223,16 @@ def format_scope_refusal(source_label: str, reason: str) -> str:
     )
 
 
-def _run_rerun(pending, hint, history, rerun_fn, rerun_args, intro_verb, update_retrieved, rehighlight):
+def _run_rerun(
+    pending,
+    hint,
+    history,
+    rerun_fn,
+    rerun_args,
+    intro_verb,
+    update_retrieved,
+    rehighlight,
+):
     """Shared body for on_needs_more_research / on_needs_rewrite."""
     if not pending:
         return history, None, gr.update(), None, [], "", ""
@@ -234,7 +270,16 @@ def _run_rerun(pending, hint, history, rerun_fn, rerun_args, intro_verb, update_
         else []
     )
 
-    return new_history, new_last, gr.update(visible=True), pending, highlighted, trace_md, ""
+    return (
+        new_history,
+        new_last,
+        gr.update(visible=True),
+        pending,
+        highlighted,
+        trace_md,
+        "",
+    )
+
 
 def get_verbatim_quotes(page_text, llm_answer):
     """Uses LLM to find exact quotes from the page used to generate the answer."""
@@ -247,11 +292,13 @@ def get_verbatim_quotes(page_text, llm_answer):
         f"LLM Answer:\n{llm_answer}\n\n"
         "Verbatim Quotes:"
     )
-    response = client.chat.completions.create(
+    response = safe_chat(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
     )
+    if response is None:
+        return []
     quotes = response.choices[0].message.content.strip().split("\n")
     return [q.strip() for q in quotes if q.strip()]
 
@@ -314,6 +361,7 @@ def process_and_highlight_pages(answer, retrieved):
 
 # ---------- General Helpers ----------
 
+
 def to_text(content):
     """Normalize Gradio message content to a plain string."""
     if isinstance(content, str):
@@ -334,11 +382,12 @@ def format_trace(pending: dict) -> str:
     a2 = pending.get("a2", {})
     a3 = pending.get("a3", {})
 
-    def fmt_time(d):                              
+    def fmt_time(d):
         return f"{d:.2f}s" if isinstance(d, (int, float)) else "—"
-    
-    total = sum(                                  
-        x.get("duration", 0) for x in (a1, a2, a3)
+
+    total = sum(
+        x.get("duration", 0)
+        for x in (a1, a2, a3)
         if isinstance(x.get("duration"), (int, float))
     )
 
@@ -401,12 +450,15 @@ def rewrite_query(message, history):
         f"Follow-up: {message}\n\n"
         "Standalone question:"
     )
-    response = client.chat.completions.create(
+    response = safe_chat(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
         max_tokens=100,
     )
+    if response is None:
+        print(f"[rewrite] API failed, using original: {message!r}")
+        return message
     rewritten = response.choices[0].message.content.strip()
     print(f"[rewrite] '{message}' -> '{rewritten}'")
     return rewritten
@@ -442,7 +494,13 @@ def log_feedback(rating, last_exchange):
 # ---------- analytics data ----------
 def load_analytics_data():
     if not USAGE_LOG.exists():
-        return "No usage data yet.", "### Total Cost: **$0.0000**", pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        return (
+            "No usage data yet.",
+            "### Total Cost: **$0.0000**",
+            pd.DataFrame(),
+            pd.DataFrame(),
+            pd.DataFrame(),
+        )
 
     df = pd.DataFrame(
         [json.loads(line) for line in open(USAGE_LOG, "r", encoding="utf-8")]
@@ -488,7 +546,9 @@ def export_conversation(history):
         lines.append(to_text(turn["content"]))
         lines.append("")
 
-    return write_export("\n".join(lines), "conversation", f"Exported {len(history)} messages.")
+    return write_export(
+        "\n".join(lines), "conversation", f"Exported {len(history)} messages."
+    )
 
 
 def export_last_answer(last_exchange):
@@ -513,7 +573,7 @@ def export_last_answer(last_exchange):
 def chat(message, history, last_exchange, mode_choice, add_knowledge_mode):
     """Produce an answer and send it directly to chat. Keep state for HITL follow-ups."""
     message = to_text(message)
-    agentic_mode = (mode_choice == "Agentic (internal + web search)")
+    agentic_mode = mode_choice == "Agentic (internal + web search)"
 
     # In add-knowledge mode: classify before doing anything
     if add_knowledge_mode:
@@ -533,17 +593,22 @@ def chat(message, history, last_exchange, mode_choice, add_knowledge_mode):
 
         # ── User asked a question — exit mode and answer normally ────────
         if classification == "question":
-            add_knowledge_mode = False   # fall through to normal RAG below
+            add_knowledge_mode = False  # fall through to normal RAG below
 
         # ── User provided content to index ───────────────────────────────
         else:
             preview = message[:80] + ("…" if len(message) > 80 else "")
             in_scope, reason = check_content_scope(message)
             if not in_scope:
-                refusal = format_scope_refusal("that content", reason) + \
-                    "\n\nPlease paste relevant content, or say _'cancel'_ to exit."
+                refusal = (
+                    format_scope_refusal("that content", reason)
+                    + "\n\nPlease paste relevant content, or say _'cancel'_ to exit."
+                )
                 new_history = history + [
-                    {"role": "user", "content": f"[Adding to knowledge base]\n_{preview}_"},
+                    {
+                        "role": "user",
+                        "content": f"[Adding to knowledge base]\n_{preview}_",
+                    },
                     {"role": "assistant", "content": refusal},
                 ]
                 return build_chat_response(
@@ -653,8 +718,12 @@ def on_needs_more_research(pending, hint, history, last_exchange):
     if not pending:
         return history, last_exchange, gr.update(), None, [], "", ""
     return _run_rerun(
-        pending, hint, history,
-        rerun_fn=lambda: rerun_with_more_research(pending["rewritten_query"], pending["a1"], hint=hint),
+        pending,
+        hint,
+        history,
+        rerun_fn=lambda: rerun_with_more_research(
+            pending["rewritten_query"], pending["a1"], hint=hint
+        ),
         rerun_args=(),
         intro_verb="Revising",
         update_retrieved=True,
@@ -666,8 +735,12 @@ def on_needs_rewrite(pending, hint, history, last_exchange):
     if not pending:
         return history, last_exchange, gr.update(), None, [], "", ""
     return _run_rerun(
-        pending, hint, history,
-        rerun_fn=lambda: rerun_with_rewrite(pending["rewritten_query"], pending["a1"], pending["a2"], hint=hint),
+        pending,
+        hint,
+        history,
+        rerun_fn=lambda: rerun_with_rewrite(
+            pending["rewritten_query"], pending["a1"], pending["a2"], hint=hint
+        ),
         rerun_args=(),
         intro_verb="Rewriting",
         update_retrieved=False,
@@ -723,16 +796,30 @@ def handle_upload_file_inline(file, source_name: str, history: list):
     result = add_to_database(extracted, source, index, chunks)
     msg = result["message"]
     success = result["added"] > 0
-    new_history = history + [{"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}]
+    new_history = history + [
+        {"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}
+    ]
     return new_history, gr.update(visible=not success), None, "", not success
 
 
 # ---------- Inline Add Knowledge helpers ----------
 ADD_KNOWLEDGE_PHRASES = [
-    "add knowledge", "add new", "upload pdf", "upload file",
-    "add information", "new information", "add text", "update the database",
-    "add to the database", "i want to add", "can i add", "how to add",
-    "add data", "insert knowledge", "teach you", "teach the bot",
+    "add knowledge",
+    "add new",
+    "upload pdf",
+    "upload file",
+    "add information",
+    "new information",
+    "add text",
+    "update the database",
+    "add to the database",
+    "i want to add",
+    "can i add",
+    "how to add",
+    "add data",
+    "insert knowledge",
+    "teach you",
+    "teach the bot",
 ]
 
 
@@ -757,10 +844,22 @@ def handle_upload_file_inline(file, source_name: str, history: list):
     elif path.suffix.lower() == ".txt":
         extracted = path.read_text(encoding="utf-8")
     else:
-        return history, gr.update(visible=True), None, "Unsupported file type. Please upload a PDF or .txt file.", True
+        return (
+            history,
+            gr.update(visible=True),
+            None,
+            "Unsupported file type. Please upload a PDF or .txt file.",
+            True,
+        )
 
     if not extracted.strip():
-        return history, gr.update(visible=True), None, "Could not extract any text from the file.", True
+        return (
+            history,
+            gr.update(visible=True),
+            None,
+            "Could not extract any text from the file.",
+            True,
+        )
 
     in_scope, reason = check_content_scope(extracted)
     if not in_scope:
@@ -775,7 +874,9 @@ def handle_upload_file_inline(file, source_name: str, history: list):
     result = add_to_database(extracted, source, index, chunks)
     msg = result["message"]
     success = result["added"] > 0
-    new_history = history + [{"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}]
+    new_history = history + [
+        {"role": "assistant", "content": f"{'✅' if success else '❌'} {msg}"}
+    ]
     return new_history, gr.update(visible=not success), None, "", not success
 
 
@@ -791,7 +892,7 @@ with gr.Blocks(
 ) as demo:
     gr.Markdown("# ER-Assistant - First Aid & CPR Q&A")
     with gr.Row(elem_classes="header-row"):
-        theme_toggle = gr.Button("Toggle theme", size="sm", scale=0)        
+        theme_toggle = gr.Button("Toggle theme", size="sm", scale=0)
         mode_dropdown = gr.Dropdown(
             choices=[
                 "Simple agent (only internal knowledge)",
@@ -829,7 +930,7 @@ with gr.Blocks(
                 # LEFT: chat column
                 with gr.Column(scale=1):
                     chatbot = gr.Chatbot(
-                        height=550,                        
+                        height=550,
                     )
 
                     # ── Input row: message + Send ──────────────────────────────
@@ -870,7 +971,11 @@ with gr.Blocks(
                                 lines=1,
                             )
                             inline_upload_btn = gr.Button(
-                                "Add file", variant="secondary", size="sm", scale=1, min_width=80
+                                "Add file",
+                                variant="secondary",
+                                size="sm",
+                                scale=1,
+                                min_width=80,
                             )
                         inline_add_status = gr.Markdown("")
 
@@ -922,7 +1027,7 @@ with gr.Blocks(
                         )
                         clear_btn = gr.Button("Clear", size="sm")
 
-                    #export_file = gr.File(label="Download", visible=False)
+                    # export_file = gr.File(label="Download", visible=False)
                     export_file = gr.DownloadButton("Download", visible=False)
                     export_status = gr.Markdown("")
 
@@ -951,7 +1056,7 @@ with gr.Blocks(
                     "### Total Cost: **$0.0000**",
                     elem_classes="total-cost-display",
                 )
-            stats_output = gr.Markdown("Loading...")            
+            stats_output = gr.Markdown("Loading...")
 
             with gr.Row():
                 topic_plot = gr.BarPlot(x="Topic", y="Count", title="Common Topics")
@@ -960,7 +1065,7 @@ with gr.Blocks(
                     y="avg_score",
                     title="Quality Trend",
                     x_title="timestamp",
-                    x_label_angle=-45,                    
+                    x_label_angle=-45,
                 )
 
             gr.Markdown("### Detailed Question Log")
@@ -975,13 +1080,25 @@ with gr.Blocks(
     inline_upload_btn.click(
         handle_upload_file_inline,
         inputs=[inline_upload_file, inline_upload_source, chatbot],
-        outputs=[chatbot, add_knowledge_panel, inline_upload_file, inline_add_status, add_knowledge_mode_state],
+        outputs=[
+            chatbot,
+            add_knowledge_panel,
+            inline_upload_file,
+            inline_add_status,
+            add_knowledge_mode_state,
+        ],
     )
 
     analytics_tab.select(
-    fn=load_analytics_data,
-    outputs=[stats_output, total_cost_output, topic_plot, score_plot, question_table],
-    )    
+        fn=load_analytics_data,
+        outputs=[
+            stats_output,
+            total_cost_output,
+            topic_plot,
+            score_plot,
+            question_table,
+        ],
+    )
 
     chat_outputs = [
         chatbot,
@@ -999,19 +1116,31 @@ with gr.Blocks(
         hitl_panel,
         review_hint,
         more_research_btn,
-        rewrite_btn, 
+        rewrite_btn,
         add_knowledge_panel,
-        add_knowledge_mode_state,        
+        add_knowledge_mode_state,
     ]
 
     msg.submit(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, mode_dropdown, add_knowledge_mode_state],
+        inputs=[
+            msg,
+            chatbot,
+            last_exchange_state,
+            mode_dropdown,
+            add_knowledge_mode_state,
+        ],
         outputs=chat_outputs,
     )
     send_btn.click(
         chat,
-        inputs=[msg, chatbot, last_exchange_state, mode_dropdown, add_knowledge_mode_state],
+        inputs=[
+            msg,
+            chatbot,
+            last_exchange_state,
+            mode_dropdown,
+            add_knowledge_mode_state,
+        ],
         outputs=chat_outputs,
     )
 
@@ -1068,19 +1197,17 @@ with gr.Blocks(
     )
 
     clear_btn.click(
-    lambda: build_chat_response([]),
-    outputs=chat_outputs,
-    )   
+        lambda: build_chat_response([]),
+        outputs=chat_outputs,
+    )
 
     def export_conversation_with_visibility(history):
         filepath, status = export_conversation(history)
         return gr.update(value=filepath, visible=filepath is not None), status
 
-
     def export_last_answer_with_visibility(last_exchange):
         filepath, status = export_last_answer(last_exchange)
         return gr.update(value=filepath, visible=filepath is not None), status
-
 
     export_chat_btn.click(
         export_conversation_with_visibility,
