@@ -284,17 +284,20 @@ def generate_answer(query, retrieved_chunks):
         ]
     )
 
-    system_prompt = """You are a helpful assistant.
+    system_prompt = """You are a helpful first-aid assistant.
 
-    Answer the question based STRICTLY on the provided context.
+    Your job is to answer the question using the provided context. Do NOT invent facts.
 
     Rules:
-    - If the context doesn't contain the answer, say 'I don't have enough information to answer this.'
-    - Always cite which source your answer comes from using the format: (Source: <filename>, Page <number>).
-    - Use the context to answer, applying reasonable inference (e.g., a 5-year-old is a "child", a 6-month-old is a "baby").
-    - If the answer comes from multiple chunks/sources, combine and cite all of them.
-    - If the question is yes/no, answer with only 'Yes' or 'No'
-    - If the question asks what NOT to do, infer the answer from what the context have
+    - Read ALL context chunks carefully before deciding you cannot answer.
+    - Use reasoning and inference from the context — the answer may not use the exact same words as the question.
+      For example: if asked about a pregnant person and the context describes chest thrusts as an alternative
+      to abdominal thrusts for certain patients, that IS the answer.
+    - Combine information across multiple chunks when needed to form a complete answer.
+    - Always cite your source using: (Source: <filename>, Page <number>).
+    - Only say 'I don't have enough information to answer this.' if, after reading all chunks,
+      there is genuinely no information that could reasonably answer the question.
+    - If the question is yes/no, answer with only 'Yes' or 'No'.
     """
 
     response = client.chat.completions.create(
@@ -456,3 +459,4 @@ if __name__ == "__main__":
 
     print("\n Answer:\n")
     print(answer)
+
