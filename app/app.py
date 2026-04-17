@@ -895,10 +895,10 @@ with gr.Blocks(
         theme_toggle = gr.Button("Toggle theme", size="sm", scale=0)
         mode_dropdown = gr.Dropdown(
             choices=[
-                "Simple agent (only internal knowledge)",
+                "Rag (internal search)",
                 "Agentic (internal + web search)",
             ],
-            value="Simple agent (only internal knowledge)",
+            value="Rag (internal search)",
             show_label=False,
             container=False,
             interactive=True,
@@ -1065,7 +1065,7 @@ with gr.Blocks(
                     y="avg_score",
                     title="Quality Trend",
                     x_title="timestamp",
-                    x_label_angle=-45,
+                    x_label_angle=-90,
                 )
 
             gr.Markdown("### Detailed Question Log")
