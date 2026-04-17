@@ -70,14 +70,19 @@ def run_eval():
 
     VERDICT_PASS = {"faithful", "correct_refusal"}
     VERDICT_ICONS = {
-        "faithful":        "✅ faithful       ",
+        "faithful": "✅ faithful       ",
         "correct_refusal": "✅ correct_refusal",
-        "missed":          "⚠️  missed         ",
-        "hallucinated":    "❌ hallucinated   ",
+        "missed": "⚠️  missed         ",
+        "hallucinated": "❌ hallucinated   ",
     }
 
     results = []
-    verdict_counts = {"faithful": 0, "correct_refusal": 0, "missed": 0, "hallucinated": 0}
+    verdict_counts = {
+        "faithful": 0,
+        "correct_refusal": 0,
+        "missed": 0,
+        "hallucinated": 0,
+    }
 
     print(f"Running {len(questions)} questions...\n")
 
@@ -87,7 +92,7 @@ def run_eval():
         category = q.get("category", "unknown")
 
         # Retrieve + generate
-        retrieved = retrieve(question, index, chunks, k=5)
+        retrieved = retrieve(question, index, chunks, k=10)
         top_score = retrieved[0]["score"] if retrieved else 0.0
         answer = generate_answer(question, retrieved)
 
@@ -98,7 +103,7 @@ def run_eval():
         verdict = judge_faithfulness(question, answer, context, top_score)
         verdict_label = verdict.split(":")[0].strip().lower()
         if verdict_label not in verdict_counts:
-            verdict_label = "hallucinated"   # safe fallback for unexpected output
+            verdict_label = "hallucinated"  # safe fallback for unexpected output
         verdict_counts[verdict_label] += 1
         passed = verdict_label in VERDICT_PASS
 
@@ -136,7 +141,9 @@ def run_eval():
     categories = {}
     for r in results:
         cat = r["category"]
-        categories.setdefault(cat, {"total": 0, "passed": 0, "missed": 0, "hallucinated": 0})
+        categories.setdefault(
+            cat, {"total": 0, "passed": 0, "missed": 0, "hallucinated": 0}
+        )
         categories[cat]["total"] += 1
         if r["passed"]:
             categories[cat]["passed"] += 1
@@ -148,8 +155,10 @@ def run_eval():
     print("\nBreakdown by category:")
     for cat, counts in categories.items():
         pct = counts["passed"] / counts["total"] * 100
-        print(f"  {cat}: {counts['passed']}/{counts['total']} passed ({pct:.0f}%) "
-              f"| missed={counts['missed']} hallucinated={counts['hallucinated']}")
+        print(
+            f"  {cat}: {counts['passed']}/{counts['total']} passed ({pct:.0f}%) "
+            f"| missed={counts['missed']} hallucinated={counts['hallucinated']}"
+        )
 
     # Save to disk
     out_path = DATA_DIR / "eval_results.json"
@@ -163,14 +172,13 @@ if __name__ == "__main__":
     run_eval()
 
 
-
 """if __name__ == "__main__":
     # run_eval()  # comment this out
 
     # Test a single question manually
     index, chunks = load_index()
     q = "What should you do if someone is choking?"
-    retrieved = retrieve(q, index, chunks, k=5)
+    retrieved = retrieve(q, index, chunks, k=10)
     answer = generate_answer(q, retrieved)
     context = "\n\n".join(c["text"] for c in retrieved)
     verdict = judge_faithfulness(q, answer, context)
@@ -178,4 +186,3 @@ if __name__ == "__main__":
     print(f"Q: {q}")
     print(f"A: {answer}")
     print(f"Verdict: {verdict}")"""
-

@@ -262,7 +262,7 @@ def load_index():
 # ---------------------------
 # Step 5 — Retrieve
 # ---------------------------
-def retrieve(query, index, chunks, k=5):
+def retrieve(query, index, chunks, k=10):
     """Retrieve top-k chunks from FAISS."""
     query_vec = np.array(get_embeddings([query])).astype("float32")
     faiss.normalize_L2(query_vec)

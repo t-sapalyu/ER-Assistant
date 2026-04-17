@@ -95,13 +95,6 @@ def web_search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
         return []
 
 
-# Direct-callable versions for in-process use
-TOOL_FUNCTIONS = {
-    "wikipedia_search": wikipedia_search,
-    "web_search": web_search,
-}
-
-
 # OpenAI function-calling schemas (derived from the tool docstrings)
 TOOL_SCHEMAS = [
     {
