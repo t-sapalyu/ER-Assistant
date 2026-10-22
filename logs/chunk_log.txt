@@ -2041,3 +2041,601 @@
 2026-04-17 12:07:24,354 - INFO - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
 2026-04-17 12:07:24,470 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-launched-telemetry "HTTP/1.1 200 OK"
 2026-04-17 12:07:24,696 - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2026-10-20 16:38:28,299 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:38:28,299 - INFO - query: pregnant woman choking chest thrusts back blows
+2026-10-20 16:38:28,299 - INFO - mode: dense
+2026-10-20 16:38:28,299 - INFO - total_candidates: 5
+2026-10-20 16:38:28,299 - INFO - [Rank 1] score: 1.0 | rrf: 0.0164 | dense_rank: 1 | bm25_rank: None
+2026-10-20 16:38:28,299 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,299 - INFO - page: 48
+2026-10-20 16:38:28,299 - INFO - text preview: lity to speak, cough, or breathe - High-pitched squeaking noises - Flushed (red) skin that becomes bluish or paler than normal - A look of panic with wide eyes - One or both hands clutching the throat
+2026-10-20 16:38:28,299 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,299 - INFO - [Rank 2] score: 0.7420516014099121 | rrf: 0.0159 | dense_rank: 3 | bm25_rank: None
+2026-10-20 16:38:28,299 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,299 - INFO - page: 50
+2026-10-20 16:38:28,299 - INFO - text preview: Responsive, Choking Toddler 1. If the child is short enough, kneel on the floor with one knee raised. 2. Perform 5 back blows with the child leaning across your raised leg, alternating with either 5 c
+2026-10-20 16:38:28,299 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,299 - INFO - [Rank 3] score: 0.7017530202865601 | rrf: 0.0152 | dense_rank: 6 | bm25_rank: None
+2026-10-20 16:38:28,299 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,299 - INFO - page: 52
+2026-10-20 16:38:28,299 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-20 16:38:28,299 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,299 - INFO - [Rank 4] score: 0.6778987050056458 | rrf: 0.0149 | dense_rank: 7 | bm25_rank: None
+2026-10-20 16:38:28,299 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,299 - INFO - page: 45
+2026-10-20 16:38:28,299 - INFO - text preview: from the outside world into the lungs through the airway. The respiratory system constantly supplies the body with the oxygen it needs and removes carbon dioxide. The process is largely involuntary an
+2026-10-20 16:38:28,299 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,299 - INFO - [Rank 5] score: 0.6650058627128601 | rrf: 0.0147 | dense_rank: 8 | bm25_rank: None
+2026-10-20 16:38:28,299 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,299 - INFO - page: 51
+2026-10-20 16:38:28,299 - INFO - text preview: Choking Baby (Less Than 12 Months) 5. If the object has not been dislodged, turn the baby face-up, ensuring you support the head. Call - Shout for help. - If the baby is making high-pitched noises, is
+2026-10-20 16:38:28,299 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,336 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:38:28,336 - INFO - query: pregnant woman choking chest thrusts back blows
+2026-10-20 16:38:28,336 - INFO - mode: bm25
+2026-10-20 16:38:28,336 - INFO - total_candidates: 5
+2026-10-20 16:38:28,336 - INFO - [Rank 1] score: 0.7332895994186401 | rrf: 0.0164 | dense_rank: None | bm25_rank: 1
+2026-10-20 16:38:28,336 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,336 - INFO - page: 50
+2026-10-20 16:38:28,336 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-20 16:38:28,336 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,336 - INFO - [Rank 2] score: 1.0 | rrf: 0.0161 | dense_rank: None | bm25_rank: 2
+2026-10-20 16:38:28,336 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,336 - INFO - page: 48
+2026-10-20 16:38:28,336 - INFO - text preview: lity to speak, cough, or breathe - High-pitched squeaking noises - Flushed (red) skin that becomes bluish or paler than normal - A look of panic with wide eyes - One or both hands clutching the throat
+2026-10-20 16:38:28,336 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,336 - INFO - [Rank 3] score: 0.7017530202865601 | rrf: 0.0156 | dense_rank: None | bm25_rank: 4
+2026-10-20 16:38:28,336 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,336 - INFO - page: 52
+2026-10-20 16:38:28,336 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-20 16:38:28,336 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,336 - INFO - [Rank 4] score: 0.6570652723312378 | rrf: 0.0149 | dense_rank: None | bm25_rank: 7
+2026-10-20 16:38:28,336 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,336 - INFO - page: 51
+2026-10-20 16:38:28,336 - INFO - text preview: n 1/3 of the chest’s depth. 7. Repeat the 5 firm back blows and 5 chest compressions until the object is coughed up, the baby starts to cry, breathe, or cough, or the baby becomes unresponsive. 47 47 
+2026-10-20 16:38:28,336 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,336 - INFO - [Rank 5] score: 0.5826824903488159 | rrf: 0.0145 | dense_rank: None | bm25_rank: 9
+2026-10-20 16:38:28,336 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,336 - INFO - page: 71
+2026-10-20 16:38:28,336 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:38:28,336 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,338 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:38:28,338 - INFO - query: pregnant woman choking chest thrusts back blows
+2026-10-20 16:38:28,338 - INFO - mode: hybrid
+2026-10-20 16:38:28,338 - INFO - total_candidates: 5
+2026-10-20 16:38:28,338 - INFO - [Rank 1] score: 1.0 | rrf: 0.0325 | dense_rank: 1 | bm25_rank: 2
+2026-10-20 16:38:28,338 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,338 - INFO - page: 48
+2026-10-20 16:38:28,338 - INFO - text preview: lity to speak, cough, or breathe - High-pitched squeaking noises - Flushed (red) skin that becomes bluish or paler than normal - A look of panic with wide eyes - One or both hands clutching the throat
+2026-10-20 16:38:28,338 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,338 - INFO - [Rank 2] score: 0.7332895994186401 | rrf: 0.0320 | dense_rank: 4 | bm25_rank: 1
+2026-10-20 16:38:28,338 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,338 - INFO - page: 50
+2026-10-20 16:38:28,338 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-20 16:38:28,338 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,338 - INFO - [Rank 3] score: 0.7017530202865601 | rrf: 0.0308 | dense_rank: 6 | bm25_rank: 4
+2026-10-20 16:38:28,338 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,338 - INFO - page: 52
+2026-10-20 16:38:28,338 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-20 16:38:28,338 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,338 - INFO - [Rank 4] score: 0.6570652723312378 | rrf: 0.0294 | dense_rank: 9 | bm25_rank: 7
+2026-10-20 16:38:28,338 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,338 - INFO - page: 51
+2026-10-20 16:38:28,338 - INFO - text preview: n 1/3 of the chest’s depth. 7. Repeat the 5 firm back blows and 5 chest compressions until the object is coughed up, the baby starts to cry, breathe, or cough, or the baby becomes unresponsive. 47 47 
+2026-10-20 16:38:28,338 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,338 - INFO - [Rank 5] score: 0.6382408738136292 | rrf: 0.0280 | dense_rank: 13 | bm25_rank: 10
+2026-10-20 16:38:28,338 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:38:28,338 - INFO - page: 49
+2026-10-20 16:38:28,338 - INFO - text preview: Chest Thrusts 1. Stand behind the person (or kneel, if you are significantly taller) and wrap both of your arms around the person’s chest, just under the armpits. 2. Make a fist and place it in the mi
+2026-10-20 16:38:28,338 - INFO - --------------------------------------------------
+2026-10-20 16:38:28,392 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:38:28,392 - INFO - query: capital of Canada
+2026-10-20 16:38:28,392 - INFO - mode: hybrid
+2026-10-20 16:38:28,392 - INFO - total_candidates: 0
+2026-10-20 16:38:52,539 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:05,231 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:05,648 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:06,057 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:06,305 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:06,614 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:06,937 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:07,306 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:07,613 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:07,905 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:08,286 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:08,654 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:08,987 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:10,049 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:10,356 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:10,704 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:11,107 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:11,515 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:11,782 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:12,110 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:12,599 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,108 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,108 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:31,108 - INFO - query: Can I do abdominal thrusts on a pregnant woman who is choking?
+2026-10-20 16:41:31,108 - INFO - mode: dense
+2026-10-20 16:41:31,108 - INFO - total_candidates: 5
+2026-10-20 16:41:31,108 - INFO - [Rank 1] score: 0.6724197864532471 | rrf: 0.0164 | dense_rank: 1 | bm25_rank: None
+2026-10-20 16:41:31,108 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,108 - INFO - page: 50
+2026-10-20 16:41:31,108 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-20 16:41:31,108 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,108 - INFO - [Rank 2] score: 0.573772668838501 | rrf: 0.0159 | dense_rank: 3 | bm25_rank: None
+2026-10-20 16:41:31,108 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,108 - INFO - page: 49
+2026-10-20 16:41:31,108 - INFO - text preview: l Thrusts 1. Stand behind the person and ensure that your stance is stable. If the person is much shorter than you are, it may be more effective to kneel. 2. Wrap your arms around the person’s waist, 
+2026-10-20 16:41:31,108 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,108 - INFO - [Rank 3] score: 0.5588128566741943 | rrf: 0.0154 | dense_rank: 5 | bm25_rank: None
+2026-10-20 16:41:31,108 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,108 - INFO - page: 51
+2026-10-20 16:41:31,108 - INFO - text preview: Choking Baby (Less Than 12 Months) 5. If the object has not been dislodged, turn the baby face-up, ensuring you support the head. Call - Shout for help. - If the baby is making high-pitched noises, is
+2026-10-20 16:41:31,108 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,121 - INFO - [Rank 4] score: 0.554531455039978 | rrf: 0.0152 | dense_rank: 6 | bm25_rank: None
+2026-10-20 16:41:31,121 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,121 - INFO - page: 71
+2026-10-20 16:41:31,121 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:41:31,121 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,121 - INFO - [Rank 5] score: 0.5363839864730835 | rrf: 0.0149 | dense_rank: 7 | bm25_rank: None
+2026-10-20 16:41:31,121 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,121 - INFO - page: 48
+2026-10-20 16:41:31,121 - INFO - text preview: herefore have to do a combination of back blows and chest thrusts. Back Blows 1. Try to dislodge the object by combining any two of the following three options: back blows, abdominal thrusts, and ches
+2026-10-20 16:41:31,121 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,321 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,356 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:31,356 - INFO - query: Can I do abdominal thrusts on a pregnant woman who is choking?
+2026-10-20 16:41:31,356 - INFO - mode: bm25
+2026-10-20 16:41:31,356 - INFO - total_candidates: 5
+2026-10-20 16:41:31,356 - INFO - [Rank 1] score: 0.6724197864532471 | rrf: 0.0164 | dense_rank: None | bm25_rank: 1
+2026-10-20 16:41:31,356 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,356 - INFO - page: 50
+2026-10-20 16:41:31,356 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-20 16:41:31,356 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,356 - INFO - [Rank 2] score: 0.5015485286712646 | rrf: 0.0161 | dense_rank: None | bm25_rank: 2
+2026-10-20 16:41:31,356 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,356 - INFO - page: 52
+2026-10-20 16:41:31,356 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-20 16:41:31,356 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,356 - INFO - [Rank 3] score: 0.4990810751914978 | rrf: 0.0159 | dense_rank: None | bm25_rank: 3
+2026-10-20 16:41:31,356 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,356 - INFO - page: 48
+2026-10-20 16:41:31,356 - INFO - text preview: lity to speak, cough, or breathe - High-pitched squeaking noises - Flushed (red) skin that becomes bluish or paler than normal - A look of panic with wide eyes - One or both hands clutching the throat
+2026-10-20 16:41:31,356 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,356 - INFO - [Rank 4] score: 0.554531455039978 | rrf: 0.0154 | dense_rank: None | bm25_rank: 5
+2026-10-20 16:41:31,356 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,356 - INFO - page: 71
+2026-10-20 16:41:31,356 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:41:31,356 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,356 - INFO - [Rank 5] score: 0.5014837384223938 | rrf: 0.0149 | dense_rank: None | bm25_rank: 7
+2026-10-20 16:41:31,356 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,356 - INFO - page: 49
+2026-10-20 16:41:31,356 - INFO - text preview: Chest Thrusts 1. Stand behind the person (or kneel, if you are significantly taller) and wrap both of your arms around the person’s chest, just under the armpits. 2. Make a fist and place it in the mi
+2026-10-20 16:41:31,356 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,521 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,531 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:31,532 - INFO - query: Can I do abdominal thrusts on a pregnant woman who is choking?
+2026-10-20 16:41:31,532 - INFO - mode: hybrid
+2026-10-20 16:41:31,532 - INFO - total_candidates: 5
+2026-10-20 16:41:31,532 - INFO - [Rank 1] score: 0.6724197864532471 | rrf: 0.0328 | dense_rank: 1 | bm25_rank: 1
+2026-10-20 16:41:31,532 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,532 - INFO - page: 50
+2026-10-20 16:41:31,532 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-20 16:41:31,532 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,532 - INFO - [Rank 2] score: 0.554531455039978 | rrf: 0.0305 | dense_rank: 6 | bm25_rank: 5
+2026-10-20 16:41:31,532 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,532 - INFO - page: 71
+2026-10-20 16:41:31,532 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:41:31,532 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,532 - INFO - [Rank 3] score: 0.5015485286712646 | rrf: 0.0302 | dense_rank: 11 | bm25_rank: 2
+2026-10-20 16:41:31,532 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,532 - INFO - page: 52
+2026-10-20 16:41:31,532 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-20 16:41:31,532 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,532 - INFO - [Rank 4] score: 0.573772668838501 | rrf: 0.0300 | dense_rank: 3 | bm25_rank: 11
+2026-10-20 16:41:31,532 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,532 - INFO - page: 49
+2026-10-20 16:41:31,532 - INFO - text preview: l Thrusts 1. Stand behind the person and ensure that your stance is stable. If the person is much shorter than you are, it may be more effective to kneel. 2. Wrap your arms around the person’s waist, 
+2026-10-20 16:41:31,532 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,532 - INFO - [Rank 5] score: 0.5363839864730835 | rrf: 0.0296 | dense_rank: 7 | bm25_rank: 8
+2026-10-20 16:41:31,532 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,532 - INFO - page: 48
+2026-10-20 16:41:31,532 - INFO - text preview: herefore have to do a combination of back blows and chest thrusts. Back Blows 1. Try to dislodge the object by combining any two of the following three options: back blows, abdominal thrusts, and ches
+2026-10-20 16:41:31,532 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,709 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,719 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:31,719 - INFO - query: Where do I put my hands for CPR on a baby?
+2026-10-20 16:41:31,719 - INFO - mode: dense
+2026-10-20 16:41:31,719 - INFO - total_candidates: 5
+2026-10-20 16:41:31,719 - INFO - [Rank 1] score: 0.6432910561561584 | rrf: 0.0164 | dense_rank: 1 | bm25_rank: None
+2026-10-20 16:41:31,719 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,719 - INFO - page: 71
+2026-10-20 16:41:31,719 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:41:31,719 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,719 - INFO - [Rank 2] score: 0.6315620541572571 | rrf: 0.0161 | dense_rank: 2 | bm25_rank: None
+2026-10-20 16:41:31,719 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,719 - INFO - page: 51
+2026-10-20 16:41:31,719 - INFO - text preview: on of a bystander. 1. Sit or kneel holding the baby. 2. Position the baby face down along your forearm, holding his or her jaw in your hand. 3. Rest your forearm on your leg so that the baby’s head is
+2026-10-20 16:41:31,719 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,719 - INFO - [Rank 3] score: 0.584267795085907 | rrf: 0.0159 | dense_rank: 3 | bm25_rank: None
+2026-10-20 16:41:31,719 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,719 - INFO - page: 67
+2026-10-20 16:41:31,719 - INFO - text preview: cycle of 30 compressions and 2 breaths. 1. Do 30 compressions: - Put 2 hands on the centre of the child’s chest. - Push down at least 1/3 of the chest’s depth, pushing deeply and steadily. - The chest
+2026-10-20 16:41:31,719 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,719 - INFO - [Rank 4] score: 0.5628690719604492 | rrf: 0.0156 | dense_rank: 4 | bm25_rank: None
+2026-10-20 16:41:31,719 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,719 - INFO - page: 68
+2026-10-20 16:41:31,719 - INFO - text preview: - If using a plastic face shield, seal your lips tightly over the baby’s mouth and nose. If using a face mask, ensure it is fitted tightly over the mouth and nose. - Give 2 breaths. Each breath should
+2026-10-20 16:41:31,719 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,719 - INFO - [Rank 5] score: 0.5624203681945801 | rrf: 0.0154 | dense_rank: 5 | bm25_rank: None
+2026-10-20 16:41:31,719 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,719 - INFO - page: 70
+2026-10-20 16:41:31,719 - INFO - text preview: re important to push deeply and push steadily than to worry about pushing too deeply. CPR Compression Depth for a Child or a Baby Because of the variation in size among children or babies, compression
+2026-10-20 16:41:31,719 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,881 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:31,895 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:31,895 - INFO - query: Where do I put my hands for CPR on a baby?
+2026-10-20 16:41:31,895 - INFO - mode: bm25
+2026-10-20 16:41:31,895 - INFO - total_candidates: 5
+2026-10-20 16:41:31,895 - INFO - [Rank 1] score: 0.5180039405822754 | rrf: 0.0164 | dense_rank: None | bm25_rank: 1
+2026-10-20 16:41:31,895 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,895 - INFO - page: 67
+2026-10-20 16:41:31,895 - INFO - text preview: EMS/9-1-1 and get an AED. If you are alone with the baby and are not in close proximity to a phone, do 5 cycles (2 minutes) of CPR before calling EMS/9-1-1. Take the baby with you to call EMS/9-1-1 an
+2026-10-20 16:41:31,895 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,896 - INFO - [Rank 2] score: 0.5624203681945801 | rrf: 0.0159 | dense_rank: None | bm25_rank: 3
+2026-10-20 16:41:31,896 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,896 - INFO - page: 70
+2026-10-20 16:41:31,896 - INFO - text preview: re important to push deeply and push steadily than to worry about pushing too deeply. CPR Compression Depth for a Child or a Baby Because of the variation in size among children or babies, compression
+2026-10-20 16:41:31,896 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,896 - INFO - [Rank 3] score: 0.5409320592880249 | rrf: 0.0156 | dense_rank: None | bm25_rank: 4
+2026-10-20 16:41:31,896 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,896 - INFO - page: 69
+2026-10-20 16:41:31,896 - INFO - text preview: nd into the side of the person’s mouth, then sweep behind the object to lift it out. compression-only CPR is acceptable. As a minimum, you should always perform compression-only CPR for any person in 
+2026-10-20 16:41:31,896 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,897 - INFO - [Rank 4] score: 0.5418647527694702 | rrf: 0.0154 | dense_rank: None | bm25_rank: 5
+2026-10-20 16:41:31,897 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,897 - INFO - page: 68
+2026-10-20 16:41:31,897 - INFO - text preview: e an obvious sign of life, such as movement. If the person shows an obvious sign of life, stop CPR and check the person’s ABCs. If the person is breathing, place him or her in the recovery position, a
+2026-10-20 16:41:31,897 - INFO - --------------------------------------------------
+2026-10-20 16:41:31,897 - INFO - [Rank 5] score: 0.5572013854980469 | rrf: 0.0152 | dense_rank: None | bm25_rank: 6
+2026-10-20 16:41:31,897 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:31,897 - INFO - page: 138
+2026-10-20 16:41:31,897 - INFO - text preview: down and wipe any fluids or mucus away from his or her mouth and nose. 6. Check the baby’s airway and breathing. Babies may not breathe and cry immediately after they are born. Usually, actively dryin
+2026-10-20 16:41:31,897 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,059 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,091 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,091 - INFO - query: Where do I put my hands for CPR on a baby?
+2026-10-20 16:41:32,091 - INFO - mode: hybrid
+2026-10-20 16:41:32,091 - INFO - total_candidates: 5
+2026-10-20 16:41:32,091 - INFO - [Rank 1] score: 0.584267795085907 | rrf: 0.0320 | dense_rank: 3 | bm25_rank: 2
+2026-10-20 16:41:32,091 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,091 - INFO - page: 67
+2026-10-20 16:41:32,091 - INFO - text preview: cycle of 30 compressions and 2 breaths. 1. Do 30 compressions: - Put 2 hands on the centre of the child’s chest. - Push down at least 1/3 of the chest’s depth, pushing deeply and steadily. - The chest
+2026-10-20 16:41:32,091 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,091 - INFO - [Rank 2] score: 0.5624203681945801 | rrf: 0.0313 | dense_rank: 5 | bm25_rank: 3
+2026-10-20 16:41:32,091 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,091 - INFO - page: 70
+2026-10-20 16:41:32,092 - INFO - text preview: re important to push deeply and push steadily than to worry about pushing too deeply. CPR Compression Depth for a Child or a Baby Because of the variation in size among children or babies, compression
+2026-10-20 16:41:32,092 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,092 - INFO - [Rank 3] score: 0.6432910561561584 | rrf: 0.0309 | dense_rank: 1 | bm25_rank: 9
+2026-10-20 16:41:32,092 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,092 - INFO - page: 71
+2026-10-20 16:41:32,092 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-20 16:41:32,092 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,092 - INFO - [Rank 4] score: 0.5572013258934021 | rrf: 0.0301 | dense_rank: 7 | bm25_rank: 6
+2026-10-20 16:41:32,092 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,092 - INFO - page: 138
+2026-10-20 16:41:32,092 - INFO - text preview: down and wipe any fluids or mucus away from his or her mouth and nose. 6. Check the baby’s airway and breathing. Babies may not breathe and cry immediately after they are born. Usually, actively dryin
+2026-10-20 16:41:32,092 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,092 - INFO - [Rank 5] score: 0.5409320592880249 | rrf: 0.0293 | dense_rank: 13 | bm25_rank: 4
+2026-10-20 16:41:32,092 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,093 - INFO - page: 69
+2026-10-20 16:41:32,093 - INFO - text preview: nd into the side of the person’s mouth, then sweep behind the object to lift it out. compression-only CPR is acceptable. As a minimum, you should always perform compression-only CPR for any person in 
+2026-10-20 16:41:32,093 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,257 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,285 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,285 - INFO - query: When should you call EMS instead of poison control?
+2026-10-20 16:41:32,285 - INFO - mode: dense
+2026-10-20 16:41:32,285 - INFO - total_candidates: 5
+2026-10-20 16:41:32,285 - INFO - [Rank 1] score: 0.7085821628570557 | rrf: 0.0164 | dense_rank: 1 | bm25_rank: None
+2026-10-20 16:41:32,286 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,286 - INFO - page: 162
+2026-10-20 16:41:32,286 - INFO - text preview: Calling EMS/9-1-1 or a Poison Control Centre is the most important thing you can do if a poisoning of any type is suspected. Other general first aid care tips for poisoning include the following: - Li
+2026-10-20 16:41:32,287 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,287 - INFO - [Rank 2] score: 0.6707266569137573 | rrf: 0.0159 | dense_rank: 3 | bm25_rank: None
+2026-10-20 16:41:32,287 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,287 - INFO - page: 20
+2026-10-20 16:41:32,287 - INFO - text preview: Downed electrical wires - Swift-moving water Poison Control Centres If none of the conditions above apply and you suspect that poisoning is the cause of the person’s condition, call poison control ins
+2026-10-20 16:41:32,288 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,288 - INFO - [Rank 3] score: 0.6698237061500549 | rrf: 0.0156 | dense_rank: 4 | bm25_rank: None
+2026-10-20 16:41:32,288 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,288 - INFO - page: 167
+2026-10-20 16:41:32,289 - INFO - text preview: ocal Poison Control Centre. Call EMS/9-1-1 and get an AED if the person has an altered level of responsiveness or has difficulty breathing. Call RASH-CAUSING PLANTS 163 163 Poisons 163
+2026-10-20 16:41:32,289 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,290 - INFO - [Rank 4] score: 0.64056795835495 | rrf: 0.0152 | dense_rank: 6 | bm25_rank: None
+2026-10-20 16:41:32,290 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,290 - INFO - page: 171
+2026-10-20 16:41:32,290 - INFO - text preview: all EMS/9-1-1 and get an AED if there are any signs of a severe allergic reaction. 167 167 Poisons 167
+2026-10-20 16:41:32,290 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,290 - INFO - [Rank 5] score: 0.6293182373046875 | rrf: 0.0149 | dense_rank: 7 | bm25_rank: None
+2026-10-20 16:41:32,290 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,290 - INFO - page: 163
+2026-10-20 16:41:32,290 - INFO - text preview: ate that a poisonous substance has been inhaled: - Breathing difficulties - Irritated eyes, nose, or throat - Dizziness - Vomiting - Seizures - Bluish colour around the mouth - Unresponsiveness - An u
+2026-10-20 16:41:32,290 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,456 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,471 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,471 - INFO - query: When should you call EMS instead of poison control?
+2026-10-20 16:41:32,471 - INFO - mode: bm25
+2026-10-20 16:41:32,471 - INFO - total_candidates: 5
+2026-10-20 16:41:32,471 - INFO - [Rank 1] score: 0.6707266569137573 | rrf: 0.0164 | dense_rank: None | bm25_rank: 1
+2026-10-20 16:41:32,471 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,472 - INFO - page: 20
+2026-10-20 16:41:32,472 - INFO - text preview: Downed electrical wires - Swift-moving water Poison Control Centres If none of the conditions above apply and you suspect that poisoning is the cause of the person’s condition, call poison control ins
+2026-10-20 16:41:32,472 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,472 - INFO - [Rank 2] score: 0.7085822224617004 | rrf: 0.0161 | dense_rank: None | bm25_rank: 2
+2026-10-20 16:41:32,472 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,473 - INFO - page: 162
+2026-10-20 16:41:32,473 - INFO - text preview: Calling EMS/9-1-1 or a Poison Control Centre is the most important thing you can do if a poisoning of any type is suspected. Other general first aid care tips for poisoning include the following: - Li
+2026-10-20 16:41:32,473 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,473 - INFO - [Rank 3] score: 0.6698237061500549 | rrf: 0.0159 | dense_rank: None | bm25_rank: 3
+2026-10-20 16:41:32,473 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,473 - INFO - page: 167
+2026-10-20 16:41:32,473 - INFO - text preview: ocal Poison Control Centre. Call EMS/9-1-1 and get an AED if the person has an altered level of responsiveness or has difficulty breathing. Call RASH-CAUSING PLANTS 163 163 Poisons 163
+2026-10-20 16:41:32,473 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,473 - INFO - [Rank 4] score: 0.6269859075546265 | rrf: 0.0152 | dense_rank: None | bm25_rank: 6
+2026-10-20 16:41:32,473 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,473 - INFO - page: 159
+2026-10-20 16:41:32,473 - INFO - text preview: l Centre can provide you with specific first aid instructions for a variety of types of poison, but remember that you should always call EMS/9-1-1 if the person has an altered level of responsiveness 
+2026-10-20 16:41:32,473 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,473 - INFO - [Rank 5] score: 0.6265343427658081 | rrf: 0.0149 | dense_rank: None | bm25_rank: 7
+2026-10-20 16:41:32,473 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,473 - INFO - page: 164
+2026-10-20 16:41:32,473 - INFO - text preview: d for any other type of inhaled poison. The following signs and symptoms can indicate that a poisonous substance has been absorbed: - Rash or hives (raised, itchy areas of skin) - Burning or itching s
+2026-10-20 16:41:32,473 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,633 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,650 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,650 - INFO - query: When should you call EMS instead of poison control?
+2026-10-20 16:41:32,650 - INFO - mode: hybrid
+2026-10-20 16:41:32,650 - INFO - total_candidates: 5
+2026-10-20 16:41:32,650 - INFO - [Rank 1] score: 0.7085821628570557 | rrf: 0.0325 | dense_rank: 1 | bm25_rank: 2
+2026-10-20 16:41:32,650 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,650 - INFO - page: 162
+2026-10-20 16:41:32,650 - INFO - text preview: Calling EMS/9-1-1 or a Poison Control Centre is the most important thing you can do if a poisoning of any type is suspected. Other general first aid care tips for poisoning include the following: - Li
+2026-10-20 16:41:32,650 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,650 - INFO - [Rank 2] score: 0.6707266569137573 | rrf: 0.0323 | dense_rank: 3 | bm25_rank: 1
+2026-10-20 16:41:32,650 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,650 - INFO - page: 20
+2026-10-20 16:41:32,650 - INFO - text preview: Downed electrical wires - Swift-moving water Poison Control Centres If none of the conditions above apply and you suspect that poisoning is the cause of the person’s condition, call poison control ins
+2026-10-20 16:41:32,650 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,650 - INFO - [Rank 3] score: 0.6698237061500549 | rrf: 0.0315 | dense_rank: 4 | bm25_rank: 3
+2026-10-20 16:41:32,651 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,651 - INFO - page: 167
+2026-10-20 16:41:32,651 - INFO - text preview: ocal Poison Control Centre. Call EMS/9-1-1 and get an AED if the person has an altered level of responsiveness or has difficulty breathing. Call RASH-CAUSING PLANTS 163 163 Poisons 163
+2026-10-20 16:41:32,651 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,651 - INFO - [Rank 4] score: 0.626986026763916 | rrf: 0.0299 | dense_rank: 8 | bm25_rank: 6
+2026-10-20 16:41:32,651 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,651 - INFO - page: 159
+2026-10-20 16:41:32,651 - INFO - text preview: l Centre can provide you with specific first aid instructions for a variety of types of poison, but remember that you should always call EMS/9-1-1 if the person has an altered level of responsiveness 
+2026-10-20 16:41:32,651 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,651 - INFO - [Rank 5] score: 0.6293182373046875 | rrf: 0.0296 | dense_rank: 7 | bm25_rank: 8
+2026-10-20 16:41:32,651 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,652 - INFO - page: 163
+2026-10-20 16:41:32,652 - INFO - text preview: ate that a poisonous substance has been inhaled: - Breathing difficulties - Irritated eyes, nose, or throat - Dizziness - Vomiting - Seizures - Bluish colour around the mouth - Unresponsiveness - An u
+2026-10-20 16:41:32,652 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,806 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,819 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,819 - INFO - query: What is the capital of Canada?
+2026-10-20 16:41:32,819 - INFO - mode: dense
+2026-10-20 16:41:32,820 - INFO - total_candidates: 5
+2026-10-20 16:41:32,820 - INFO - [Rank 1] score: 0.3351547122001648 | rrf: 0.0164 | dense_rank: 1 | bm25_rank: None
+2026-10-20 16:41:32,820 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,820 - INFO - page: 20
+2026-10-20 16:41:32,820 - INFO - text preview: EMS varies from community to community. Most people in Canada call 9-1-1 for help in emergencies, but in some areas of Canada and in many workplaces you may need to dial a different designated emergen
+2026-10-20 16:41:32,820 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,820 - INFO - [Rank 2] score: 0.3320181667804718 | rrf: 0.0161 | dense_rank: 2 | bm25_rank: None
+2026-10-20 16:41:32,820 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,820 - INFO - page: 8
+2026-10-20 16:41:32,820 - INFO - text preview: nized emblems in the world, and continues to be an internationally respected symbol of protection and neutrality. The Red Cross is the emblem that is used by the Canadian National Society. No organiza
+2026-10-20 16:41:32,820 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,820 - INFO - [Rank 3] score: 0.32745757699012756 | rrf: 0.0159 | dense_rank: 3 | bm25_rank: None
+2026-10-20 16:41:32,820 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,820 - INFO - page: 7
+2026-10-20 16:41:32,821 - INFO - text preview: anadian Red Cross Society Act was approved by Parliament, and decreed that the Canadian Red Cross would serve as an auxiliary to the Government of Canada for Canadians, which was a measure that was in
+2026-10-20 16:41:32,821 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,821 - INFO - [Rank 4] score: 0.31956636905670166 | rrf: 0.0156 | dense_rank: 4 | bm25_rank: None
+2026-10-20 16:41:32,821 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,821 - INFO - page: 174
+2026-10-20 16:41:32,821 - INFO - text preview: snakes are non-venomous, but there are three venomous snakes currently native to Canada. All three are rattlesnakes: 1. Northern Pacific Rattlesnake 2. Massasauga Rattlesnake 3. Prairie Rattlesnake If
+2026-10-20 16:41:32,821 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,821 - INFO - [Rank 5] score: 0.31770560145378113 | rrf: 0.0154 | dense_rank: 5 | bm25_rank: None
+2026-10-20 16:41:32,821 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,821 - INFO - page: 9
+2026-10-20 16:41:32,821 - INFO - text preview: food, clothing, hygiene items, and emotional support. As part of a global network of 190 national Societies, the work and expertise of the Canadian Red Cross often extends beyond Canada’s borders. Tra
+2026-10-20 16:41:32,821 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,958 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:32,982 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:32,982 - INFO - query: What is the capital of Canada?
+2026-10-20 16:41:32,982 - INFO - mode: bm25
+2026-10-20 16:41:32,982 - INFO - total_candidates: 5
+2026-10-20 16:41:32,982 - INFO - [Rank 1] score: 0.28630080819129944 | rrf: 0.0164 | dense_rank: None | bm25_rank: 1
+2026-10-20 16:41:32,982 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,983 - INFO - page: 175
+2026-10-20 16:41:32,983 - INFO - text preview: CANADA 171 171 Poisons 171
+2026-10-20 16:41:32,983 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,983 - INFO - [Rank 2] score: 0.2966036796569824 | rrf: 0.0161 | dense_rank: None | bm25_rank: 2
+2026-10-20 16:41:32,983 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,983 - INFO - page: 204
+2026-10-20 16:41:32,983 - INFO - text preview: d working order. To find out exactly what is needed for your boat, contact Transport Canada. - As of September 15, 2009, anyone operating a powerboat on Canadian waters must have a pleasure craft oper
+2026-10-20 16:41:32,983 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,983 - INFO - [Rank 3] score: 0.3009752333164215 | rrf: 0.0159 | dense_rank: None | bm25_rank: 3
+2026-10-20 16:41:32,983 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,983 - INFO - page: 199
+2026-10-20 16:41:32,984 - INFO - text preview: Car Safety Motor vehicle injuries are the number one cause of death of children in Canada. Follow the guidelines on the safe use of car seats and the passenger rules for children to help ensure childr
+2026-10-20 16:41:32,984 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,984 - INFO - [Rank 4] score: 0.3274575471878052 | rrf: 0.0156 | dense_rank: None | bm25_rank: 4
+2026-10-20 16:41:32,984 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,984 - INFO - page: 7
+2026-10-20 16:41:32,984 - INFO - text preview: anadian Red Cross Society Act was approved by Parliament, and decreed that the Canadian Red Cross would serve as an auxiliary to the Government of Canada for Canadians, which was a measure that was in
+2026-10-20 16:41:32,984 - INFO - --------------------------------------------------
+2026-10-20 16:41:32,984 - INFO - [Rank 5] score: 0.27469518780708313 | rrf: 0.0152 | dense_rank: None | bm25_rank: 6
+2026-10-20 16:41:32,984 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:32,984 - INFO - page: 174
+2026-10-20 16:41:32,985 - INFO - text preview: in feeling to the flu) Seek medical attention as soon as possible. If possible, save the tick responsible for the bite in a resealable bag or empty pill bottle, and bring it to the medical appointment
+2026-10-20 16:41:32,985 - INFO - --------------------------------------------------
+2026-10-20 16:41:33,186 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 16:41:33,207 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 16:41:33,207 - INFO - query: What is the capital of Canada?
+2026-10-20 16:41:33,207 - INFO - mode: hybrid
+2026-10-20 16:41:33,207 - INFO - total_candidates: 5
+2026-10-20 16:41:33,207 - INFO - [Rank 1] score: 0.32745757699012756 | rrf: 0.0315 | dense_rank: 3 | bm25_rank: 4
+2026-10-20 16:41:33,207 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:33,207 - INFO - page: 7
+2026-10-20 16:41:33,207 - INFO - text preview: anadian Red Cross Society Act was approved by Parliament, and decreed that the Canadian Red Cross would serve as an auxiliary to the Government of Canada for Canadians, which was a measure that was in
+2026-10-20 16:41:33,207 - INFO - --------------------------------------------------
+2026-10-20 16:41:33,207 - INFO - [Rank 2] score: 0.3351547122001648 | rrf: 0.0311 | dense_rank: 1 | bm25_rank: 8
+2026-10-20 16:41:33,207 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:33,207 - INFO - page: 20
+2026-10-20 16:41:33,207 - INFO - text preview: EMS varies from community to community. Most people in Canada call 9-1-1 for help in emergencies, but in some areas of Canada and in many workplaces you may need to dial a different designated emergen
+2026-10-20 16:41:33,207 - INFO - --------------------------------------------------
+2026-10-20 16:41:33,207 - INFO - [Rank 3] score: 0.3009752333164215 | rrf: 0.0308 | dense_rank: 7 | bm25_rank: 3
+2026-10-20 16:41:33,207 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:33,207 - INFO - page: 199
+2026-10-20 16:41:33,207 - INFO - text preview: Car Safety Motor vehicle injuries are the number one cause of death of children in Canada. Follow the guidelines on the safe use of car seats and the passenger rules for children to help ensure childr
+2026-10-20 16:41:33,207 - INFO - --------------------------------------------------
+2026-10-20 16:41:33,207 - INFO - [Rank 4] score: 0.2966036796569824 | rrf: 0.0306 | dense_rank: 9 | bm25_rank: 2
+2026-10-20 16:41:33,207 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:33,207 - INFO - page: 204
+2026-10-20 16:41:33,207 - INFO - text preview: d working order. To find out exactly what is needed for your boat, contact Transport Canada. - As of September 15, 2009, anyone operating a powerboat on Canadian waters must have a pleasure craft oper
+2026-10-20 16:41:33,207 - INFO - --------------------------------------------------
+2026-10-20 16:41:33,207 - INFO - [Rank 5] score: 0.28630080819129944 | rrf: 0.0303 | dense_rank: 12 | bm25_rank: 1
+2026-10-20 16:41:33,207 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 16:41:33,207 - INFO - page: 175
+2026-10-20 16:41:33,207 - INFO - text preview: CANADA 171 171 Poisons 171
+2026-10-20 16:41:33,207 - INFO - --------------------------------------------------
+2026-10-20 17:46:56,521 - INFO - HTTP Request: GET https://pypi.org/pypi/fastmcp/json "HTTP/1.1 200 OK"
+2026-10-20 17:46:56,581 - INFO - StreamableHTTP session manager started
+2026-10-20 17:47:12,210 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+2026-10-20 17:47:12,587 - INFO - HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2026-10-20 17:47:12,681 - INFO - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+2026-10-20 17:47:12,751 - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2026-10-20 17:47:12,796 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-launched-telemetry "HTTP/1.1 200 OK"
+2026-10-20 17:48:39,604 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 18:28:23,441 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 18:28:23,441 - INFO - query: What is the capital of Canada?
+2026-10-20 18:28:23,441 - INFO - mode: hybrid
+2026-10-20 18:28:23,441 - INFO - total_candidates: 10
+2026-10-20 18:28:23,441 - INFO - [Rank 1] score: 0.32745757699012756 | rrf: 0.0315 | dense_rank: 3 | bm25_rank: 4
+2026-10-20 18:28:23,441 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,441 - INFO - page: 7
+2026-10-20 18:28:23,441 - INFO - text preview: anadian Red Cross Society Act was approved by Parliament, and decreed that the Canadian Red Cross would serve as an auxiliary to the Government of Canada for Canadians, which was a measure that was in
+2026-10-20 18:28:23,441 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,441 - INFO - [Rank 2] score: 0.3351547122001648 | rrf: 0.0311 | dense_rank: 1 | bm25_rank: 8
+2026-10-20 18:28:23,441 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,441 - INFO - page: 20
+2026-10-20 18:28:23,450 - INFO - text preview: EMS varies from community to community. Most people in Canada call 9-1-1 for help in emergencies, but in some areas of Canada and in many workplaces you may need to dial a different designated emergen
+2026-10-20 18:28:23,450 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,450 - INFO - [Rank 3] score: 0.3009752333164215 | rrf: 0.0308 | dense_rank: 7 | bm25_rank: 3
+2026-10-20 18:28:23,450 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,450 - INFO - page: 199
+2026-10-20 18:28:23,450 - INFO - text preview: Car Safety Motor vehicle injuries are the number one cause of death of children in Canada. Follow the guidelines on the safe use of car seats and the passenger rules for children to help ensure childr
+2026-10-20 18:28:23,450 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,450 - INFO - [Rank 4] score: 0.2966036796569824 | rrf: 0.0306 | dense_rank: 9 | bm25_rank: 2
+2026-10-20 18:28:23,450 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,451 - INFO - page: 204
+2026-10-20 18:28:23,451 - INFO - text preview: d working order. To find out exactly what is needed for your boat, contact Transport Canada. - As of September 15, 2009, anyone operating a powerboat on Canadian waters must have a pleasure craft oper
+2026-10-20 18:28:23,451 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,451 - INFO - [Rank 5] score: 0.28630080819129944 | rrf: 0.0303 | dense_rank: 12 | bm25_rank: 1
+2026-10-20 18:28:23,451 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,451 - INFO - page: 175
+2026-10-20 18:28:23,451 - INFO - text preview: CANADA 171 171 Poisons 171
+2026-10-20 18:28:23,451 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,451 - INFO - [Rank 6] score: 0.31770560145378113 | rrf: 0.0287 | dense_rank: 5 | bm25_rank: 15
+2026-10-20 18:28:23,451 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,451 - INFO - page: 9
+2026-10-20 18:28:23,451 - INFO - text preview: food, clothing, hygiene items, and emotional support. As part of a global network of 190 national Societies, the work and expertise of the Canadian Red Cross often extends beyond Canada’s borders. Tra
+2026-10-20 18:28:23,451 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,451 - INFO - [Rank 7] score: 0.27469515800476074 | rrf: 0.0281 | dense_rank: 17 | bm25_rank: 6
+2026-10-20 18:28:23,451 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,451 - INFO - page: 174
+2026-10-20 18:28:23,451 - INFO - text preview: in feeling to the flu) Seek medical attention as soon as possible. If possible, save the tick responsible for the bite in a resealable bag or empty pill bottle, and bring it to the medical appointment
+2026-10-20 18:28:23,451 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,453 - INFO - [Rank 8] score: 0.3320181667804718 | rrf: 0.0275 | dense_rank: 2 | bm25_rank: 28
+2026-10-20 18:28:23,453 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,453 - INFO - page: 8
+2026-10-20 18:28:23,453 - INFO - text preview: nized emblems in the world, and continues to be an internationally respected symbol of protection and neutrality. The Red Cross is the emblem that is used by the Canadian National Society. No organiza
+2026-10-20 18:28:23,453 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,453 - INFO - [Rank 9] score: 0.27248668670654297 | rrf: 0.0273 | dense_rank: 18 | bm25_rank: 9
+2026-10-20 18:28:23,453 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,453 - INFO - page: 137
+2026-10-20 18:28:23,453 - INFO - text preview: rom minor self-inflicted injuries to suicide. Suicide is one of the ten most common causes of death in Canada, affecting people from a variety of backgrounds and age groups. Anyone expressing intentio
+2026-10-20 18:28:23,453 - INFO - --------------------------------------------------
+2026-10-20 18:28:23,453 - INFO - [Rank 10] score: 0.279936820268631 | rrf: 0.0272 | dense_rank: 16 | bm25_rank: 11
+2026-10-20 18:28:23,453 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 18:28:23,453 - INFO - page: 169
+2026-10-20 18:28:23,453 - INFO - text preview: Opioid Overdose Opioid drugs, such as heroin, oxycodone, and fentanyl, are a common cause of drug overdose in Canada. Many prescription drugs are or contain opiates. EMS personnel use naloxone (Narcan
+2026-10-20 18:28:23,453 - INFO - --------------------------------------------------
+2026-10-20 18:30:52,534 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-20 21:22:35,920 - INFO - StreamableHTTP session manager started
+2026-10-20 21:22:36,035 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+2026-10-20 21:22:36,327 - INFO - HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2026-10-20 21:22:36,356 - INFO - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+2026-10-20 21:22:36,471 - INFO - HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-launched-telemetry "HTTP/1.1 200 OK"
+2026-10-20 21:22:36,549 - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2026-10-20 21:23:14,122 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-20 21:23:14,301 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-20 21:23:14,301 - INFO - query: How long should you apply cooling to a partial thickness burn compared to a sprain or other muscle/joint injury?
+2026-10-20 21:23:14,301 - INFO - mode: hybrid
+2026-10-20 21:23:14,301 - INFO - total_candidates: 10
+2026-10-20 21:23:14,301 - INFO - [Rank 1] score: 0.6592094898223877 | rrf: 0.0309 | dense_rank: 1 | bm25_rank: 9
+2026-10-20 21:23:14,301 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,301 - INFO - page: 96
+2026-10-20 21:23:14,303 - INFO - text preview: Partial Thickness Burns What to Look For 1. Cool the affected area with clean running or standing water for at least 10 minutes. A clean cool or cold (but not freezing) compress can be used as a subst
+2026-10-20 21:23:14,303 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,303 - INFO - [Rank 2] score: 0.5344539880752563 | rrf: 0.0308 | dense_rank: 7 | bm25_rank: 3
+2026-10-20 21:23:14,303 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,303 - INFO - page: 124
+2026-10-20 21:23:14,303 - INFO - text preview: ossible to safely or comfortably move the person to a vehicle for transport to a healthcare facility. Myth-Information Myth: You should apply heat to a muscle, bone, or joint injury to speed healing. 
+2026-10-20 21:23:14,303 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,303 - INFO - [Rank 3] score: 0.5087747573852539 | rrf: 0.0307 | dense_rank: 10 | bm25_rank: 1
+2026-10-20 21:23:14,303 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,303 - INFO - page: 98
+2026-10-20 21:23:14,303 - INFO - text preview: first aid steps. 2. Care for radiation burns as you would care for thermal burns. Special Considerations When Caring for Burns Remember the following special considerations when providing care for bur
+2026-10-20 21:23:14,303 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,303 - INFO - [Rank 4] score: 0.5519065856933594 | rrf: 0.0303 | dense_rank: 5 | bm25_rank: 7
+2026-10-20 21:23:14,303 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,303 - INFO - page: 97
+2026-10-20 21:23:14,303 - INFO - text preview: Full Thickness Burns What to Look For - Redness - Pain (may not be present in the most severely burned areas due to nerve damage) - Possible swelling - Blisters - Charred or waxy, white flesh 1. Stop 
+2026-10-20 21:23:14,303 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,303 - INFO - [Rank 5] score: 0.48851478099823 | rrf: 0.0291 | dense_rank: 13 | bm25_rank: 5
+2026-10-20 21:23:14,303 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,303 - INFO - page: 95
+2026-10-20 21:23:14,303 - INFO - text preview: l EMS/9-1-1 yourself, get an AED, and then return to care for the person. If it a superficial burn, you should not need to call EMS/9-1-1, unless the person is in a great deal of pain or becomes unres
+2026-10-20 21:23:14,303 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,306 - INFO - [Rank 6] score: 0.45877736806869507 | rrf: 0.0264 | dense_rank: 20 | bm25_rank: 12
+2026-10-20 21:23:14,306 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,306 - INFO - page: 125
+2026-10-20 21:23:14,306 - INFO - text preview: bones and the joints above and below the injured area in the splint. - Always pad a rigid or anatomical splint to make the person more comfortable. - Remove any jewellery (especially rings) that the p
+2026-10-20 21:23:14,306 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,306 - INFO - [Rank 7] score: 0.4356962740421295 | rrf: 0.0262 | dense_rank: 27 | bm25_rank: 8
+2026-10-20 21:23:14,306 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,306 - INFO - page: 123
+2026-10-20 21:23:14,306 - INFO - text preview: the person receives medical attention. To avoid damaging nerves, blood vessels, and tissues, do not perform traction or any other manipulation. When caring for an open fracture, your first priority is
+2026-10-20 21:23:14,306 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,307 - INFO - [Rank 8] score: 0.4392290711402893 | rrf: 0.0258 | dense_rank: 25 | bm25_rank: 11
+2026-10-20 21:23:14,307 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,307 - INFO - page: 61
+2026-10-20 21:23:14,307 - INFO - text preview: uet 5 to 10 cm (2 to 4 in.) above the injury. If there is a joint in this range, apply the tourniquet above it, at least 2.5 cm (1 in.) away from the joint. 2. Tighten the tourniquet until the bleedin
+2026-10-20 21:23:14,307 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,307 - INFO - [Rank 9] score: 0.4373045563697815 | rrf: 0.0244 | dense_rank: 26 | bm25_rank: 18
+2026-10-20 21:23:14,307 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,307 - INFO - page: 99
+2026-10-20 21:23:14,307 - INFO - text preview: Call If the person is in severe pain or cannot move a body part without pain, or you think the force that caused the injury was great enough to cause serious damage or life-threatening bleeding, call 
+2026-10-20 21:23:14,307 - INFO - --------------------------------------------------
+2026-10-20 21:23:14,307 - INFO - [Rank 10] score: 0.42543870210647583 | rrf: 0.0235 | dense_rank: 32 | bm25_rank: 19
+2026-10-20 21:23:14,307 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-20 21:23:14,307 - INFO - page: 127
+2026-10-20 21:23:14,307 - INFO - text preview: in the hollow of the neck on the uninjured side. 8. Pad between the arm and the body, in the natural hollow, with soft, firm material. 9. Apply a binder (as described on the following page). 10. Reche
+2026-10-20 21:23:14,307 - INFO - --------------------------------------------------
+2026-10-20 21:23:17,223 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-20 21:23:19,294 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

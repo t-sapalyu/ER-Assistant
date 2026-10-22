@@ -4,7 +4,7 @@ import time
 from cost_tracker import track_cost
 from fastmcp import Client
 from mcp_server import TOOL_SCHEMAS
-from rag_pipeline import client, generate_answer, retrieve, safe_chat
+from rag_pipeline import best_score, client, generate_answer, retrieve, safe_chat
 
 MCP_SERVER_URL = "http://127.0.0.1:8765/mcp"
 
@@ -89,7 +89,7 @@ def agent_1_researcher(query, index, chunks) -> dict:
         }
 
     retrieved = retrieve(query, index, chunks)
-    top_score = retrieved[0].get("score", 0.0) if retrieved else 0.0
+    top_score = best_score(retrieved)
     print(f"[Agent 1] Retrieved {len(retrieved)} chunks. Top score: {top_score:.3f}")
 
     draft = generate_answer(query, retrieved)
@@ -538,7 +538,7 @@ def run_simple_rag(query, index, chunks) -> dict:
     print(f"{'#' * 60}")
 
     retrieved = retrieve(query, index, chunks)
-    top_score = retrieved[0].get("score", 0.0) if retrieved else 0.0
+    top_score = best_score(retrieved)
     print(f"[Simple RAG] Retrieved {len(retrieved)} chunks. Top score: {top_score:.3f}")
 
     answer = generate_answer(query, retrieved)

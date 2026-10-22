@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from rag_pipeline import client, load_index, retrieve, generate_answer
+from rag_pipeline import best_score, client, load_index, retrieve, generate_answer
 from cost_tracker import track_cost
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -93,7 +93,7 @@ def run_eval():
 
         # Retrieve + generate
         retrieved = retrieve(question, index, chunks, k=10)
-        top_score = retrieved[0]["score"] if retrieved else 0.0
+        top_score = best_score(retrieved)
         answer = generate_answer(question, retrieved)
 
         # Build context string for the judge

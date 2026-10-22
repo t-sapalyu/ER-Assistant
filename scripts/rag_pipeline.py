@@ -8,8 +8,10 @@ from pathlib import Path
 import uuid
 from cost_tracker import track_cost
 import logging
+import re
 
 import time
+from rank_bm25 import BM25Okapi
 from openai import RateLimitError, APIError, APITimeoutError, APIConnectionError
 
 # import spacy
@@ -232,6 +234,10 @@ def build_index(chunks):
     print("Embedding chunks...")
 
     vectors = np.array(embed_chunks(chunks)).astype("float32")
+    if len(vectors) != len(chunks):
+        raise RuntimeError(
+            f"Embedded {len(vectors)} of {len(chunks)} chunks; not saving a misaligned index."
+        )
 
     # Normalize for cosine similarity
     faiss.normalize_L2(vectors)
@@ -260,31 +266,128 @@ def load_index():
 
 
 # ---------------------------
-# Step 5 — Retrieve
+# Step 5 — Retrieve (hybrid: dense + BM25, fused with RRF)
 # ---------------------------
-def retrieve(query, index, chunks, k=10):
-    """Retrieve top-k chunks from FAISS."""
+MIN_SCORE = 0.25  # cosine floor; applied in every mode so off-topic queries still return nothing
+CANDIDATE_POOL = 50  # candidates taken from each retriever before fusion
+RRF_K = 60  # standard Reciprocal Rank Fusion constant
+
+STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "can", "do", "does", "for",
+    "from", "how", "i", "if", "in", "is", "it", "of", "on", "or", "should",
+    "that", "the", "this", "to", "was", "what", "when", "where", "which", "who",
+    "why", "with", "you", "your",
+}
+
+_bm25 = None
+_bm25_key = None
+
+
+def tokenize(text: str) -> list[str]:
+    """Lowercase word/number tokens; keeps abbreviations (AED, CPR) and numbers (30, 2)."""
+    return [
+        t
+        for t in re.findall(r"[a-z0-9]+", text.lower())
+        if t not in STOPWORDS and (len(t) > 1 or t.isdigit())
+    ]
+
+
+def get_bm25(chunks):
+    """Build the BM25 index lazily; rebuilds when chunks are added (add_to_database)."""
+    global _bm25, _bm25_key
+    key = (id(chunks), len(chunks))
+    if _bm25_key != key:
+        _bm25 = BM25Okapi([tokenize(c["text"]) for c in chunks])
+        _bm25_key = key
+    return _bm25
+
+
+def retrieve(query, index, chunks, k=10, mode="hybrid"):
+    """Retrieve top-k chunks.
+
+    mode: "hybrid" (dense + BM25 fused with RRF), "dense" (FAISS only) or "bm25".
+    Each returned chunk keeps "score" = cosine similarity (used downstream for
+    thresholds and analytics) plus "rrf_score", "dense_rank" and "bm25_rank".
+    """
+    if index.ntotal == 0 or not chunks:
+        return []
+
+    # Embed the query and normalize it to length 1, so a dot product with a
+    # stored (also normalized) chunk vector equals their cosine similarity.
+    # Needed in every mode: even "bm25" uses cosine for the MIN_SCORE floor.
     query_vec = np.array(get_embeddings([query])).astype("float32")
     faiss.normalize_L2(query_vec)
 
-    n_fetch = min(k, index.ntotal)
-    if n_fetch == 0:
-        return []
-    scores, indices = index.search(query_vec, n_fetch)
+    pool = min(CANDIDATE_POOL, index.ntotal)
 
+    # --- 1. Dense (semantic) search -------------------------------------
+    # FAISS compares the query vector with every chunk vector and returns the
+    # `pool` best: `scores` = cosine similarities (highest first), `indices` =
+    # row numbers, which are also positions in `chunks`. Both are 2-D (one
+    # row per query); we send one query, so we read row [0].
+    # dense_ranks: chunk idx -> position 1..pool   (used by RRF)
+    # cosine:      chunk idx -> cosine similarity  (used by the MIN_SCORE floor)
+    dense_ranks, cosine = {}, {}
+    if mode in ("hybrid", "dense"):
+        scores, indices = index.search(query_vec, pool)
+        for rank, (idx, score) in enumerate(zip(indices[0], scores[0]), start=1):
+            if 0 <= idx < len(chunks):  # FAISS pads missing results with -1
+                dense_ranks[int(idx)] = rank
+                cosine[int(idx)] = float(score)
+
+    # --- 2. BM25 (keyword) search ----------------------------------------
+    # No embeddings: BM25 scores each chunk by how often the query words
+    # appear in it, weighting rare words (e.g. "epinephrine") above common
+    # ones. get_scores returns one score per chunk, in `chunks` order.
+    # argsort(...)[::-1] lists chunk positions from best to worst score; we
+    # keep the top `pool` and stop at the first chunk sharing no query word.
+    bm25_ranks, bm25_scores = {}, {}
+    if mode in ("hybrid", "bm25"):
+        query_tokens = tokenize(query)
+        if query_tokens:  # query was only stopwords -> nothing to match
+            scores = get_bm25(chunks).get_scores(query_tokens)
+            for rank, idx in enumerate(np.argsort(scores)[::-1][:pool], start=1):
+                if scores[idx] <= 0:
+                    break
+                bm25_ranks[int(idx)] = rank
+                bm25_scores[int(idx)] = float(scores[idx])
+
+    # --- 3. Reciprocal Rank Fusion ----------------------------------------
+    # Loop over both rank dicts (dense first, then BM25). Each chunk earns
+    # 1 / (RRF_K + rank) from every list it appears in, so chunks ranked well
+    # by BOTH retrievers rise to the top. Only ranks are used, not raw
+    # scores, because cosine (0..1) and BM25 (unbounded) are not comparable.
+    # Example: dense rank 3 + BM25 rank 1 -> 1/63 + 1/61 = 0.0323
+    #          dense rank 1 only           -> 1/61         = 0.0164
+    # In "dense" or "bm25" mode one dict is empty, so this is just that ranking.
+    fused = {}
+    for ranks in (dense_ranks, bm25_ranks):
+        for idx, rank in ranks.items():
+            fused[idx] = fused.get(idx, 0.0) + 1.0 / (RRF_K + rank)
+
+    # --- 4. Relevance floor + build results -------------------------------
+    # Walk chunks from highest to lowest fused score. BM25 matches any shared
+    # word, so it can return off-topic chunks; the cosine floor removes them.
     candidates = []
-    for i, idx in enumerate(indices[0]):
-        if idx < 0 or idx >= len(chunks):
+    for idx in sorted(fused, key=fused.get, reverse=True):
+        if idx not in cosine:
+            # Found only by BM25 (not in the dense top `pool`): read its
+            # stored vector back from FAISS and compute cosine directly.
+            vec = index.reconstruct(idx).reshape(1, -1)
+            cosine[idx] = float(np.dot(vec, query_vec.T)[0][0])
+        if cosine[idx] < MIN_SCORE:
             continue
-        chunk = dict(chunks[idx])
-        chunk["score"] = float(scores[0][i])
+        chunk = dict(chunks[idx])  # copy, so the shared `chunks` list isn't modified
+        chunk["score"] = cosine[idx]  # cosine: read by thresholds and analytics
+        chunk["rrf_score"] = fused[idx]  # what the results are ordered by
+        chunk["dense_rank"] = dense_ranks.get(idx)  # None if dense didn't find it
+        chunk["bm25_rank"] = bm25_ranks.get(idx)  # None if BM25 didn't find it
         candidates.append(chunk)
 
-    # Filter weak matches
-    MIN_SCORE = 0.25
-    candidates = [c for c in candidates if c["score"] >= MIN_SCORE]
-
-    # Deduplicate — keep best chunk per page
+    # --- 5. Deduplicate — keep best chunk per page (after fusion) ---------
+    # Overlapping chunks from the same page are near-duplicates; keeping only
+    # the highest-ranked one gives the LLM more varied context and cleaner
+    # citations. Then cut to the final k.
     seen = set()
     unique = []
     for c in candidates:
@@ -293,20 +396,29 @@ def retrieve(query, index, chunks, k=10):
             continue
         seen.add(key)
         unique.append(c)
-    candidates = unique
+    candidates = unique[:k]
 
-    # Logging
+    # --- 6. Log every result with both ranks, to see why it ranked where it did
     logger.info("---- RETRIEVED CHUNKS ----")
     logger.info(f"query: {query}")
+    logger.info(f"mode: {mode}")
     logger.info(f"total_candidates: {len(candidates)}")
     for i, chunk in enumerate(candidates):
-        logger.info(f"[Rank {i+1}] score: {chunk.get('score')}")
+        logger.info(
+            f"[Rank {i+1}] score: {chunk.get('score')} | rrf: {chunk['rrf_score']:.4f}"
+            f" | dense_rank: {chunk['dense_rank']} | bm25_rank: {chunk['bm25_rank']}"
+        )
         logger.info(f"source: {chunk.get('source')}")
         logger.info(f"page: {chunk.get('page')}")
         logger.info(f"text preview: {chunk.get('text', '')[:200]}")
         logger.info("-" * 50)
 
     return candidates
+
+
+def best_score(retrieved) -> float:
+    """Highest cosine score among retrieved chunks (results are ordered by RRF, not cosine)."""
+    return max((c.get("score", 0.0) for c in retrieved), default=0.0)
 
 
 # ---------------------------
@@ -479,6 +591,12 @@ def add_to_database(text: str, source_name: str, index, chunks: list) -> dict:
         }
 
     embeddings = embed_chunks(new_chunks)
+    if len(embeddings) != len(new_chunks):
+        return {
+            "added": 0,
+            "source": source_name,
+            "message": "Embedding failed; nothing was added. Please try again.",
+        }
     vectors = np.array(embeddings).astype("float32")
     faiss.normalize_L2(vectors)
     index.add(vectors)

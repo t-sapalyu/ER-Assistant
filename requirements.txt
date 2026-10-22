@@ -9,3 +9,4 @@ wikipedia-api>=0.6.0
 ddgs>=5.0.0
 fastmcp>=0.1.0
 gradio>=4.0.0
+rank-bm25>=0.2.2
