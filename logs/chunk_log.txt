@@ -2639,3 +2639,1068 @@
 2026-10-20 21:23:14,307 - INFO - --------------------------------------------------
 2026-10-20 21:23:17,223 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-10-20 21:23:19,294 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-23 00:31:33,755 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:33,931 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:36,302 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:36,462 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:36,647 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:36,839 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:37,070 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:37,392 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:37,562 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:37,788 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:37,990 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:38,179 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:38,343 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:38,548 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:38,724 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:38,884 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,070 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,230 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,400 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,553 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,714 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:39,923 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:40,089 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:40,304 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:40,475 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:40,671 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:40,873 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,037 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,216 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,385 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,545 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,704 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:41,911 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:42,075 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:42,268 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:42,493 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:42,671 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-23 00:31:42,847 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:29,298 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:29,406 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:29,406 - INFO - query: Who founded the International Red Cross movement after witnessing the Battle of Solferino?
+2026-10-25 12:22:29,406 - INFO - mode: hybrid
+2026-10-25 12:22:29,406 - INFO - total_candidates: 8
+2026-10-25 12:22:29,406 - INFO - [Rank 1] score: 0.5729384422302246 | rrf: 0.0323 | dense_rank: 3 | bm25_rank: 1
+2026-10-25 12:22:29,406 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,406 - INFO - page: 7
+2026-10-25 12:22:29,406 - INFO - text preview: nguish the horse drawn wagon being used to transport the wounded. This was one of the first Red Cross flags ever flown in Canada. In 1896, Dr. Ryerson founded the first overseas branch of the British 
+2026-10-25 12:22:29,406 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,406 - INFO - [Rank 2] score: 0.5279890298843384 | rrf: 0.0313 | dense_rank: 5 | bm25_rank: 3
+2026-10-25 12:22:29,406 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,406 - INFO - page: 5
+2026-10-25 12:22:29,406 - INFO - text preview: . The Fundamental Principles were proclaimed by the XXth International Conference of the Red Cross, Vienna, 1965. This is the revised text contained in the Statutes of the International Red Cross and 
+2026-10-25 12:22:29,406 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,406 - INFO - [Rank 3] score: 0.4758220613002777 | rrf: 0.0303 | dense_rank: 7 | bm25_rank: 5
+2026-10-25 12:22:29,406 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,407 - INFO - page: 8
+2026-10-25 12:22:29,407 - INFO - text preview: cember of 2005, the International Red Cross and Red Crescent Movement welcomed the decision to create an additional emblem alongside the Red Cross and Red Crescent: the Red Crystal. The Red Cross The 
+2026-10-25 12:22:29,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,407 - INFO - [Rank 4] score: 0.42046546936035156 | rrf: 0.0282 | dense_rank: 12 | bm25_rank: 10
+2026-10-25 12:22:29,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,407 - INFO - page: 9
+2026-10-25 12:22:29,407 - INFO - text preview: he rights of all people affected by armed conflict. The Geneva Conventions, laws that protect the wounded, the sick, prisoners of war, and civilians, serve as a mandate for the Canadian Red Cross in i
+2026-10-25 12:22:29,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,407 - INFO - [Rank 5] score: 0.2932034134864807 | rrf: 0.0242 | dense_rank: 28 | bm25_rank: 18
+2026-10-25 12:22:29,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,407 - INFO - page: 233
+2026-10-25 12:22:29,407 - INFO - text preview: t access to videos, interactive quizzes, and simple, step-by-step advice. redcross.ca Stay tuned for training and volunteer opportunities in the Red Cross community. .CA Copyright © 2017 The Canadian 
+2026-10-25 12:22:29,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,407 - INFO - [Rank 6] score: 0.3605082631111145 | rrf: 0.0241 | dense_rank: 21 | bm25_rank: 25
+2026-10-25 12:22:29,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,407 - INFO - page: 10
+2026-10-25 12:22:29,407 - INFO - text preview: First Aid Programs As the largest provider of first aid training in Canada, the Canadian Red Cross has been offering first aid and CPR training for more than 50 years. With courses for individuals, gr
+2026-10-25 12:22:29,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,408 - INFO - [Rank 7] score: 0.2695504426956177 | rrf: 0.0229 | dense_rank: 31 | bm25_rank: 24
+2026-10-25 12:22:29,408 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,408 - INFO - page: 77
+2026-10-25 12:22:29,408 - INFO - text preview: ctor. The Canadian Red Cross accepts no responsibility for any modifications made to the AED protocol set out in this text. 73 73 CPR & AED 73
+2026-10-25 12:22:29,408 - INFO - --------------------------------------------------
+2026-10-25 12:22:29,408 - INFO - [Rank 8] score: 0.28737232089042664 | rrf: 0.0219 | dense_rank: 29 | bm25_rank: 34
+2026-10-25 12:22:29,408 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:29,408 - INFO - page: 232
+2026-10-25 12:22:29,408 - INFO - text preview: . This revision required the hard work and dedication of many teams who put in countless hours to contribute to its success. The Canadian Red Cross extends its thanks to the First Aid Technical Adviso
+2026-10-25 12:22:29,408 - INFO - --------------------------------------------------
+2026-10-25 12:22:32,005 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:33,302 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:34,202 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:34,241 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:34,241 - INFO - query: How do you obtain consent before providing first aid to a conscious person?
+2026-10-25 12:22:34,241 - INFO - mode: hybrid
+2026-10-25 12:22:34,241 - INFO - total_candidates: 10
+2026-10-25 12:22:34,241 - INFO - [Rank 1] score: 0.6111258268356323 | rrf: 0.0313 | dense_rank: 1 | bm25_rank: 7
+2026-10-25 12:22:34,241 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,241 - INFO - page: 16
+2026-10-25 12:22:34,241 - INFO - text preview: ce for more information. Getting Permission to Help Once you decide to act, you need to get the ill or injured person’s permission (also known as consent) to assist. To get permission: 1. Tell the per
+2026-10-25 12:22:34,241 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 2] score: 0.5293060541152954 | rrf: 0.0293 | dense_rank: 12 | bm25_rank: 5
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 41
+2026-10-25 12:22:34,243 - INFO - text preview: e visible, and that the person (or the person’s direct caregiver) is the best source of information about his or her unique situation. If you are unsure, ask what you can do to help. The person is lik
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 3] score: 0.5764085054397583 | rrf: 0.0282 | dense_rank: 3 | bm25_rank: 21
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 17
+2026-10-25 12:22:34,243 - INFO - text preview: Special Situations There are times when it is difficult to get permission to provide care for an ill or injured person or when the person denies the help of First Aiders or bystanders: You and the Per
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 4] score: 0.5330795049667358 | rrf: 0.0272 | dense_rank: 11 | bm25_rank: 16
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 30
+2026-10-25 12:22:34,243 - INFO - text preview: to the site of the emergency, getting needed items (such as an AED and first aid kit), controlling crowds, and reassuring the injured or ill person. What is your initial impression of the ill or injur
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 5] score: 0.5209122896194458 | rrf: 0.0268 | dense_rank: 15 | bm25_rank: 14
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 42
+2026-10-25 12:22:34,243 - INFO - text preview: who you are, but then speak directly to the ill or injured person. Don’t touch the person abruptly and don’t touch the person without permission. Providing First Aid for Someone with a Physical Disabi
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 6] score: 0.5514156818389893 | rrf: 0.0263 | dense_rank: 7 | bm25_rank: 28
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 38
+2026-10-25 12:22:34,243 - INFO - text preview: 3. If the person indicates an area of pain, discomfort, or concern, look at the area for signs of injury including discolouration (bruises) or deformities (odd shapes). For privacy reasons, do not rem
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 7] score: 0.5036042928695679 | rrf: 0.0245 | dense_rank: 27 | bm25_rank: 17
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 31
+2026-10-25 12:22:34,243 - INFO - text preview: ckly looking at the person from head to toe for signs of life-threatening external bleeding. Life-threatening bleeding must be controlled as soon as possible. Unresponsiveness, trouble breathing, and 
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 8] score: 0.5068285465240479 | rrf: 0.0240 | dense_rank: 25 | bm25_rank: 22
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 33
+2026-10-25 12:22:34,243 - INFO - text preview: ttle that you can do as a First Aider, so you should call EMS/9-1-1 first before providing care. The person has life-threatening bleeding Life-threatening bleeding quickly reduces the body’s blood vol
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 9] score: 0.4792841672897339 | rrf: 0.0234 | dense_rank: 50 | bm25_rank: 10
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 32
+2026-10-25 12:22:34,243 - INFO - text preview: erson. If someone else has to leave to make the call for you, ask that person to come back and tell you what the EMS/9-1-1 dispatcher said. If using a mobile phone, the person can stay with you while 
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:34,243 - INFO - [Rank 10] score: 0.5148864388465881 | rrf: 0.0223 | dense_rank: 17 | bm25_rank: 47
+2026-10-25 12:22:34,243 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:34,243 - INFO - page: 35
+2026-10-25 12:22:34,243 - INFO - text preview: bleeding, you should help the person with life- threatening bleeding first. EMS personnel will arrive before the minor bleeding becomes serious. Guidelines for Helping an Ill or Injured Person with Me
+2026-10-25 12:22:34,243 - INFO - --------------------------------------------------
+2026-10-25 12:22:36,408 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:37,698 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:37,887 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:37,918 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:37,918 - INFO - query: What solution should be used to disinfect a surface after a blood spill?
+2026-10-25 12:22:37,918 - INFO - mode: hybrid
+2026-10-25 12:22:37,918 - INFO - total_candidates: 10
+2026-10-25 12:22:37,918 - INFO - [Rank 1] score: 0.614006757736206 | rrf: 0.0325 | dense_rank: 1 | bm25_rank: 2
+2026-10-25 12:22:37,918 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,918 - INFO - page: 26
+2026-10-25 12:22:37,918 - INFO - text preview: ation, and wear gloves and eye protection when using bleach. Let the solution stand on the surface for at least 10 minutes, then use clean absorbent materials (such as paper towels) to wipe up the liq
+2026-10-25 12:22:37,918 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,918 - INFO - [Rank 2] score: 0.43546149134635925 | rrf: 0.0282 | dense_rank: 13 | bm25_rank: 9
+2026-10-25 12:22:37,918 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,918 - INFO - page: 24
+2026-10-25 12:22:37,918 - INFO - text preview: efore and after contact with an ill or injured person. - After handling dirty articles, instruments, or dressings. - Before or after treating wounds. - After removing gloves. Hand Sanitizers Hand sani
+2026-10-25 12:22:37,918 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,918 - INFO - [Rank 3] score: 0.5418679714202881 | rrf: 0.0263 | dense_rank: 5 | bm25_rank: 32
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 27
+2026-10-25 12:22:37,920 - INFO - text preview: Soft materials such as clothes and linens that have been contaminated should be washed with soap and the hottest water available, at least 70°C (158°F). Hard-surfaced materials, such as dustpans, shou
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 4] score: 0.3717753291130066 | rrf: 0.0245 | dense_rank: 38 | bm25_rank: 10
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 62
+2026-10-25 12:22:37,920 - INFO - text preview: s fail or are not practical. Typically, hemostatic dressings are used on parts of the body where a tourniquet cannot be applied, such as the neck or torso. A hemostatic dressing can also be used to co
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 5] score: 0.38600242137908936 | rrf: 0.0230 | dense_rank: 30 | bm25_rank: 24
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 60
+2026-10-25 12:22:37,920 - INFO - text preview: ent. Life-Threatening External Bleeding What to Look For The signs and symptoms of life- threatening external bleeding include: - Blood spurting or flowing freely from a wound - Blood that fails to cl
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 6] score: 0.3912651538848877 | rrf: 0.0213 | dense_rank: 27 | bm25_rank: 42
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 90
+2026-10-25 12:22:37,920 - INFO - text preview: tially dangerous tools or equipment. - Stay alert and focused when engaged in any potentially risky activity. Bandaging Guidelines - Use clean, preferably sterile, dressings. - Check circulation below
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 7] score: 0.3255564272403717 | rrf: 0.0156 | dense_rank: None | bm25_rank: 4
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 206
+2026-10-25 12:22:37,920 - INFO - text preview: lity to determine the facts and evidence, not you. Children’s Hygiene Diapering Follow these steps to ensure that diapers are changed in a sanitary way: - Use disposable gloves and remove them before 
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 8] score: 0.32529163360595703 | rrf: 0.0152 | dense_rank: None | bm25_rank: 6
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 22
+2026-10-25 12:22:37,920 - INFO - text preview: disease transmission. Some pathogens spread through only one of these routes, while others spread through several. Definition Example Direct Contact Occurs when bodily fluids from an infected person e
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 9] score: 0.49312740564346313 | rrf: 0.0149 | dense_rank: 7 | bm25_rank: None
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 92
+2026-10-25 12:22:37,920 - INFO - text preview: ects, like glass, right away. Dispose of sharp objects safely (e.g., do not put broken glass directly into a garbage bag, and, if possible, remove nails from objects before putting the objects into a 
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:37,920 - INFO - [Rank 10] score: 0.33517324924468994 | rrf: 0.0149 | dense_rank: None | bm25_rank: 7
+2026-10-25 12:22:37,920 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:37,920 - INFO - page: 180
+2026-10-25 12:22:37,920 - INFO - text preview: the importance of covering their mouths (preferably with the inside of their elbow) when they cough or sneeze and washing their hands afterward. In a child care setting, follow these guidelines for cl
+2026-10-25 12:22:37,920 - INFO - --------------------------------------------------
+2026-10-25 12:22:39,853 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:40,764 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:40,984 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:41,020 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:41,020 - INFO - query: What are the four modes of disease transmission?
+2026-10-25 12:22:41,020 - INFO - mode: hybrid
+2026-10-25 12:22:41,020 - INFO - total_candidates: 10
+2026-10-25 12:22:41,020 - INFO - [Rank 1] score: 0.46838265657424927 | rrf: 0.0323 | dense_rank: 3 | bm25_rank: 1
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 22
+2026-10-25 12:22:41,020 - INFO - text preview: Lowering the Risk of Infection Giving first aid care is a hands-on activity that can put you in close contact with another person’s bodily fluids (such as saliva, mucus, vomit, and blood), which may c
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 2] score: 0.41347265243530273 | rrf: 0.0310 | dense_rank: 6 | bm25_rank: 3
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 23
+2026-10-25 12:22:41,020 - INFO - text preview: How to Prevent Diseases from Spreading Personal Precautions Personal precautions are the actions that individuals can take to reduce the risk of disease transmission. Examples include washing your han
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 3] score: 0.4204781651496887 | rrf: 0.0295 | dense_rank: 5 | bm25_rank: 11
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 142
+2026-10-25 12:22:41,020 - INFO - text preview: The Four Mechanisms of Heating and Cooling the Body Heat moves from warmer areas to cooler ones through four mechanisms: 1. Radiation: (Warming or cooling) Involves the direct loss or absorption of he
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 4] score: 0.30849236249923706 | rrf: 0.0272 | dense_rank: 23 | bm25_rank: 6
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 143
+2026-10-25 12:22:41,020 - INFO - text preview: Heat-Related Illnesses Hyperthermia occurs when the body’s core temperature rises above the normal range. It results when at least one of the four mechanisms that cool the body is impaired by clothing
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 5] score: 0.3419708013534546 | rrf: 0.0256 | dense_rank: 13 | bm25_rank: 24
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 19
+2026-10-25 12:22:41,020 - INFO - text preview: cessary physical contact and any body language that could appear threatening. - Actively listen to the ill or injured person. This involves four behaviours: 1. Making every effort to fully understand 
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 6] score: 0.31800583004951477 | rrf: 0.0253 | dense_rank: 17 | bm25_rank: 21
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 15
+2026-10-25 12:22:41,020 - INFO - text preview: 3. Catching a disease: You might be concerned that performing first aid will put you at risk of infection, but there are many ways to reduce this risk. If you take simple precautions to limit contact 
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 7] score: 0.32119324803352356 | rrf: 0.0235 | dense_rank: 15 | bm25_rank: 38
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 172
+2026-10-25 12:22:41,020 - INFO - text preview: ion will last 4 to 8 hours and heavier or more frequent applications do not increase effectiveness. from their mouths into the person’s body. These pathogens can cause serious illnesses, such as Lyme 
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 8] score: 0.2690807580947876 | rrf: 0.0225 | dense_rank: 45 | bm25_rank: 17
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 24
+2026-10-25 12:22:41,020 - INFO - text preview: e-preventable diseases are serious, and can lead to disability or death. Immunizations protect not only you, but also your family, friends, and co-workers. Immunization introduces a substance into the
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 9] score: 0.36961865425109863 | rrf: 0.0147 | dense_rank: 8 | bm25_rank: None
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 27
+2026-10-25 12:22:41,020 - INFO - text preview: ther person through contact with the eyes, mucous membranes (e.g., in the mouth or nose), or an opening in the skin (e.g., a cut). Being pricked by a used syringe is also an example of an exposure inc
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,020 - INFO - [Rank 10] score: 0.35395219922065735 | rrf: 0.0143 | dense_rank: 10 | bm25_rank: None
+2026-10-25 12:22:41,020 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:41,020 - INFO - page: 182
+2026-10-25 12:22:41,020 - INFO - text preview: hese diseases. Vaccination is also a fundamental preventive strategy. Vaccines have been incredibly effective in preventing childhood diseases and decreasing child mortality rates. Common childhood va
+2026-10-25 12:22:41,020 - INFO - --------------------------------------------------
+2026-10-25 12:22:41,727 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:43,161 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:43,383 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:43,413 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:43,416 - INFO - query: What are the steps involved in the primary assessment of an ill or injured person?
+2026-10-25 12:22:43,416 - INFO - mode: hybrid
+2026-10-25 12:22:43,416 - INFO - total_candidates: 10
+2026-10-25 12:22:43,416 - INFO - [Rank 1] score: 0.7176108956336975 | rrf: 0.0320 | dense_rank: 1 | bm25_rank: 4
+2026-10-25 12:22:43,416 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,416 - INFO - page: 37
+2026-10-25 12:22:43,416 - INFO - text preview: secondary assessment consists of three steps: 1. Asking questions 2. Checking the quality of the person’s vital signs 3. Doing an injury check If possible, record the findings from the secondary asses
+2026-10-25 12:22:43,416 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,416 - INFO - [Rank 2] score: 0.6526591777801514 | rrf: 0.0317 | dense_rank: 3 | bm25_rank: 3
+2026-10-25 12:22:43,416 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,416 - INFO - page: 30
+2026-10-25 12:22:43,416 - INFO - text preview: or does it seem pale, ashen (grey), or flushed? Is the person moving or motionless? Does the person have any immediately identifiable injuries? Look for signs of a life-threatening illness or injury, 
+2026-10-25 12:22:43,416 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,416 - INFO - [Rank 3] score: 0.6078824996948242 | rrf: 0.0297 | dense_rank: 5 | bm25_rank: 10
+2026-10-25 12:22:43,416 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,416 - INFO - page: 29
+2026-10-25 12:22:43,416 - INFO - text preview: If you encounter an ill or injured person, there are three simple steps that you must take: Check Once you recognize an emergency you must first check the scene, then check the person. Check the Scene
+2026-10-25 12:22:43,416 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,416 - INFO - [Rank 4] score: 0.5804046392440796 | rrf: 0.0282 | dense_rank: 8 | bm25_rank: 14
+2026-10-25 12:22:43,417 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,417 - INFO - page: 38
+2026-10-25 12:22:43,417 - INFO - text preview: check is to look carefully for injuries that were not identified during the primary assessment. An injury check may involve a focused examination or a hands-on check, depending on the comfort level of
+2026-10-25 12:22:43,417 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,417 - INFO - [Rank 5] score: 0.5496647357940674 | rrf: 0.0270 | dense_rank: 12 | bm25_rank: 16
+2026-10-25 12:22:43,417 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,417 - INFO - page: 19
+2026-10-25 12:22:43,417 - INFO - text preview: tation to a hospital or other facility if necessary. Responding to the scene of an emergency involves providing emotional support as well as caring for injuries. When providing care, you should: - Spe
+2026-10-25 12:22:43,417 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,417 - INFO - [Rank 6] score: 0.5243740081787109 | rrf: 0.0270 | dense_rank: 16 | bm25_rank: 12
+2026-10-25 12:22:43,417 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,417 - INFO - page: 18
+2026-10-25 12:22:43,417 - INFO - text preview: t Aider includes four basic steps: 1. Recognize the emergency. 2. Protect yourself, the ill or injured person, and bystanders. 3. Access help (e.g., call EMS/9-1-1). 4. Act according to your skills, k
+2026-10-25 12:22:43,417 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,417 - INFO - [Rank 7] score: 0.49321678280830383 | rrf: 0.0269 | dense_rank: 25 | bm25_rank: 6
+2026-10-25 12:22:43,418 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,418 - INFO - page: 230
+2026-10-25 12:22:43,418 - INFO - text preview: ctive organs. Poison: Any substance that causes injury, illness, or death if it is inhaled, swallowed (ingested), absorbed, or injected. Poison Control Centre: A centre staffed by medical professional
+2026-10-25 12:22:43,418 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,418 - INFO - [Rank 8] score: 0.5228503942489624 | rrf: 0.0256 | dense_rank: 17 | bm25_rank: 19
+2026-10-25 12:22:43,418 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,418 - INFO - page: 209
+2026-10-25 12:22:43,419 - INFO - text preview: To protect yourself and the ill or injured person, follow these guidelines when moving someone: - Attempt to move a person only when you are sure you can comfortably handle the rescue. - Walk carefull
+2026-10-25 12:22:43,419 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,419 - INFO - [Rank 9] score: 0.514427661895752 | rrf: 0.0256 | dense_rank: 18 | bm25_rank: 18
+2026-10-25 12:22:43,419 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,419 - INFO - page: 35
+2026-10-25 12:22:43,419 - INFO - text preview: To roll a person safely into the recovery position: When to Stop Giving Care Once you begin providing care to an injured or ill person, you must continue to give the appropriate care until: - Another 
+2026-10-25 12:22:43,419 - INFO - --------------------------------------------------
+2026-10-25 12:22:43,419 - INFO - [Rank 10] score: 0.5362794995307922 | rrf: 0.0248 | dense_rank: 13 | bm25_rank: 30
+2026-10-25 12:22:43,419 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:43,419 - INFO - page: 40
+2026-10-25 12:22:43,419 - INFO - text preview: ble sound, while you slowly lower your arm and count to ten. 4. Repeat 3 to 5 times, providing encouragement in a calm voice. Should You Transport an Ill or Injured Person to the Hospital? You may dec
+2026-10-25 12:22:43,419 - INFO - --------------------------------------------------
+2026-10-25 12:22:45,171 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:46,192 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:46,380 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:46,405 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:46,405 - INFO - query: What size of toys are considered choking hazards for young children and what guideline can be used to identify unsafe objects?
+2026-10-25 12:22:46,405 - INFO - mode: hybrid
+2026-10-25 12:22:46,405 - INFO - total_candidates: 10
+2026-10-25 12:22:46,405 - INFO - [Rank 1] score: 0.614784300327301 | rrf: 0.0328 | dense_rank: 1 | bm25_rank: 1
+2026-10-25 12:22:46,405 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,405 - INFO - page: 47
+2026-10-25 12:22:46,405 - INFO - text preview: f panic, with wide eyes - Forceful or weak coughing - One or both hands clutching the throat Partial Choking What To Look For It is not usually necessary to call for help for partial choking, though y
+2026-10-25 12:22:46,405 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,405 - INFO - [Rank 2] score: 0.5617457628250122 | rrf: 0.0315 | dense_rank: 3 | bm25_rank: 4
+2026-10-25 12:22:46,405 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,405 - INFO - page: 198
+2026-10-25 12:22:46,405 - INFO - text preview: If the toy seems unsafe, discard it immediately. - Wooden toys should be glued or screwed together instead of nailed. - Ride-around or ride-on toys must be selected according to the size of the child.
+2026-10-25 12:22:46,405 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,405 - INFO - [Rank 3] score: 0.5044222474098206 | rrf: 0.0304 | dense_rank: 10 | bm25_rank: 2
+2026-10-25 12:22:46,405 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,405 - INFO - page: 46
+2026-10-25 12:22:46,405 - INFO - text preview: OBJECTS AND TOYS 42 42 Choking 42
+2026-10-25 12:22:46,405 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,405 - INFO - [Rank 4] score: 0.505290150642395 | rrf: 0.0296 | dense_rank: 9 | bm25_rank: 6
+2026-10-25 12:22:46,405 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,405 - INFO - page: 196
+2026-10-25 12:22:46,405 - INFO - text preview: Children are very vulnerable. Their bodies are more susceptible to injury, and they are typically less aware of risks and hazards in their environments. When caring for children, prevention, preparati
+2026-10-25 12:22:46,405 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,405 - INFO - [Rank 5] score: 0.432813823223114 | rrf: 0.0269 | dense_rank: 17 | bm25_rank: 12
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 45
+2026-10-25 12:22:46,407 - INFO - text preview: by the person’s tongue or by swelling, this is called an anatomical obstruction. If it is blocked by a physical object, this is called a mechanical obstruction. Children younger than 5 years old have 
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,407 - INFO - [Rank 6] score: 0.42058977484703064 | rrf: 0.0253 | dense_rank: 21 | bm25_rank: 17
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 203
+2026-10-25 12:22:46,407 - INFO - text preview: upervisors of the dangers of relying on inflatable toys (e.g., inner tubes). Inflatable toys can leak and no longer provide support, and they can also create barriers to effective supervision. - Ensur
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,407 - INFO - [Rank 7] score: 0.39669084548950195 | rrf: 0.0216 | dense_rank: 28 | bm25_rank: 38
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 135
+2026-10-25 12:22:46,407 - INFO - text preview: ary. It is impossible to swallow one’s own tongue. Although the person may bite down on the tongue, causing it to bleed, this is a minor problem compared to the risks of attempting to put an object in
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,407 - INFO - [Rank 8] score: 0.36409878730773926 | rrf: 0.0209 | dense_rank: 42 | bm25_rank: 30
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 160
+2026-10-25 12:22:46,407 - INFO - text preview: Hazardous Materials The international hazard symbols on product labels make it easier to identify harmful materials. If you must handle a product that is labelled with any of the international hazard 
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,407 - INFO - [Rank 9] score: 0.393588662147522 | rrf: 0.0202 | dense_rank: 30 | bm25_rank: 50
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 200
+2026-10-25 12:22:46,407 - INFO - text preview: Safe Use of Wheeled Equipment Choosing a Safe Bicycle When choosing a bicycle for a child, ensure that it is the proper size: Choosing a Safe Helmet Mishaps during sports that require a helmet are the
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:46,407 - INFO - [Rank 10] score: 0.30532193183898926 | rrf: 0.0133 | dense_rank: None | bm25_rank: 15
+2026-10-25 12:22:46,407 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:46,407 - INFO - page: 204
+2026-10-25 12:22:46,407 - INFO - text preview: he boat. - Teach children how to use a boat radio and fire extinguisher in case of an emergency. - Discuss and practice survival techniques often. - Choose PFDs or lifejackets carefully to match the w
+2026-10-25 12:22:46,407 - INFO - --------------------------------------------------
+2026-10-25 12:22:47,935 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:48,822 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:49,080 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:49,097 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:49,097 - INFO - query: What are the steps for performing back blows on a choking person?
+2026-10-25 12:22:49,097 - INFO - mode: hybrid
+2026-10-25 12:22:49,097 - INFO - total_candidates: 10
+2026-10-25 12:22:49,097 - INFO - [Rank 1] score: 0.719541072845459 | rrf: 0.0325 | dense_rank: 1 | bm25_rank: 2
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 48
+2026-10-25 12:22:49,097 - INFO - text preview: cross the person’s chest. 2. Bend the person forward at the waist until the upper airway is at least parallel to the ground. 3. With the heel of your free hand, deliver up to 5 firm back blows between
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 2] score: 0.629849910736084 | rrf: 0.0320 | dense_rank: 4 | bm25_rank: 1
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 50
+2026-10-25 12:22:49,097 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 3] score: 0.605080246925354 | rrf: 0.0305 | dense_rank: 6 | bm25_rank: 5
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 51
+2026-10-25 12:22:49,097 - INFO - text preview: n 1/3 of the chest’s depth. 7. Repeat the 5 firm back blows and 5 chest compressions until the object is coughed up, the baby starts to cry, breathe, or cough, or the baby becomes unresponsive. 47 47 
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 4] score: 0.5302865505218506 | rrf: 0.0289 | dense_rank: 17 | bm25_rank: 3
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 52
+2026-10-25 12:22:49,097 - INFO - text preview: After the Object Comes Out An object lodged in the airway can cause damage to the sensitive tissues in the trachea and the back of the throat. This can cause bleeding and swelling. Any person who has 
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 5] score: 0.5203102827072144 | rrf: 0.0269 | dense_rank: 18 | bm25_rank: 11
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 45
+2026-10-25 12:22:49,097 - INFO - text preview: to breathe. Since forceful coughing usually eliminates the obstruction, encourage the person to keep coughing. Stand by and monitor the person in case further help becomes necessary. Note that the car
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 6] score: 0.55632084608078 | rrf: 0.0265 | dense_rank: 10 | bm25_rank: 22
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 71
+2026-10-25 12:22:49,097 - INFO - text preview: ickly wipe the person’s mouth clean. 3. Reposition the person on his or her back and continue with CPR. 67 67 CPR & AED 67
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 7] score: 0.5831189155578613 | rrf: 0.0263 | dense_rank: 7 | bm25_rank: 28
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 49
+2026-10-25 12:22:49,097 - INFO - text preview: l Thrusts 1. Stand behind the person and ensure that your stance is stable. If the person is much shorter than you are, it may be more effective to kneel. 2. Wrap your arms around the person’s waist, 
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 8] score: 0.5316359996795654 | rrf: 0.0260 | dense_rank: 15 | bm25_rank: 19
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 211
+2026-10-25 12:22:49,097 - INFO - text preview: th his or her clothing and your hands, and keep the person’s head, neck, and back as straight as possible. 3. Pull the person to safety. This type of emergency move is exhausting and may result in bac
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 9] score: 0.5457844734191895 | rrf: 0.0252 | dense_rank: 11 | bm25_rank: 30
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 35
+2026-10-25 12:22:49,097 - INFO - text preview: l the person toward you as one unit by pulling the raised knee and supporting the head and neck with your other hand 5. Position the person on his or her side, and slide the bent knee into a position 
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:49,097 - INFO - [Rank 10] score: 0.49136584997177124 | rrf: 0.0240 | dense_rank: 26 | bm25_rank: 21
+2026-10-25 12:22:49,097 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:49,097 - INFO - page: 210
+2026-10-25 12:22:49,097 - INFO - text preview: tand on one side of the person and have the other First Aider stand on the opposite side. 2. Put one arm under the person’s thighs and the other across the person’s back, while the other First Aider d
+2026-10-25 12:22:49,097 - INFO - --------------------------------------------------
+2026-10-25 12:22:50,667 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:51,456 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:51,631 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:51,670 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:51,670 - INFO - query: What is the recommended depth for chest compressions on an adult during CPR?
+2026-10-25 12:22:51,670 - INFO - mode: hybrid
+2026-10-25 12:22:51,670 - INFO - total_candidates: 10
+2026-10-25 12:22:51,670 - INFO - [Rank 1] score: 0.8215237855911255 | rrf: 0.0328 | dense_rank: 1 | bm25_rank: 1
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 70
+2026-10-25 12:22:51,670 - INFO - text preview: CPR Compression Depth for an Adult When providing CPR to an adult, you should perform compressions in the middle of the chest on the lower half of the sternum. Push deeply and push steadily, ensuring 
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 2] score: 0.6504413485527039 | rrf: 0.0306 | dense_rank: 4 | bm25_rank: 7
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 72
+2026-10-25 12:22:51,670 - INFO - text preview: Hand Position Compress Breathe Cycle Compression Rate Adult Two hands on the middle of the chest At least 5 cm (about 2 in.) Just enough volume to make the chest start to rise (1 second per breath) 30
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 3] score: 0.6088539361953735 | rrf: 0.0290 | dense_rank: 6 | bm25_rank: 12
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 67
+2026-10-25 12:22:51,670 - INFO - text preview: cycle of 30 compressions and 2 breaths. 1. Do 30 compressions: - Put 2 hands on the centre of the child’s chest. - Push down at least 1/3 of the chest’s depth, pushing deeply and steadily. - The chest
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 4] score: 0.598325252532959 | rrf: 0.0288 | dense_rank: 8 | bm25_rank: 11
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 51
+2026-10-25 12:22:51,670 - INFO - text preview: n 1/3 of the chest’s depth. 7. Repeat the 5 firm back blows and 5 chest compressions until the object is coughed up, the baby starts to cry, breathe, or cough, or the baby becomes unresponsive. 47 47 
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 5] score: 0.505751371383667 | rrf: 0.0277 | dense_rank: 21 | bm25_rank: 5
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 71
+2026-10-25 12:22:51,670 - INFO - text preview: Myth-Information: Upper-Body Strength Required for CPR Myth: Performing CPR compressions requires significant upper- body strength. If you are performing compressions properly, the power comes from th
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 6] score: 0.6374794840812683 | rrf: 0.0266 | dense_rank: 5 | bm25_rank: 29
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 66
+2026-10-25 12:22:51,670 - INFO - text preview: 1. Place both of your hands on the centre of the person’s chest. 2. Do 30 compressions: - Push down at least 5 cm (about 2 in.), pushing deeply and steadily. - Allow the chest to fully recoil after ea
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 7] score: 0.5935317873954773 | rrf: 0.0264 | dense_rank: 9 | bm25_rank: 24
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 68
+2026-10-25 12:22:51,670 - INFO - text preview: steady. - The chest compression rate should be between 100 and 120 beats per minute (30 compressions in 15 to 18 seconds). - Allow the chest to fully recoil after each compression (do not lean on the 
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 8] score: 0.5308160781860352 | rrf: 0.0263 | dense_rank: 14 | bm25_rank: 18
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 75
+2026-10-25 12:22:51,670 - INFO - text preview: is not enough space on the chest to leave 2.5 cm (1 in.) between the pads, place one pad on the person’s chest (anterior) and one on the person’s back (posterior). 4. Apply the AED pads: - Use the app
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 9] score: 0.5252763032913208 | rrf: 0.0263 | dense_rank: 18 | bm25_rank: 14
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 69
+2026-10-25 12:22:51,670 - INFO - text preview: in, begin the CPR sequence again (30 chest compressions). 5. Continue to give CPR. After each set of compressions and before attempting to give rescue breaths, look for an object in the person’s mouth
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:51,670 - INFO - [Rank 10] score: 0.4317162334918976 | rrf: 0.0250 | dense_rank: 42 | bm25_rank: 6
+2026-10-25 12:22:51,670 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:51,670 - INFO - page: 78
+2026-10-25 12:22:51,670 - INFO - text preview: s appear, take the AED out of service and contact the manufacturer or the appropriate person at your place of employment (according to your employer’s policy). You may need to return the AED to the ma
+2026-10-25 12:22:51,670 - INFO - --------------------------------------------------
+2026-10-25 12:22:52,805 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:53,545 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:53,740 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:53,761 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:53,761 - INFO - query: How should you treat a choking pregnant person?
+2026-10-25 12:22:53,761 - INFO - mode: hybrid
+2026-10-25 12:22:53,761 - INFO - total_candidates: 10
+2026-10-25 12:22:53,761 - INFO - [Rank 1] score: 0.6558589339256287 | rrf: 0.0328 | dense_rank: 1 | bm25_rank: 1
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 50
+2026-10-25 12:22:53,761 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-25 12:22:53,761 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,761 - INFO - [Rank 2] score: 0.5744450688362122 | rrf: 0.0305 | dense_rank: 5 | bm25_rank: 6
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 52
+2026-10-25 12:22:53,761 - INFO - text preview: tself), so any person given this care should be assessed in a hospital. A person who has experienced partial choking should seek medical attention if he or she experiences any kind of respiratory dist
+2026-10-25 12:22:53,761 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,761 - INFO - [Rank 3] score: 0.5580433011054993 | rrf: 0.0303 | dense_rank: 8 | bm25_rank: 4
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 45
+2026-10-25 12:22:53,761 - INFO - text preview: to breathe. Since forceful coughing usually eliminates the obstruction, encourage the person to keep coughing. Stand by and monitor the person in case further help becomes necessary. Note that the car
+2026-10-25 12:22:53,761 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,761 - INFO - [Rank 4] score: 0.5673172473907471 | rrf: 0.0301 | dense_rank: 6 | bm25_rank: 7
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 71
+2026-10-25 12:22:53,761 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-25 12:22:53,761 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,761 - INFO - [Rank 5] score: 0.5875080823898315 | rrf: 0.0288 | dense_rank: 4 | bm25_rank: 16
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 48
+2026-10-25 12:22:53,761 - INFO - text preview: Complete Choking What To Look For What To Do Responsive Adult or Child Over 12 Months Call - If possible, send someone to call EMS/9-1-1 and get an AED while you care for the person. - If you are alon
+2026-10-25 12:22:53,761 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,761 - INFO - [Rank 6] score: 0.5063230991363525 | rrf: 0.0279 | dense_rank: 16 | bm25_rank: 8
+2026-10-25 12:22:53,761 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,761 - INFO - page: 47
+2026-10-25 12:22:53,761 - INFO - text preview: f panic, with wide eyes - Forceful or weak coughing - One or both hands clutching the throat Partial Choking What To Look For It is not usually necessary to call for help for partial choking, though y
+2026-10-25 12:22:53,763 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,763 - INFO - [Rank 7] score: 0.5191401243209839 | rrf: 0.0260 | dense_rank: 14 | bm25_rank: 20
+2026-10-25 12:22:53,763 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,763 - INFO - page: 49
+2026-10-25 12:22:53,763 - INFO - text preview: l Thrusts 1. Stand behind the person and ensure that your stance is stable. If the person is much shorter than you are, it may be more effective to kneel. 2. Wrap your arms around the person’s waist, 
+2026-10-25 12:22:53,763 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,763 - INFO - [Rank 8] score: 0.6398560404777527 | rrf: 0.0257 | dense_rank: 2 | bm25_rank: 45
+2026-10-25 12:22:53,763 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,763 - INFO - page: 51
+2026-10-25 12:22:53,763 - INFO - text preview: Choking Baby (Less Than 12 Months) 5. If the object has not been dislodged, turn the baby face-up, ensuring you support the head. Call - Shout for help. - If the baby is making high-pitched noises, is
+2026-10-25 12:22:53,763 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,763 - INFO - [Rank 9] score: 0.46991071105003357 | rrf: 0.0223 | dense_rank: 36 | bm25_rank: 24
+2026-10-25 12:22:53,763 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,763 - INFO - page: 116
+2026-10-25 12:22:53,763 - INFO - text preview: position you found them. Avoid unnecessary jostling and move the person only as much as is necessary. Remember, it is more important to treat life-threatening conditions than it is to keep the person 
+2026-10-25 12:22:53,763 - INFO - --------------------------------------------------
+2026-10-25 12:22:53,763 - INFO - [Rank 10] score: 0.4868580102920532 | rrf: 0.0222 | dense_rank: 24 | bm25_rank: 37
+2026-10-25 12:22:53,763 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:53,763 - INFO - page: 137
+2026-10-25 12:22:53,763 - INFO - text preview: mary role will be to provide comfort and reassurance and to facilitate the process while you wait for EMS personnel to arrive. The labour and delivery process will happen without much intervention on 
+2026-10-25 12:22:53,763 - INFO - --------------------------------------------------
+2026-10-25 12:22:55,193 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:56,132 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:22:56,331 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:22:56,375 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:22:56,375 - INFO - query: What are the steps for performing CPR on an adult?
+2026-10-25 12:22:56,375 - INFO - mode: hybrid
+2026-10-25 12:22:56,375 - INFO - total_candidates: 10
+2026-10-25 12:22:56,375 - INFO - [Rank 1] score: 0.6304384469985962 | rrf: 0.0323 | dense_rank: 1 | bm25_rank: 3
+2026-10-25 12:22:56,375 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,375 - INFO - page: 70
+2026-10-25 12:22:56,375 - INFO - text preview: CPR Compression Depth for an Adult When providing CPR to an adult, you should perform compressions in the middle of the chest on the lower half of the sternum. Push deeply and push steadily, ensuring 
+2026-10-25 12:22:56,375 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,375 - INFO - [Rank 2] score: 0.5511832237243652 | rrf: 0.0295 | dense_rank: 15 | bm25_rank: 2
+2026-10-25 12:22:56,377 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,377 - INFO - page: 71
+2026-10-25 12:22:56,377 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-25 12:22:56,377 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,377 - INFO - [Rank 3] score: 0.5874208211898804 | rrf: 0.0294 | dense_rank: 9 | bm25_rank: 7
+2026-10-25 12:22:56,377 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,377 - INFO - page: 65
+2026-10-25 12:22:56,377 - INFO - text preview: life-threatening condition, so starting CPR is the top priority. A person in cardiac arrest may have other conditions as well, such as a possible head, neck, or spinal injury, but caring for other inj
+2026-10-25 12:22:56,377 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,377 - INFO - [Rank 4] score: 0.6296085715293884 | rrf: 0.0293 | dense_rank: 2 | bm25_rank: 16
+2026-10-25 12:22:56,378 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,378 - INFO - page: 69
+2026-10-25 12:22:56,378 - INFO - text preview: in, begin the CPR sequence again (30 chest compressions). 5. Continue to give CPR. After each set of compressions and before attempting to give rescue breaths, look for an object in the person’s mouth
+2026-10-25 12:22:56,378 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,378 - INFO - [Rank 5] score: 0.5288488268852234 | rrf: 0.0277 | dense_rank: 23 | bm25_rank: 4
+2026-10-25 12:22:56,378 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,378 - INFO - page: 78
+2026-10-25 12:22:56,378 - INFO - text preview: ’s chest, and plugging in the connector cable, if necessary. The First Aider performing CPR should not pause CPR until the AED is ready to analyze the person’s heart rhythm and the second First Aider 
+2026-10-25 12:22:56,378 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,378 - INFO - [Rank 6] score: 0.49326348304748535 | rrf: 0.0253 | dense_rank: 39 | bm25_rank: 6
+2026-10-25 12:22:56,378 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,378 - INFO - page: 50
+2026-10-25 12:22:56,378 - INFO - text preview: l the dispatcher to send help. 2. If there are people nearby, move to a place where you can be noticed. 3. Attempt to dislodge the object by performing an abdominal thrust against a safe object with n
+2026-10-25 12:22:56,379 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,379 - INFO - [Rank 7] score: 0.4825924038887024 | rrf: 0.0249 | dense_rank: 45 | bm25_rank: 5
+2026-10-25 12:22:56,379 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,379 - INFO - page: 75
+2026-10-25 12:22:56,379 - INFO - text preview: is not enough space on the chest to leave 2.5 cm (1 in.) between the pads, place one pad on the person’s chest (anterior) and one on the person’s back (posterior). 4. Apply the AED pads: - Use the app
+2026-10-25 12:22:56,379 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,379 - INFO - [Rank 8] score: 0.5710486173629761 | rrf: 0.0248 | dense_rank: 11 | bm25_rank: 33
+2026-10-25 12:22:56,379 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,379 - INFO - page: 48
+2026-10-25 12:22:56,379 - INFO - text preview: Complete Choking What To Look For What To Do Responsive Adult or Child Over 12 Months Call - If possible, send someone to call EMS/9-1-1 and get an AED while you care for the person. - If you are alon
+2026-10-25 12:22:56,379 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,379 - INFO - [Rank 9] score: 0.6073153018951416 | rrf: 0.0245 | dense_rank: 7 | bm25_rank: 44
+2026-10-25 12:22:56,379 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,379 - INFO - page: 66
+2026-10-25 12:22:56,379 - INFO - text preview: breaths go in, repeat the cycle of 30 compressions and 2 breaths. Cardiac Arrest, Child (1 Year to the Onset of Puberty) Call Have someone call EMS/9-1-1 and get an AED. If you are alone with the chil
+2026-10-25 12:22:56,379 - INFO - --------------------------------------------------
+2026-10-25 12:22:56,379 - INFO - [Rank 10] score: 0.5500963926315308 | rrf: 0.0227 | dense_rank: 16 | bm25_rank: 45
+2026-10-25 12:22:56,379 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:22:56,379 - INFO - page: 72
+2026-10-25 12:22:56,379 - INFO - text preview: ompressions and 2 breaths Rate of 100–120 per minute: 30 compressions in about 15–18 seconds. Baby Two fingers on the middle of the chest (just below the nipple line) At least 1/3 of the chest’s depth
+2026-10-25 12:22:56,379 - INFO - --------------------------------------------------
+2026-10-25 12:22:59,915 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:00,762 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:00,972 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:01,005 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:01,005 - INFO - query: What should you do if you suspect a person is having a heart attack?
+2026-10-25 12:23:01,005 - INFO - mode: hybrid
+2026-10-25 12:23:01,005 - INFO - total_candidates: 10
+2026-10-25 12:23:01,005 - INFO - [Rank 1] score: 0.6796467304229736 | rrf: 0.0328 | dense_rank: 1 | bm25_rank: 1
+2026-10-25 12:23:01,005 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,007 - INFO - page: 57
+2026-10-25 12:23:01,007 - INFO - text preview: eat a person having a heart attack. Myth-Information Myth: You should delay calling EMS/9-1-1 for a person if you suspect that he or she is experiencing angina and not a full heart attack. You should 
+2026-10-25 12:23:01,007 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,007 - INFO - [Rank 2] score: 0.5782722234725952 | rrf: 0.0303 | dense_rank: 8 | bm25_rank: 4
+2026-10-25 12:23:01,007 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,007 - INFO - page: 56
+2026-10-25 12:23:01,007 - INFO - text preview: ¶ ¶ Comes and goes ¶ ¶ Does not necessarily feel painful ¶ ¶ Gets better with rest and worse with activity, or gets progressively worse - Extreme fatigue (tiredness) - Gastric discomfort, nausea, or v
+2026-10-25 12:23:01,007 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,007 - INFO - [Rank 3] score: 0.6224417686462402 | rrf: 0.0283 | dense_rank: 2 | bm25_rank: 22
+2026-10-25 12:23:01,007 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,007 - INFO - page: 130
+2026-10-25 12:23:01,007 - INFO - text preview: n, or you suspect that the person fainted as a result of a serious injury or illness. If you are unsure, call EMS/9-1-1 and get an AED. 126 126 Sudden Medical Emergencies 126
+2026-10-25 12:23:01,007 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,007 - INFO - [Rank 4] score: 0.6198395490646362 | rrf: 0.0265 | dense_rank: 3 | bm25_rank: 34
+2026-10-25 12:23:01,007 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,007 - INFO - page: 59
+2026-10-25 12:23:01,007 - INFO - text preview: est in a comfortable position. If the person prefers to lie down, or is unresponsive, drooling, or having trouble swallowing, place the person in the recovery position. Call Call EMS/9-1-1 and get an 
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 5] score: 0.5671526193618774 | rrf: 0.0248 | dense_rank: 15 | bm25_rank: 27
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 83
+2026-10-25 12:23:01,008 - INFO - text preview: ble breathing) - Anxiety and fear - Tightness in the chest - Tingling in the hands and feet - Sweating - Inability to say more than a few words without pausing to breathe Call EMS/9-1-1 and get an AED
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 6] score: 0.5458060503005981 | rrf: 0.0237 | dense_rank: 24 | bm25_rank: 25
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 41
+2026-10-25 12:23:01,008 - INFO - text preview: - Rapid breathing - Drowsiness or loss of responsiveness - Nausea and vomiting The best thing you can do when a person is in shock is to call EMS/9-1-1. While you are waiting for EMS personnel to arri
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 7] score: 0.5767974853515625 | rrf: 0.0236 | dense_rank: 10 | bm25_rank: 47
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 32
+2026-10-25 12:23:01,008 - INFO - text preview: - The scene is becoming unsafe. To roll a person from a face-down to a face-up position: Call If you identify an unresponsive individual or an individual with a life- threatening condition in your ini
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 8] score: 0.5353978276252747 | rrf: 0.0212 | dense_rank: 29 | bm25_rank: 40
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 81
+2026-10-25 12:23:01,008 - INFO - text preview: s - Muscle contractions, usually in the hands, feet, arms, and legs Call It is not always necessary to call EMS/9-1-1 for a person who is hyperventilating. You should call EMS/9-1-1 and get an AED if 
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 9] score: 0.5300763249397278 | rrf: 0.0212 | dense_rank: 34 | bm25_rank: 35
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 76
+2026-10-25 12:23:01,008 - INFO - text preview: 5. Follow the AED’s prompts to "Analyze Heart Rhythm:" - Most AEDs will begin to analyze the heart rhythm automatically, but some may require you to push an "analyze" button to start this process. - N
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:01,008 - INFO - [Rank 10] score: 0.5362172722816467 | rrf: 0.0206 | dense_rank: 27 | bm25_rank: 50
+2026-10-25 12:23:01,008 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:01,008 - INFO - page: 124
+2026-10-25 12:23:01,008 - INFO - text preview: You should always call EMS/9-1-1 and get an AED if: - There is a problem with the ABCs. - The injury involves the head and/or spine. - You suspect that there may be multiple injuries. - There are inju
+2026-10-25 12:23:01,008 - INFO - --------------------------------------------------
+2026-10-25 12:23:02,406 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:03,606 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:03,831 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:03,847 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:03,847 - INFO - query: What are the steps for caring for a puncture wound?
+2026-10-25 12:23:03,847 - INFO - mode: hybrid
+2026-10-25 12:23:03,847 - INFO - total_candidates: 10
+2026-10-25 12:23:03,847 - INFO - [Rank 1] score: 0.5506933331489563 | rrf: 0.0318 | dense_rank: 5 | bm25_rank: 1
+2026-10-25 12:23:03,848 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,848 - INFO - page: 92
+2026-10-25 12:23:03,848 - INFO - text preview: Puncture Wounds A puncture wound occurs when a hole in the skin is created by a pointed object, such as nails, pieces of glass, and animal teeth. Common Causes Puncture wounds may be caused by: - Inju
+2026-10-25 12:23:03,848 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,848 - INFO - [Rank 2] score: 0.5710253715515137 | rrf: 0.0306 | dense_rank: 2 | bm25_rank: 9
+2026-10-25 12:23:03,848 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,848 - INFO - page: 170
+2026-10-25 12:23:03,848 - INFO - text preview: wound is minor: - Wash the wound thoroughly with clean water, ideally by running it under a tap, as the pressure from the running water lets it penetrate more deeply into the wound. - Control any blee
+2026-10-25 12:23:03,848 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,848 - INFO - [Rank 3] score: 0.6272307634353638 | rrf: 0.0303 | dense_rank: 1 | bm25_rank: 12
+2026-10-25 12:23:03,848 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,848 - INFO - page: 91
+2026-10-25 12:23:03,848 - INFO - text preview: ure until it stops. 2. If possible, rinse the wound for 5 minutes with clean, running tap water. 3. If an antibiotic ointment or cream is available, ask the person if he or she has a sensitivity to an
+2026-10-25 12:23:03,848 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,848 - INFO - [Rank 4] score: 0.5271956324577332 | rrf: 0.0279 | dense_rank: 8 | bm25_rank: 16
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 60
+2026-10-25 12:23:03,849 - INFO - text preview: bandage, and then secure them in place. 4. Reassess the wound to see if the pressure has stopped the bleeding. If not, consider using a tourniquet if the wound is on a limb. 56 56 Circulation Emergenc
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 5] score: 0.5027173161506653 | rrf: 0.0263 | dense_rank: 11 | bm25_rank: 22
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 105
+2026-10-25 12:23:03,849 - INFO - text preview: 101 101 Wound Care 101
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 6] score: 0.5125434398651123 | rrf: 0.0255 | dense_rank: 10 | bm25_rank: 29
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 97
+2026-10-25 12:23:03,849 - INFO - text preview: ditional first aid measures, if it is available. 93 93 Wound Care 93
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 7] score: 0.41086694598197937 | rrf: 0.0250 | dense_rank: 37 | bm25_rank: 8
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 123
+2026-10-25 12:23:03,849 - INFO - text preview: the person receives medical attention. To avoid damaging nerves, blood vessels, and tissues, do not perform traction or any other manipulation. When caring for an open fracture, your first priority is
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 8] score: 0.38918817043304443 | rrf: 0.0246 | dense_rank: 49 | bm25_rank: 5
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 98
+2026-10-25 12:23:03,849 - INFO - text preview: first aid steps. 2. Care for radiation burns as you would care for thermal burns. Special Considerations When Caring for Burns Remember the following special considerations when providing care for bur
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 9] score: 0.5191973447799683 | rrf: 0.0241 | dense_rank: 9 | bm25_rank: 44
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 90
+2026-10-25 12:23:03,849 - INFO - text preview: ce and not be removed. - Dressings and bandages should be kept clean and dry to decrease the risk of infection. Once bleeding is under control and the wound has begun to heal, dressings that become we
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:03,849 - INFO - [Rank 10] score: 0.4539962410926819 | rrf: 0.0239 | dense_rank: 20 | bm25_rank: 28
+2026-10-25 12:23:03,849 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:03,849 - INFO - page: 108
+2026-10-25 12:23:03,849 - INFO - text preview: wound that may bubble at the injury site - A sucking sound coming from the wound with each breath - Severe pain at the site of the injury - Coughing up blood Call EMS/9-1-1 and get an AED. Call 1. Hav
+2026-10-25 12:23:03,849 - INFO - --------------------------------------------------
+2026-10-25 12:23:05,624 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:06,384 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:06,567 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:06,591 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:06,591 - INFO - query: Compare the signs of partial choking with the signs of complete choking.
+2026-10-25 12:23:06,591 - INFO - mode: hybrid
+2026-10-25 12:23:06,591 - INFO - total_candidates: 10
+2026-10-25 12:23:06,591 - INFO - [Rank 1] score: 0.5700295567512512 | rrf: 0.0320 | dense_rank: 2 | bm25_rank: 3
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,591 - INFO - page: 47
+2026-10-25 12:23:06,591 - INFO - text preview: f panic, with wide eyes - Forceful or weak coughing - One or both hands clutching the throat Partial Choking What To Look For It is not usually necessary to call for help for partial choking, though y
+2026-10-25 12:23:06,591 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,591 - INFO - [Rank 2] score: 0.5458248853683472 | rrf: 0.0318 | dense_rank: 4 | bm25_rank: 2
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,591 - INFO - page: 45
+2026-10-25 12:23:06,591 - INFO - text preview: pressure behind the blockage (which is impossible unless the blockage is complete). If the person is or becomes too weak to cough, his or her condition will quickly deteriorate into complete choking. 
+2026-10-25 12:23:06,591 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,591 - INFO - [Rank 3] score: 0.5727083683013916 | rrf: 0.0315 | dense_rank: 1 | bm25_rank: 6
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,591 - INFO - page: 52
+2026-10-25 12:23:06,591 - INFO - text preview: tself), so any person given this care should be assessed in a hospital. A person who has experienced partial choking should seek medical attention if he or she experiences any kind of respiratory dist
+2026-10-25 12:23:06,591 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,591 - INFO - [Rank 4] score: 0.5632599592208862 | rrf: 0.0313 | dense_rank: 3 | bm25_rank: 5
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,591 - INFO - page: 48
+2026-10-25 12:23:06,591 - INFO - text preview: Complete Choking What To Look For What To Do Responsive Adult or Child Over 12 Months Call - If possible, send someone to call EMS/9-1-1 and get an AED while you care for the person. - If you are alon
+2026-10-25 12:23:06,591 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,591 - INFO - [Rank 5] score: 0.5013279914855957 | rrf: 0.0296 | dense_rank: 7 | bm25_rank: 8
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,591 - INFO - page: 51
+2026-10-25 12:23:06,591 - INFO - text preview: Choking Baby (Less Than 12 Months) 5. If the object has not been dislodged, turn the baby face-up, ensuring you support the head. Call - Shout for help. - If the baby is making high-pitched noises, is
+2026-10-25 12:23:06,591 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,591 - INFO - [Rank 6] score: 0.48603278398513794 | rrf: 0.0273 | dense_rank: 9 | bm25_rank: 18
+2026-10-25 12:23:06,591 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,599 - INFO - page: 50
+2026-10-25 12:23:06,599 - INFO - text preview: Responsive, Choking Toddler 1. If the child is short enough, kneel on the floor with one knee raised. 2. Perform 5 back blows with the child leaning across your raised leg, alternating with either 5 c
+2026-10-25 12:23:06,599 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,599 - INFO - [Rank 7] score: 0.4541269540786743 | rrf: 0.0263 | dense_rank: 18 | bm25_rank: 14
+2026-10-25 12:23:06,599 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,599 - INFO - page: 65
+2026-10-25 12:23:06,599 - INFO - text preview: omplete choking - Electrocution - Drug overdose - Severe chest injuries - Commotio cordis - Other heart diseases and abnormalities Cardiovascular disease and certain congenital heart conditions (i.e.,
+2026-10-25 12:23:06,599 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,599 - INFO - [Rank 8] score: 0.48307669162750244 | rrf: 0.0263 | dense_rank: 11 | bm25_rank: 22
+2026-10-25 12:23:06,599 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,599 - INFO - page: 228
+2026-10-25 12:23:06,599 - INFO - text preview: ) Choking: A condition in which someone’s airway is partly or completely blocked by a foreign object, swelling of the mouth or throat, or fluids such as vomit. Cholesterol: A fatty substance that can 
+2026-10-25 12:23:06,599 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,599 - INFO - [Rank 9] score: 0.3893730640411377 | rrf: 0.0241 | dense_rank: 44 | bm25_rank: 9
+2026-10-25 12:23:06,599 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,599 - INFO - page: 46
+2026-10-25 12:23:06,599 - INFO - text preview: OBJECTS AND TOYS 42 42 Choking 42
+2026-10-25 12:23:06,599 - INFO - --------------------------------------------------
+2026-10-25 12:23:06,599 - INFO - [Rank 10] score: 0.42402029037475586 | rrf: 0.0215 | dense_rank: 26 | bm25_rank: 41
+2026-10-25 12:23:06,599 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:06,599 - INFO - page: 39
+2026-10-25 12:23:06,599 - INFO - text preview: Hands-On Check If a person is breathing but unresponsive, or is otherwise unable to communicate what is wrong, you may need to do a hands-on check to assess whether further first aid is required. Cond
+2026-10-25 12:23:06,599 - INFO - --------------------------------------------------
+2026-10-25 12:23:08,097 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:09,005 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:09,171 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:09,195 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:09,195 - INFO - query: What are the primary differences in hand placement for CPR between an adult, a child, and a baby?
+2026-10-25 12:23:09,195 - INFO - mode: hybrid
+2026-10-25 12:23:09,195 - INFO - total_candidates: 10
+2026-10-25 12:23:09,195 - INFO - [Rank 1] score: 0.5887695550918579 | rrf: 0.0311 | dense_rank: 2 | bm25_rank: 7
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 70
+2026-10-25 12:23:09,195 - INFO - text preview: re important to push deeply and push steadily than to worry about pushing too deeply. CPR Compression Depth for a Child or a Baby Because of the variation in size among children or babies, compression
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 2] score: 0.5039064884185791 | rrf: 0.0305 | dense_rank: 11 | bm25_rank: 1
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 75
+2026-10-25 12:23:09,195 - INFO - text preview: is not enough space on the chest to leave 2.5 cm (1 in.) between the pads, place one pad on the person’s chest (anterior) and one on the person’s back (posterior). 4. Apply the AED pads: - Use the app
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 3] score: 0.5480833053588867 | rrf: 0.0303 | dense_rank: 6 | bm25_rank: 6
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 51
+2026-10-25 12:23:09,195 - INFO - text preview: on of a bystander. 1. Sit or kneel holding the baby. 2. Position the baby face down along your forearm, holding his or her jaw in your hand. 3. Rest your forearm on your leg so that the baby’s head is
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 4] score: 0.5061776041984558 | rrf: 0.0286 | dense_rank: 10 | bm25_rank: 10
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 69
+2026-10-25 12:23:09,195 - INFO - text preview: nd into the side of the person’s mouth, then sweep behind the object to lift it out. compression-only CPR is acceptable. As a minimum, you should always perform compression-only CPR for any person in 
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 5] score: 0.526242733001709 | rrf: 0.0271 | dense_rank: 7 | bm25_rank: 22
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 68
+2026-10-25 12:23:09,195 - INFO - text preview: reaths until: - EMS personnel take over. - An AED is available and there is no one else who can apply the pads to the person’s chest. - Another trained First Aider is available and can take over compr
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 6] score: 0.616810142993927 | rrf: 0.0270 | dense_rank: 1 | bm25_rank: 34
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 71
+2026-10-25 12:23:09,195 - INFO - text preview: ed. There is no need for you to reposition your hands after every compression—the hand is placed on the middle of chest. Special Considerations CPR for a Pregnant Woman When performing CPR for a pregn
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 7] score: 0.5723913908004761 | rrf: 0.0264 | dense_rank: 3 | bm25_rank: 35
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 72
+2026-10-25 12:23:09,195 - INFO - text preview: Hand Position Compress Breathe Cycle Compression Rate Adult Two hands on the middle of the chest At least 5 cm (about 2 in.) Just enough volume to make the chest start to rise (1 second per breath) 30
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 8] score: 0.4463733434677124 | rrf: 0.0260 | dense_rank: 34 | bm25_rank: 5
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 77
+2026-10-25 12:23:09,195 - INFO - text preview: r using an AED on a child or baby is the same as the procedure for using an AED on an adult. Some AEDs come with pediatric AED pads that are smaller and designed to deliver a less powerful shock. Thes
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,195 - INFO - [Rank 9] score: 0.5542330741882324 | rrf: 0.0254 | dense_rank: 5 | bm25_rank: 40
+2026-10-25 12:23:09,195 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,195 - INFO - page: 67
+2026-10-25 12:23:09,195 - INFO - text preview: cycle of 30 compressions and 2 breaths. 1. Do 30 compressions: - Put 2 hands on the centre of the child’s chest. - Push down at least 1/3 of the chest’s depth, pushing deeply and steadily. - The chest
+2026-10-25 12:23:09,195 - INFO - --------------------------------------------------
+2026-10-25 12:23:09,202 - INFO - [Rank 10] score: 0.4729729890823364 | rrf: 0.0253 | dense_rank: 20 | bm25_rank: 18
+2026-10-25 12:23:09,202 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:09,202 - INFO - page: 65
+2026-10-25 12:23:09,202 - INFO - text preview: life-threatening condition, so starting CPR is the top priority. A person in cardiac arrest may have other conditions as well, such as a possible head, neck, or spinal injury, but caring for other inj
+2026-10-25 12:23:09,202 - INFO - --------------------------------------------------
+2026-10-25 12:23:11,174 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:12,047 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:12,301 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:12,328 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:12,328 - INFO - query: What is the difference between consent and implied consent in first aid?
+2026-10-25 12:23:12,328 - INFO - mode: hybrid
+2026-10-25 12:23:12,328 - INFO - total_candidates: 10
+2026-10-25 12:23:12,328 - INFO - [Rank 1] score: 0.5087639093399048 | rrf: 0.0325 | dense_rank: 1 | bm25_rank: 2
+2026-10-25 12:23:12,328 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,328 - INFO - page: 16
+2026-10-25 12:23:12,328 - INFO - text preview: ce for more information. Getting Permission to Help Once you decide to act, you need to get the ill or injured person’s permission (also known as consent) to assist. To get permission: 1. Tell the per
+2026-10-25 12:23:12,331 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,331 - INFO - [Rank 2] score: 0.49326059222221375 | rrf: 0.0325 | dense_rank: 2 | bm25_rank: 1
+2026-10-25 12:23:12,331 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,331 - INFO - page: 17
+2026-10-25 12:23:12,331 - INFO - text preview: determining the psychological impact on the victim. Indifference and blame are damaging responses that can have long- lasting consequences. The Person Is Unresponsive Or Confused, Or Has a Mental Impa
+2026-10-25 12:23:12,331 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,331 - INFO - [Rank 3] score: 0.475993812084198 | rrf: 0.0289 | dense_rank: 3 | bm25_rank: 17
+2026-10-25 12:23:12,331 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,331 - INFO - page: 18
+2026-10-25 12:23:12,331 - INFO - text preview: nderstanding Your Role as a First Aider First aid is the immediate care that is given to an ill or injured person until more advanced care can be obtained. Responding to Emergencies 14
+2026-10-25 12:23:12,331 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,331 - INFO - [Rank 4] score: 0.42549988627433777 | rrf: 0.0274 | dense_rank: 12 | bm25_rank: 14
+2026-10-25 12:23:12,331 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,331 - INFO - page: 41
+2026-10-25 12:23:12,331 - INFO - text preview: Providing First Aid for Someone with a Disability It is not uncommon to feel intimidated when providing first aid to a person who has different abilities, because there is often uncertainty about how 
+2026-10-25 12:23:12,331 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,331 - INFO - [Rank 5] score: 0.4325951039791107 | rrf: 0.0257 | dense_rank: 9 | bm25_rank: 29
+2026-10-25 12:23:12,331 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,331 - INFO - page: 15
+2026-10-25 12:23:12,331 - INFO - text preview: thing wrong, or causing more harm: You might be afraid that you will be sued if you make a mistake. As long as you act reasonably, you don’t need to worry. All provinces and territories have laws to p
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,333 - INFO - [Rank 6] score: 0.3867202401161194 | rrf: 0.0243 | dense_rank: 25 | bm25_rank: 20
+2026-10-25 12:23:12,333 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,333 - INFO - page: 62
+2026-10-25 12:23:12,333 - INFO - text preview: all EMS/9-1-1 and get an AED. You cannot provide first aid for life- threatening internal bleeding as a First Aider. Life-threatening internal bleeding, especially if it results from damage to an orga
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,333 - INFO - [Rank 7] score: 0.36384010314941406 | rrf: 0.0230 | dense_rank: 34 | bm25_rank: 21
+2026-10-25 12:23:12,333 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,333 - INFO - page: 136
+2026-10-25 12:23:12,333 - INFO - text preview: lth Crisis Mental health first aid is the initial care given by a First Aider to a person in a mental health crisis. Like any first aid, it includes the recognition of signs and symptoms and the care 
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,333 - INFO - [Rank 8] score: 0.3951495289802551 | rrf: 0.0227 | dense_rank: 20 | bm25_rank: 38
+2026-10-25 12:23:12,333 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,333 - INFO - page: 30
+2026-10-25 12:23:12,333 - INFO - text preview: to the site of the emergency, getting needed items (such as an AED and first aid kit), controlling crowds, and reassuring the injured or ill person. What is your initial impression of the ill or injur
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,333 - INFO - [Rank 9] score: 0.3622693419456482 | rrf: 0.0226 | dense_rank: 35 | bm25_rank: 23
+2026-10-25 12:23:12,333 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,333 - INFO - page: 43
+2026-10-25 12:23:12,333 - INFO - text preview: Providing First Aid for Someone with an Intellectual or a Developmental Disability It may not be apparent that a person has an intellectual or developmental disability unless this fact is communicated
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:12,333 - INFO - [Rank 10] score: 0.35397839546203613 | rrf: 0.0226 | dense_rank: 41 | bm25_rank: 19
+2026-10-25 12:23:12,333 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:12,333 - INFO - page: 31
+2026-10-25 12:23:12,333 - INFO - text preview: obtain an AED and first aid kit if these items are available. Check, Call, Care 27
+2026-10-25 12:23:12,333 - INFO - --------------------------------------------------
+2026-10-25 12:23:14,189 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:14,982 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:15,177 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:15,196 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:15,196 - INFO - query: What is the capital of Canada?
+2026-10-25 12:23:15,196 - INFO - mode: hybrid
+2026-10-25 12:23:15,196 - INFO - total_candidates: 10
+2026-10-25 12:23:15,196 - INFO - [Rank 1] score: 0.32745757699012756 | rrf: 0.0315 | dense_rank: 3 | bm25_rank: 4
+2026-10-25 12:23:15,196 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,196 - INFO - page: 7
+2026-10-25 12:23:15,196 - INFO - text preview: anadian Red Cross Society Act was approved by Parliament, and decreed that the Canadian Red Cross would serve as an auxiliary to the Government of Canada for Canadians, which was a measure that was in
+2026-10-25 12:23:15,196 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,196 - INFO - [Rank 2] score: 0.3351547122001648 | rrf: 0.0311 | dense_rank: 1 | bm25_rank: 8
+2026-10-25 12:23:15,196 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,196 - INFO - page: 20
+2026-10-25 12:23:15,196 - INFO - text preview: EMS varies from community to community. Most people in Canada call 9-1-1 for help in emergencies, but in some areas of Canada and in many workplaces you may need to dial a different designated emergen
+2026-10-25 12:23:15,196 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 3] score: 0.3009752333164215 | rrf: 0.0308 | dense_rank: 7 | bm25_rank: 3
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 199
+2026-10-25 12:23:15,198 - INFO - text preview: Car Safety Motor vehicle injuries are the number one cause of death of children in Canada. Follow the guidelines on the safe use of car seats and the passenger rules for children to help ensure childr
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 4] score: 0.2966036796569824 | rrf: 0.0306 | dense_rank: 9 | bm25_rank: 2
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 204
+2026-10-25 12:23:15,198 - INFO - text preview: d working order. To find out exactly what is needed for your boat, contact Transport Canada. - As of September 15, 2009, anyone operating a powerboat on Canadian waters must have a pleasure craft oper
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 5] score: 0.28630080819129944 | rrf: 0.0303 | dense_rank: 12 | bm25_rank: 1
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 175
+2026-10-25 12:23:15,198 - INFO - text preview: CANADA 171 171 Poisons 171
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 6] score: 0.31770560145378113 | rrf: 0.0287 | dense_rank: 5 | bm25_rank: 15
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 9
+2026-10-25 12:23:15,198 - INFO - text preview: food, clothing, hygiene items, and emotional support. As part of a global network of 190 national Societies, the work and expertise of the Canadian Red Cross often extends beyond Canada’s borders. Tra
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 7] score: 0.27469515800476074 | rrf: 0.0281 | dense_rank: 17 | bm25_rank: 6
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 174
+2026-10-25 12:23:15,198 - INFO - text preview: in feeling to the flu) Seek medical attention as soon as possible. If possible, save the tick responsible for the bite in a resealable bag or empty pill bottle, and bring it to the medical appointment
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 8] score: 0.3320181667804718 | rrf: 0.0275 | dense_rank: 2 | bm25_rank: 28
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 8
+2026-10-25 12:23:15,198 - INFO - text preview: nized emblems in the world, and continues to be an internationally respected symbol of protection and neutrality. The Red Cross is the emblem that is used by the Canadian National Society. No organiza
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 9] score: 0.27248668670654297 | rrf: 0.0273 | dense_rank: 18 | bm25_rank: 9
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 137
+2026-10-25 12:23:15,198 - INFO - text preview: rom minor self-inflicted injuries to suicide. Suicide is one of the ten most common causes of death in Canada, affecting people from a variety of backgrounds and age groups. Anyone expressing intentio
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,198 - INFO - [Rank 10] score: 0.279936820268631 | rrf: 0.0272 | dense_rank: 16 | bm25_rank: 11
+2026-10-25 12:23:15,198 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:15,198 - INFO - page: 169
+2026-10-25 12:23:15,198 - INFO - text preview: Opioid Overdose Opioid drugs, such as heroin, oxycodone, and fentanyl, are a common cause of drug overdose in Canada. Many prescription drugs are or contain opiates. EMS personnel use naloxone (Narcan
+2026-10-25 12:23:15,198 - INFO - --------------------------------------------------
+2026-10-25 12:23:15,820 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:16,039 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:16,062 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:16,062 - INFO - query: Who won the FIFA World Cup in 2022?
+2026-10-25 12:23:16,062 - INFO - mode: hybrid
+2026-10-25 12:23:16,062 - INFO - total_candidates: 0
+2026-10-25 12:23:16,814 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:17,018 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:17,038 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:17,038 - INFO - query: What is the current stock price of Apple?
+2026-10-25 12:23:17,038 - INFO - mode: hybrid
+2026-10-25 12:23:17,038 - INFO - total_candidates: 0
+2026-10-25 12:23:17,734 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:17,939 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:17,964 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:17,964 - INFO - query: What should I do in an emergency?
+2026-10-25 12:23:17,964 - INFO - mode: hybrid
+2026-10-25 12:23:17,964 - INFO - total_candidates: 10
+2026-10-25 12:23:17,964 - INFO - [Rank 1] score: 0.628976583480835 | rrf: 0.0313 | dense_rank: 2 | bm25_rank: 6
+2026-10-25 12:23:17,964 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,964 - INFO - page: 15
+2026-10-25 12:23:17,964 - INFO - text preview: were trained. Once you start giving first aid, keep providing help until EMS personnel arrive. If you are unsure of what to do, call EMS/9-1-1 and follow the EMS dispatcher’s instructions. The most ha
+2026-10-25 12:23:17,964 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,964 - INFO - [Rank 2] score: 0.6052777767181396 | rrf: 0.0313 | dense_rank: 6 | bm25_rank: 2
+2026-10-25 12:23:17,964 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,964 - INFO - page: 13
+2026-10-25 12:23:17,964 - INFO - text preview: important information in an emergency (such as your medical conditions, blood type, and emergency contact details). In a life-threatening emergency, every second counts. By preparing for emergencies, 
+2026-10-25 12:23:17,964 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,964 - INFO - [Rank 3] score: 0.6254748702049255 | rrf: 0.0296 | dense_rank: 3 | bm25_rank: 13
+2026-10-25 12:23:17,964 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,964 - INFO - page: 33
+2026-10-25 12:23:17,964 - INFO - text preview: . Immediately do 2 minutes of CPR (5 cycles of 30 compressions and 2 breaths) to increase the oxygen level, then quickly call EMS/9-1-1 before returning to provide more care. When You Call EMS/9-1-1 W
+2026-10-25 12:23:17,964 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,964 - INFO - [Rank 4] score: 0.5218219757080078 | rrf: 0.0259 | dense_rank: 45 | bm25_rank: 1
+2026-10-25 12:23:17,964 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,964 - INFO - page: 18
+2026-10-25 12:23:17,964 - INFO - text preview: govern how you respond. The Emergency Medical Services System The emergency medical services (EMS) system is a network of community resources and trained personnel, organized to give emergency care in
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 5] score: 0.6136574745178223 | rrf: 0.0258 | dense_rank: 4 | bm25_rank: 38
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 20
+2026-10-25 12:23:17,966 - INFO - text preview: ining you may have received. Trust your instincts. When in doubt, make the call. If you think that an emergency exists, it probably does; you should call EMS/9-1-1 for professional help immediately. C
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 6] score: 0.532581090927124 | rrf: 0.0252 | dense_rank: 35 | bm25_rank: 8
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 21
+2026-10-25 12:23:17,966 - INFO - text preview: avelling in an ambulance, tell them you will call again when you know the name and location of the hospital and that you may not know this information until after you arrive. If you cannot go with the
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 7] score: 0.5830661058425903 | rrf: 0.0248 | dense_rank: 8 | bm25_rank: 39
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 29
+2026-10-25 12:23:17,966 - INFO - text preview: thing that might reveal the cause of the emergency. If the person is unresponsive and there are no witnesses, your check of the scene may offer the only clues as to what happened. Use your senses to d
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 8] score: 0.5425196886062622 | rrf: 0.0245 | dense_rank: 27 | bm25_rank: 17
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 37
+2026-10-25 12:23:17,966 - INFO - text preview: before? LAST ORAL INTAKE — When did you last eat or drink? What did you have? EVENTS LEADING UP TO THE EMERGENCY — What happened? Check, Call, Care 33
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 9] score: 0.5583778619766235 | rrf: 0.0237 | dense_rank: 17 | bm25_rank: 33
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 30
+2026-10-25 12:23:17,966 - INFO - text preview: to the site of the emergency, getting needed items (such as an AED and first aid kit), controlling crowds, and reassuring the injured or ill person. What is your initial impression of the ill or injur
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:17,966 - INFO - [Rank 10] score: 0.550859808921814 | rrf: 0.0226 | dense_rank: 22 | bm25_rank: 36
+2026-10-25 12:23:17,966 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:17,966 - INFO - page: 130
+2026-10-25 12:23:17,966 - INFO - text preview: blems seeing or speaking, problems with sensation or movement, seizures, or unresponsiveness require a call to EMS/9-1-1. If you are unsure about the severity of the illness, it is better to call for 
+2026-10-25 12:23:17,966 - INFO - --------------------------------------------------
+2026-10-25 12:23:20,804 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:21,726 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:22,105 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-10-25 12:23:22,131 - INFO - ---- RETRIEVED CHUNKS ----
+2026-10-25 12:23:22,131 - INFO - query: How do I help someone?
+2026-10-25 12:23:22,131 - INFO - mode: hybrid
+2026-10-25 12:23:22,131 - INFO - total_candidates: 10
+2026-10-25 12:23:22,131 - INFO - [Rank 1] score: 0.47625312209129333 | rrf: 0.0295 | dense_rank: 5 | bm25_rank: 11
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 42
+2026-10-25 12:23:22,131 - INFO - text preview: , let him or her know that you are leaving and will be back. - Narrate your actions so that the person can follow what you are doing. - If you’re unsure about how to provide directions, simply ask the
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 2] score: 0.4580753445625305 | rrf: 0.0290 | dense_rank: 11 | bm25_rank: 7
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 17
+2026-10-25 12:23:22,131 - INFO - text preview: Special Situations There are times when it is difficult to get permission to provide care for an ill or injured person or when the person denies the help of First Aiders or bystanders: You and the Per
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 3] score: 0.4682427942752838 | rrf: 0.0271 | dense_rank: 6 | bm25_rank: 24
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 35
+2026-10-25 12:23:22,131 - INFO - text preview: bleeding, you should help the person with life- threatening bleeding first. EMS personnel will arrive before the minor bleeding becomes serious. Guidelines for Helping an Ill or Injured Person with Me
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 4] score: 0.40481019020080566 | rrf: 0.0267 | dense_rank: 30 | bm25_rank: 4
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 15
+2026-10-25 12:23:22,131 - INFO - text preview: e four most common reasons are: 1. The Bystander Effect: If there are other people at the scene, it is easy to think that they can take care of the emergency without your help. However, you should nev
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 5] score: 0.41047680377960205 | rrf: 0.0261 | dense_rank: 26 | bm25_rank: 9
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 40
+2026-10-25 12:23:22,131 - INFO - text preview: If you decide it is safe to transport the person yourself, take someone else with you, if possible, to help keep the ill or injured person comfortable and to watch for any changes in his or her condit
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 6] score: 0.43733251094818115 | rrf: 0.0260 | dense_rank: 14 | bm25_rank: 20
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 32
+2026-10-25 12:23:22,131 - INFO - text preview: ve first aid. If you are alone with the person and you do not 1. Support the head while rolling the person. 2. Try to roll the person as one unit (head, back, and legs at one time). 3. Open the airway
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 7] score: 0.43820926547050476 | rrf: 0.0253 | dense_rank: 13 | bm25_rank: 26
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 43
+2026-10-25 12:23:22,131 - INFO - text preview: Providing First Aid for Someone with an Intellectual or a Developmental Disability It may not be apparent that a person has an intellectual or developmental disability unless this fact is communicated
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 8] score: 0.48751431703567505 | rrf: 0.0250 | dense_rank: 3 | bm25_rank: 49
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 41
+2026-10-25 12:23:22,131 - INFO - text preview: Providing First Aid for Someone with a Disability It is not uncommon to feel intimidated when providing first aid to a person who has different abilities, because there is often uncertainty about how 
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 9] score: 0.4066402316093445 | rrf: 0.0249 | dense_rank: 29 | bm25_rank: 13
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 30
+2026-10-25 12:23:22,131 - INFO - text preview: moving or a person obscured by debris or wreckage who you do not notice at first. It is also easy to overlook a small child or a baby. Is there someone to help? Take note of bystanders who can be of a
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:22,131 - INFO - [Rank 10] score: 0.3932138681411743 | rrf: 0.0202 | dense_rank: 36 | bm25_rank: 42
+2026-10-25 12:23:22,131 - INFO - source: Comprehensive_Guide_for_FirstAidCPR_en.pdf
+2026-10-25 12:23:22,131 - INFO - page: 137
+2026-10-25 12:23:22,131 - INFO - text preview: A person expressing his or her intent to die, especially if he or she has a plan to do so - A person expressing his or her final wishes to someone close by (e.g., a bystander at scene) - Items associa
+2026-10-25 12:23:22,131 - INFO - --------------------------------------------------
+2026-10-25 12:23:26,647 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-25 12:23:27,620 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

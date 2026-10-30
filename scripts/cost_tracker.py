@@ -1,6 +1,8 @@
 import json, os
+from pathlib import Path
 
-COST_FILE = "cost_tracker.json"
+# Project-root file, regardless of the directory the script is run from
+COST_FILE = Path(__file__).resolve().parent.parent / "cost_tracker.json"
 
 def track_cost(response, is_embedding=False):
     usage = response.usage
